@@ -1,9 +1,9 @@
 (ns app.core
-  (:require 
+  (:require
     [clojure.java.io :refer [as-file]]
     [clojure.string :refer [lower-case]]
     [clojure.set :refer [map-invert]]
-    [app.design-parse :refer [design-as-map parse-masking]]
+    [app.design-parse :refer [parse-masking]]
     [riveted.core :as vtd]
     [org.drugis.addis.rdf.trig :as trig]))
 
@@ -330,7 +330,7 @@
         row-specific ((:sample-size row-info) group-id)
         subj-with-sample-size (if (nil? row-specific)
                                   (measurement-value subj sample-size-xml "sample_size" "value")
-                                  (trig/spo subj [(trig/iri :ontology "sample_size") row-specific])) 
+                                  (trig/spo subj [(trig/iri :ontology "sample_size") row-specific]))
         properties (outcome-results-properties props)]
     (reduce #(measurement-value %1 measurement-xml (first %2) (second %2))
             subj-with-sample-size

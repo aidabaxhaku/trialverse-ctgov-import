@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<clinical_study>
+  <!-- This xml conforms to an XML Schema at:
+    https://clinicaltrials.gov/ct2/html/images/info/public.xsd -->
+  <required_header>
+    <download_date>ClinicalTrials.gov processed this data on May 23, 2017</download_date>
+    <link_text>Link to the current ClinicalTrials.gov record.</link_text>
+    <url>https://clinicaltrials.gov/show/NCT00857584</url>
+  </required_header>
+  <id_info>
+    <org_study_id>D1443L00058</org_study_id>
+    <nct_id>NCT00857584</nct_id>
+  </id_info>
+  <brief_title>Quetiapine XR Versus Sertraline in Acute Bipolar Depression as add-on Therapy</brief_title>
+  <official_title>Effectiveness of Quetiapine XR Versus Sertraline in Acute Depression as add-on Therapy to Previous Mood Stabilizer Treatment: a Pilot Study</official_title>
+  <sponsors>
+    <lead_sponsor>
+      <agency>AstraZeneca</agency>
+      <agency_class>Industry</agency_class>
+    </lead_sponsor>
+  </sponsors>
+  <source>AstraZeneca</source>
+  <oversight_info>
+    <has_dmc>No</has_dmc>
+  </oversight_info>
+  <brief_summary>
+    <textblock>
+      Prospective, open-label, controlled (active comparator), randomized study of 8 weeks
+      follow-up for the evaluation of the efficacy of extended release quetiapine (quetiapine XR)
+      versus Sertraline in addition to previous mood stabilizer treatment (lithium or valproate at
+      stable and clinically therapeutic blood levels) in the treatment of the adult bipolar
+      depression. This multicentric study will be featured in two sites in Spain.
+    </textblock>
+  </brief_summary>
+  <overall_status>Completed</overall_status>
+  <start_date>May 2009</start_date>
+  <completion_date type="Actual">February 2011</completion_date>
+  <primary_completion_date type="Actual">February 2011</primary_completion_date>
+  <phase>Phase 3</phase>
+  <study_type>Interventional</study_type>
+  <has_expanded_access>No</has_expanded_access>
+  <study_design_info>
+    <allocation>Randomized</allocation>
+    <intervention_model>Parallel Assignment</intervention_model>
+    <primary_purpose>Treatment</primary_purpose>
+    <masking>Open Label</masking>
+  </study_design_info>
+  <primary_outcome>
+    <measure>The Mean Change From Baseline to Week 2 in the Montgomery Asberg Depression Rating Scale (MADRS) Total Score</measure>
+    <time_frame>baseline, week 2</time_frame>
+    <description>MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms)</description>
+  </primary_outcome>
+  <secondary_outcome>
+    <measure>The Mean Change From Baseline to Week 1 in the Montgomery Asberg Depression Rating Scale (MADRS) Total Score</measure>
+    <time_frame>baseline, week 1</time_frame>
+    <description>MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms)</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>The Mean Change From Baseline to Week 4 in the Montgomery Asberg Depression Rating Scale (MADRS) Total Score</measure>
+    <time_frame>baseline, week 4</time_frame>
+    <description>MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms)</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>The Mean Change From Baseline to Week 8 in the Montgomery Asberg Depression Rating Scale (MADRS) Total Score</measure>
+    <time_frame>baseline. week 8</time_frame>
+    <description>MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms)</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>The Mean Change From Baseline to Week 1 in the Clinical Impression Global Scale - Bipolar (CGI-BP-M) Total Score</measure>
+    <time_frame>baseline, week 1</time_frame>
+    <description>CGI-BP-M assesses severity of clinical status. It ranges from a minimum of 1 to a maximum of 7 ( higher scores indicating a greater clinical severity)</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>The Mean Change From Baseline to Week 2 in the Clinical Impression Global Scale - Bipolar (CGI-BP-M) Total Score</measure>
+    <time_frame>baseline, week 2</time_frame>
+    <description>CGI-BP-M assesses severity of clinical status. It ranges from a minimum of 1 to a maximum of 7 ( higher scores indicating a greater clinical severity)</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>The Mean Change From Baseline to Week 4 in the Clinical Impression Global Scale - Bipolar (CGI-BP-M) Total Score</measure>
+    <time_frame>baseline, week 4</time_frame>
+    <description>CGI-BP-M assesses severity of clinical status. It ranges from a minimum of 1 to a maximum of 7 ( higher scores indicating a greater clinical severity)</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>The Mean Change From Baseline to Week 8 in the Clinical Impression Global Scale - Bipolar (CGI-BP-M) Total Score</measure>
+    <time_frame>baseline, week 8</time_frame>
+    <description>CGI-BP-M assesses severity of clinical status. It ranges from a minimum of 1 to a maximum of 7 (higher scores indicating a greater clinical severity)</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>The Mean Change From Baseline to Week 4 in the Hamilton Anxiety Rating Scale (HARS) Total Score</measure>
+    <time_frame>baseline, week 4</time_frame>
+    <description>HARS assesses severity of anxiety symptoms. It ranges from a minimum of 0 to a maximum of 56 (higher scores indicating a greater severity of anxiety symptoms)</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>The Mean Change From Baseline to Week 8 in the Hamilton Anxiety Rating Scale (HARS) Total Score</measure>
+    <time_frame>baseline, week 8</time_frame>
+    <description>HARS assesses severity of anxiety symptoms. It ranges from a minimum of 0 to a maximum of 56 (higher scores indicating a greater severity of anxiety symptoms)</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients Response at Week 1</measure>
+    <time_frame>week 1</time_frame>
+    <description>Number of patients responded to the treatment at week 1, where response is defined as ≥ 50% reduction in the Montgomery Asberg Depression Rating Scale (MADRS) total score from baseline to week 1.
+MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Response at Week 2</measure>
+    <time_frame>week 2</time_frame>
+    <description>Number of patients responded to the treatment at week 2, where response is defined as ≥ 50% reduction in the Montgomery Asberg Depression Rating Scale (MADRS) total score from baseline to week 2.
+MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Response at Week 4.</measure>
+    <time_frame>week 4</time_frame>
+    <description>Number of patients responded to the treatment at week 4, where response is defined as ≥ 50% reduction in the Montgomery Asberg Depression Rating Scale (MADRS) total score from baseline to week 4.
+MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Response at Week 8.</measure>
+    <time_frame>week 8</time_frame>
+    <description>Number of patients responded to the treatment at week 8, where response is defined as ≥ 50% reduction in the Montgomery Asberg Depression Rating Scale (MADRS) total score from baseline to week 8.
+MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Remission at Week 1.</measure>
+    <time_frame>week 1</time_frame>
+    <description>Number of patients who achieved remission at week 1, where remission is defined as Montgomery Asberg Depression Rating Scale (MADRS) total score ≤ 10.
+MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Remission at Week 2.</measure>
+    <time_frame>week 2</time_frame>
+    <description>Number of patients who achieved remission at week 2, where remission is defined as Montgomery Asberg Depression Rating Scale (MADRS) total score ≤ 10.
+MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Remission at Week 4.</measure>
+    <time_frame>week 4</time_frame>
+    <description>Number of patients who achieved remission at week 4, where remission is defined as Montgomery Asberg Depression Rating Scale (MADRS) total score ≤ 10.
+MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Remission at Week 8.</measure>
+    <time_frame>week 8</time_frame>
+    <description>Number of patients who achieved remission at week 8, where remission is defined as Montgomery Asberg Depression Rating Scale (MADRS) total score ≤ 10.
+MADRS assesses severity of depressive symptoms. It ranges from a minimum of 0 to a maximum of 60 (higher scores indicating a greater severity of depressive symptoms.</description>
+  </secondary_outcome>
+  <number_of_arms>2</number_of_arms>
+  <enrollment type="Actual">27</enrollment>
+  <condition>Bipolar Disorder</condition>
+  <condition>Bipolar Depression</condition>
+  <arm_group>
+    <arm_group_label>Quetiapine Extended Release</arm_group_label>
+    <arm_group_type>Experimental</arm_group_type>
+    <description>Lithium or valproate at stable doses within seric therapeutic levels</description>
+  </arm_group>
+  <arm_group>
+    <arm_group_label>Sertraline</arm_group_label>
+    <arm_group_type>Active Comparator</arm_group_type>
+    <description>Lithium or valproate at stable doses within seric therapeutic levels</description>
+  </arm_group>
+  <intervention>
+    <intervention_type>Drug</intervention_type>
+    <intervention_name>Extended release quetiapine (quetiapine XR)</intervention_name>
+    <description>Flexible dose from 300 to 600 mg/d (combination of tablets of 50mg, 200mg and 300mg) oral, daily, 8 weeks length.
+Quetiapine XR was initiated at 50 mg/day and titrated to 100 mg on day 2, 200 mg on day 3, 300 mg on day 4, and flexible doses of 300 to 600 mg/d from day 5 to the end of the study.</description>
+    <arm_group_label>Quetiapine Extended Release</arm_group_label>
+    <other_name>SEROQUEL XR®</other_name>
+  </intervention>
+  <intervention>
+    <intervention_type>Drug</intervention_type>
+    <intervention_name>Sertraline</intervention_name>
+    <description>Flexible dose from 50 to 200 mg/d (combination of tablets of 50mg and 100mg) oral, daily, 8 weeks length.
+Sertraline titration: 50 mg on day 1-3, 100 mg on day 4, and flexible doses of 50 to 200 mg/d from day 5 to the end of the study.</description>
+    <arm_group_label>Sertraline</arm_group_label>
+    <other_name>Zoloft</other_name>
+  </intervention>
+  <intervention>
+    <intervention_type>Drug</intervention_type>
+    <intervention_name>adequate mood stabilizer</intervention_name>
+    <description>An adequate mood stabilizer treatment with lithium or valproate(defined as a serum concentration of 0.5-1.2 mEq/L or 50-100 microg/ml, respectively).</description>
+    <arm_group_label>Quetiapine Extended Release</arm_group_label>
+    <arm_group_label>Sertraline</arm_group_label>
+  </intervention>
+  <eligibility>
+    <criteria>
+      <textblock>
+        Inclusion Criteria:
+
+          -  Adult ambulatory patients diagnosed of bipolar disorder I or II, current depressive
+             episode (DSM-IV-TR 4ª Ed: 296.5x or 296.89 codes)
+
+          -  Have been treated with only one mood stabilizer (lithium or valproate) in optimal and
+             stable doses during at least the previous 4 weeks to randomization
+
+          -  Hamilton Depression Rating Scale (HDRS-17) total score ≥ 20 and Young Mania Rating
+             Scale (YMRS) total score ≤ 14 at the screening and randomization visits - Informed
+             consent signed
+
+        Exclusion Criteria:
+
+          -  Patients with any axis I or II Diagnostic and Statistical Manual of Mental Disorders,
+             4th edition, text revision (DSM-IV-TR) diagnoses different from bipolar disorder I or
+             II - Length of current depressive episode less than 2 weeks or more than 12 months
+
+          -  Having been treated with more than one mood stabilizer or any mood stabilizer other
+             than Lithium or valproate, any antidepressant, any antipsychotic or any CP450-3A
+             inductor/inhibitor within the 7 days period prior to randomization
+      </textblock>
+    </criteria>
+    <gender>All</gender>
+    <minimum_age>18 Years</minimum_age>
+    <maximum_age>65 Years</maximum_age>
+    <healthy_volunteers>No</healthy_volunteers>
+  </eligibility>
+  <location>
+    <facility>
+      <name>Research Site</name>
+      <address>
+        <city>Santander</city>
+        <state>Cantabria</state>
+        <country>Spain</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Research Site</name>
+      <address>
+        <city>Zamora</city>
+        <state>Castilla-León</state>
+        <country>Spain</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Research Site</name>
+      <address>
+        <city>Vigo</city>
+        <state>Galicia</state>
+        <country>Spain</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Research Site</name>
+      <address>
+        <city>Vitoria</city>
+        <state>Pais Vasco</state>
+        <country>Spain</country>
+      </address>
+    </facility>
+  </location>
+  <location_countries>
+    <country>Spain</country>
+  </location_countries>
+  <verification_date>March 2012</verification_date>
+  <lastchanged_date>April 16, 2012</lastchanged_date>
+  <firstreceived_date>March 5, 2009</firstreceived_date>
+  <firstreceived_results_date>February 6, 2012</firstreceived_results_date>
+  <responsible_party>
+    <responsible_party_type>Sponsor</responsible_party_type>
+  </responsible_party>
+  <keyword>Bipolar disorder</keyword>
+  <keyword>Bipolar depression</keyword>
+  <keyword>quetiapine</keyword>
+  <keyword>sertraline</keyword>
+  <condition_browse>
+    <!-- CAUTION:  The following MeSH terms are assigned with an imperfect algorithm  -->
+    <mesh_term>Depression</mesh_term>
+    <mesh_term>Depressive Disorder</mesh_term>
+    <mesh_term>Bipolar Disorder</mesh_term>
+  </condition_browse>
+  <intervention_browse>
+    <!-- CAUTION:  The following MeSH terms are assigned with an imperfect algorithm  -->
+    <mesh_term>Quetiapine Fumarate</mesh_term>
+    <mesh_term>Valproic Acid</mesh_term>
+    <mesh_term>Sertraline</mesh_term>
+  </intervention_browse>
+  <!-- Results are available for this study                                           -->
+</clinical_study>
