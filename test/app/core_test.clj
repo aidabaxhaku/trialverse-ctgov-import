@@ -1,13 +1,10 @@
 (ns app.core-test
-  (:require [riveted.core :as vtd])
+  (:require [riveted.core :as vtd]
+            [org.drugis.addis.rdf.trig :as trig])
   (:use clojure.test)
   (:use app.core))
 
-
-(deftest baseline-measurements-test
-  (is
-    (= (let
-         [xml (vtd/navigator "<measure>
+(def baseline-xml-str "<measure>
 <title>Age</title>
 <units>Participants</units>
 <param>Count of Participants</param>
@@ -42,12 +39,39 @@
 </class>
 </class_list>
 </measure>")
-          idx 1
-          sample-size-xml '()
-          baseline-uris (list "baseline-uri")
-          group-uris (list "group-uri")
-          mm-uris (list "mm-uri")
-          category-uris (list "category-uri")]
-         (baseline-measurements xml idx sample-size-xml baseline-uris group-uris mm-uris category-uris))
 
-                                      false)))
+(def category-uris (list "category-uri"))
+
+(def baseline-xml (vtd/navigator baseline-xml-str))
+
+(def subj (trig/iri "http://subject.com"))
+
+(deftest baseline-measurement-properties-test
+  (is (= (.toString (baseline-measurement-properties baseline-xml))
+         (str "{:categories (\"under 18\" \"Between 18 and 65 years\" \"over 65 years\"), :simple false, "
+            ":param \"Count of Participants\", :dispersion nil, :units \"Participants\"}"))))
+
+(deftest measurement-meta-rdf-test
+  (is (= (measurement-meta-rdf subj "outcome-uri" "group-uri" "mm-uri")
+         [[:uri "http://subject.com"]
+          (list
+           [[:qname :ontology "of_outcome"] [:lit "outcome-uri"]]
+           [[:qname :ontology "of_group"] [:lit "group-uri"]]
+           [[:qname :ontology "of_moment"] [:lit "mm-uri"]])])))
+
+(deftest baseline-measurement-data-rdf-test
+  (is (= (baseline-measurement-data-rdf subj baseline-xml baseline-xml "group-uri" category-uris)
+         ())))
+
+; (deftest baseline-measurements-test
+;   (is
+;     (= (let
+;          [idx 1
+;           sample-size-xml '()
+;           baseline-uris (list "baseline-uri")
+;           group-uris (list "group-uri")
+;           mm-uris (list "mm-uri")
+;           result (baseline-measurements baseline-xml idx baseline-xml baseline-uris group-uris mm-uris category-uris)]
+;          result)
+
+;                                       false)))

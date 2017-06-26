@@ -17,7 +17,6 @@
     "N/A"
     (let
       [masking-map (masking the-str)
-       _dummy (println masking-map)
        blinding (second (second masking-map))
        extra-terms (map #(second %1) (rest (nth masking-map 2)))]
 

@@ -36,7 +36,7 @@
         measure-xml (vtd/last-child measures-xml)
         categories-xml (vtd/at measure-xml "./category_list")
         category-count (count (vtd/children categories-xml))
-        category-info (map #(measurement-row-info xml (vtd/text %)) (vtd/search categories-xml "./category/sub_title"))
+        category-info (map #(measurement-row-info xml (vtd/text %)) (vtd/search categories-xml "./category/title"))
         category-xml (vtd/first-child categories-xml)
         ; probe the measure for type: <param> and <dispersion>, plus <units>
         param (vtd/text (vtd/at measure-xml "./param"))
@@ -51,8 +51,10 @@
 
 (defn baseline-measurement-properties
   [measure-xml]
-  (let [categories-xml (vtd/at measure-xml "./category_list")
-        category-titles (map vtd/text (vtd/search categories-xml "./category/sub_title"))
+  (let [_dummy   (println (.toString measure-xml))
+        categories-xml (vtd/at measure-xml "./class_list/class/category_list")
+        category-titles (concat (map vtd/text (vtd/search categories-xml "./category/sub_title"))
+                                (map vtd/text (vtd/search categories-xml "./category/title")))
         param (vtd/text (vtd/at measure-xml "./param"))
         dispersion (vtd/text (vtd/at measure-xml "./dispersion"))
         units (vtd/text (vtd/at measure-xml "./units"))]
@@ -76,7 +78,9 @@
 
 (defn is-count-outcome
   [props]
-  (and (= "Number" (:param props)) (not (is-percent-outcome props)) (not (is-proportion-outcome props))))
+  (and
+    (or (= "Number" (:param props)) (= "Count of Participants" (:param props)))
+    (not (is-percent-outcome props)) (not (is-proportion-outcome props))))
 
 ; determine results properties from the measurement properties
 (defn outcome-results-properties
@@ -378,13 +382,13 @@
 
 (defn baseline-measurements
   [xml idx sample-size-xml baseline-uris group-uris mm-uris category-uris]
-  (let [group-id-query "./category_list/category/measurement_list/measurement/@group_id"
+  (let [group-id-query "./class_list/class/category_list/category/measurement_list/measurement/@group_id"
         groups (set (map vtd/text (vtd/search xml group-id-query)))
-        m-meta (into {} (map (fn [g] [g (measurement-meta-rdf (trig/iri :instance (uuid))
+        m-meta (into {} (map (fn [group] [group (measurement-meta-rdf (trig/iri :instance (uuid))
                                                               (baseline-uris idx)
-                                                              (group-uris [:baseline_group g])
+                                                              (group-uris [:baseline_group group])
                                                               (mm-uris [:baseline]))]) groups))]
-    (map (fn [[g s]] (baseline-measurement-data-rdf s xml sample-size-xml g category-uris)) m-meta)))
+    (map (fn [[group subj]] (baseline-measurement-data-rdf subj xml sample-size-xml group category-uris)) m-meta)))
 
 (defn event-measurement-rdf
   [xml event-uri group-uri mm-uri]
