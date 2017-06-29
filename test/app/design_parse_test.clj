@@ -10,6 +10,11 @@
   (is (= (parse-masking "Single Blind (Outcomes Assessor)")
          ["Single Blind" "Outcomes Assessor"])))
 
+(deftest test-masking-parser-single-blind-single-spec
+  (is (= (parse-masking "Outcomes Assessor")
+         ["Single Blind" "Outcomes Assessor"])))
+
+
 ; (deftest test-masking-parser-no-blinding
 ;   (is (= (parse-masking "Participant, Investigator")
 ;     ["Participant" "Investigator"]))
