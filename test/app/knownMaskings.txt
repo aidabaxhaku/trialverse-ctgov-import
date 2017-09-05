@@ -1,36 +1,18 @@
-Care Provider
-Care Provider, Investigator
-Care Provider, Investigator, Outcomes Assessor
-Care Provider, Outcomes Assessor
-Double Blind (Care Provider, Investigator)
-Double Blind (Care Provider, Investigator, Outcomes Assessor)
-Double Blind (Care Provider, Outcomes Assessor)
-Double Blind (Investigator, Outcomes Assessor)
-Double Blind (masked roles unspecified)
-Double Blind (Participant, Care Provider)
-Double Blind (Participant, Care Provider, Investigator)
-Double Blind (Participant, Care Provider, Investigator, Outcomes Assessor)
-Double Blind (Participant, Care Provider, Outcomes Assessor)
-Double Blind (Participant, Investigator)
-Double Blind (Participant, Investigator, Outcomes Assessor)
-Double Blind (Participant, Outcomes Assessor)
-Double-Blind
-Investigator
-Investigator, Outcomes Assessor
-No masking
-Open Label
-Outcomes Assessor
-Participant
-Participant, Care Provider
-Participant, Care Provider, Investigator
-Participant, Care Provider, Investigator, Outcomes Assessor
-Participant, Care Provider, Outcomes Assessor
-Participant, Investigator
-Participant, Investigator, Outcomes Assessor
-Participant, Outcomes Assessor
-Single Blind (Care Provider)
-Single Blind (Investigator)
-Single Blind (masked role unspecified)
-Single Blind (Outcomes Assessor)
-Single Blind (Participant)
-Single Blind
+Double (Participant, Outcomes Assessor)
+Single (Care Provider)
+Triple (Participant, Investigator, Outcomes Assessor)
+Double (Investigator, Outcomes Assessor)
+Double (Participant, Care Provider)
+Double (Care Provider, Outcomes Assessor)
+Single
+Triple (Participant, Care Provider, Investigator)
+Single (Investigator)
+Double
+None (Open Label)
+Quadruple (Participant, Care Provider, Investigator, Outcomes Assessor)
+Triple (Care Provider, Investigator, Outcomes Assessor)
+Double (Participant, Investigator)
+Triple (Participant, Care Provider, Outcomes Assessor)
+Single (Outcomes Assessor)
+Single (Participant)
+Double (Care Provider, Investigator)

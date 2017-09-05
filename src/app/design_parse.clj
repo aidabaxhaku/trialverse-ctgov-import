@@ -4,33 +4,32 @@
 ; extracts blinding information from the ctgov masking string
 (def masking
   (insta/parser
-    "masking = noMasking | singleBlind | doubleBlind
-     noMasking = 'No masking' | 'Open Label'
-     singleBlind = <'Single Blind'> | <'Single Blind'> <space>+ <paropen> (who | unknown) <parclose> | who
-     doubleBlind = <'Double-Blind'> | <'Double Blind'> <space>+ <paropen> multipleWho <parclose> | multipleWho
-     multipleWho = 'masked roles unspecified' | who <sep> (who <sep>?)+
+    "masking = maskingType maskingDetails?
+     maskingType = 'None (Open Label)' | 'Single' | 'Double' | 'Triple' | 'Quadruple'
+     maskingDetails = <space paropen> (who <sep>?)+ <parclose>
      sep = ', '
      space = ' '
      paropen = '('
      parclose = ')'
-     who = 'Care Provider' | 'Investigator' | 'Outcomes Assessor' | 'Participant'
-     unknown = 'masked role unspecified'"))
+     who = 'Care Provider' | 'Investigator' | 'Outcomes Assessor' | 'Participant'"))
 
 (defn key-to-label [the-key]
-  (let [masking-types {:singleBlind "Single Blind"
-                       :doubleBlind "Double Blind"
-                       :noMasking "No masking"}]
-    (the-key masking-types)))
+  (let [masking-types {"None (Open Label)" "Open"
+                       "Single" "Single Blind"
+                       "Double" "Double Blind"
+                       "Triple" "Double Blind"
+                       "Quadruple" "Double Blind"}]
+    (masking-types the-key)))
 
-(defn get-extra-terms [masking-spec blinding]
+(defn get-extra-terms [masking-map blinding]
   (case blinding
-    "Single Blind" (if (> (count masking-spec) 1)
-                     (rest (second masking-spec))
+    "Single Blind" (if (> (count masking-map) 2)
+                     (map second (rest (nth masking-map 2)))
                      `())
-    "Double Blind" (if (> (count masking-spec) 1)
-                     (map second (rest (nth masking-spec 1)))
+    "Double Blind" (if (> (count masking-map) 2)
+                     (map second (rest (nth masking-map 2)))
                      `())
-    "No masking" `()))
+    "Open" `()))
 
 (defn parse-masking [the-str]
   (if (= "N/A" the-str)
@@ -38,7 +37,7 @@
     (let
       [masking-map (masking the-str)
        masking-spec (second masking-map)
-       blinding (key-to-label (first masking-spec))
-       extra-terms (get-extra-terms masking-spec blinding)]
+       blinding (key-to-label (second masking-spec))
+       extra-terms (get-extra-terms masking-map blinding)]
       (concat (list blinding) extra-terms))))
 
