@@ -21,7 +21,7 @@
 
 (deftest test-no-masking
   (is (= (parse-masking "None (Open Label)")
-         ["Open"])))
+         ["Open Label"])))
 
 (deftest test-parse-all-no-exceptions
   (is (nil? (with-open [rdr (reader "test/app/knownMaskings.txt")]

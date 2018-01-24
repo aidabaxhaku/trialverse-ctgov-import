@@ -14,22 +14,24 @@
      who = 'Care Provider' | 'Investigator' | 'Outcomes Assessor' | 'Participant'"))
 
 (defn key-to-label [the-key]
-  (let [masking-types {"None (Open Label)" "Open"
+  (let [masking-types {"None (Open Label)" "Open Label"
                        "Single" "Single Blind"
                        "Double" "Double Blind"
-                       "Triple" "Double Blind"
+                       "Triple" "Triple Blind"
                        "Quadruple" "Double Blind"}]
     (masking-types the-key)))
 
+(defn extra-terms [masking-map] 
+  (if (> (count masking-map) 2)
+    (map second (rest (nth masking-map 2)))
+    `()))
+
 (defn get-extra-terms [masking-map blinding]
   (case blinding
-    "Single Blind" (if (> (count masking-map) 2)
-                     (map second (rest (nth masking-map 2)))
-                     `())
-    "Double Blind" (if (> (count masking-map) 2)
-                     (map second (rest (nth masking-map 2)))
-                     `())
-    "Open" `()))
+    "Single Blind" (extra-terms masking-map)
+    "Double Blind" (extra-terms masking-map)
+    "Triple Blind" (extra-terms masking-map)
+    "Open Label" `()))
 
 (defn parse-masking [the-str]
   (if (= "N/A" the-str)
