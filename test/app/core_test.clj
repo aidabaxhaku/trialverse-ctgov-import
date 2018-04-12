@@ -83,7 +83,7 @@
 ;          (str "{:categories (\"under 18\" \"Between 18 and 65 years\" \"over 65 years\"), :simple false, "
 ;             ":param \"Count of Participants\", :dispersion nil, :units \"Participants\"}"))))
 
-(def testxml (vtd/navigator (slurp "test/app/textxml3.xml")))
+(def testxml (vtd/navigator (slurp "test/app/testxml3.xml")))
 
 (deftest testxml-4
   (is (not (println (ctgov-import testxml)))))

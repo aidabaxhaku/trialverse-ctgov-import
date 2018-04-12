@@ -31,10 +31,10 @@
 ; probe the outcome for measurement properties
 (defn outcome-measurement-properties
   [xml]
-  (let [measures-xml (vtd/at xml "./measure_list")
-        measure-count (count (vtd/children measures-xml))
-        measure-xml (vtd/last-child measures-xml)
-        categories-xml (vtd/at measure-xml "./*/category_list")
+  (let [measures-xml (vtd/search xml ".//measure")
+        measure-count (count measures-xml)
+        measure-xml (last measures-xml)
+        categories-xml (vtd/at measure-xml "./*//category_list")
         category-count (count (vtd/children categories-xml))
         category-info (map #(measurement-row-info xml (vtd/text %)) (vtd/search categories-xml "./category/title"))
         category-xml (vtd/first-child categories-xml)
@@ -51,8 +51,8 @@
 
 (defn baseline-measurement-properties
   [measure-xml]
-  (let [_dummy   (println (.toString measure-xml))
-        categories-xml (vtd/at measure-xml "./*/category_list")
+  (let [
+        categories-xml (vtd/at measure-xml ".//*/category_list")
         category-titles (concat (map vtd/text (vtd/search categories-xml "./category/sub_title"))
                                 (map vtd/text (vtd/search categories-xml "./category/title")))
         param (vtd/text (vtd/at measure-xml "./param"))
@@ -131,7 +131,7 @@
   [props]
   (if (= 0 (count (:categories props)))
     [nil (trig/_po [(trig/iri :ontology "measurementType") (trig/iri :ontology (outcome-measurement-type props))])]
-    (if (= "Number" (:param props))
+    (if (or (= "Number" (:param props)) (= "Count of Participants" (:param props)))
       (let [category-uris (into {} (map (fn [%] [% (trig/iri :instance (uuid))]) (:categories props)))
             category-rdfs (map #(trig/spo (second %)
                                           [(trig/iri :rdfs "label") (trig/lit (first %))]
@@ -306,7 +306,7 @@
 
 (defn measurement-data-rdf-basic
   [subj properties sample-size-xml measure-xml group-id]
-  (let [measurement-query (format "./*/category_list/category/measurement_list/measurement[@group_id=\"%s\"]" group-id)
+  (let [measurement-query (format "./*//category_list/category/measurement_list/measurement[@group_id=\"%s\"]" group-id)
         sample-size (vtd/at sample-size-xml measurement-query)
         measurement-xml (vtd/at measure-xml measurement-query)]
     (reduce #(measurement-value %1 measurement-xml (first %2) (second %2))
@@ -315,18 +315,19 @@
 
 (defn measurement-data-rdf-categorical
   [subj measure-xml group-id category-uris]
-  (let [categories-xml (vtd/search measure-xml "./*/category_list/category")
+  (let [categories-xml (vtd/search measure-xml "./*//category_list/category")
         measurement-query (format "./measurement_list/measurement[@group_id=\"%s\"]" group-id)
         cond-count (fn [subj value] (if value (trig/spo subj [(trig/iri :ontology "count") (parse-int value)]) subj))]
     (reduce #(trig/spo %1 [(trig/iri :ontology "category_count")
-                           (-> (trig/_po [(trig/iri :ontology "category") (category-uris (vtd/text (vtd/at %2 "./sub_title")))])
+                           (-> (trig/_po [(trig/iri :ontology "category") 
+                                  (category-uris (or (vtd/text (vtd/at %2 "./sub_title")) (vtd/text (vtd/at %2 "./title"))))])
                                (cond-count (vtd/attr (vtd/at %2 measurement-query) :value)))])
             subj
             categories-xml)))
 
 (defn measurement-data-row-rdf
   [measure-xml group-id m-meta props row-info sample-size-xml]
-  (let [measurement-xml (vtd/at measure-xml (format "./*/category_list/category/sub_title[text()=\"%s\"]/../measurement_list/measurement[@group_id=\"%s\"]" (:title row-info) group-id))
+  (let [measurement-xml (vtd/at measure-xml (format "./*//category_list/category/sub_title[text()=\"%s\"]/../measurement_list/measurement[@group_id=\"%s\"]" (:title row-info) group-id))
         subj (trig/spo (trig/iri :instance (uuid))
                        [(trig/iri :ontology "of_outcome") (:outcome m-meta)]
                        [(trig/iri :ontology "of_group") (:group m-meta)]
@@ -342,13 +343,13 @@
 
 (defn measurement-data-rdf-complex
   [props sample-size-xml measure-xml group-id m-meta]
-  (let [measurement-query (format "./*/category_list/category/measurement_list/measurement[@group_id=\"%s\"]" group-id)
+  (let [measurement-query (format "./*//category_list/category/measurement_list/measurement[@group_id=\"%s\"]" group-id)
         sample-size (vtd/at sample-size-xml measurement-query)]
   (map #(measurement-data-row-rdf measure-xml group-id m-meta props % sample-size) (:categories props))))
 
 (defn outcome-measurement-data-rdf
   [xml group-id m-meta]
-  (let [measures-xml (vtd/at xml "./measure_list")
+  (let [measures-xml (vtd/at xml "./measure")
         measure-count (count (vtd/search measures-xml "./measure"))
         sample-size-xml (if (= 3 measure-count)
                           (vtd/next-sibling (vtd/first-child measures-xml))
@@ -364,7 +365,7 @@
 
 (defn outcome-measurements
   [xml idx outcome-uris group-uris mm-uris]
-  (let [group-id-query "./measure_list/measure/*/category_list/category/measurement_list/measurement/@group_id"
+  (let [group-id-query "./measure/*//category_list/category/measurement_list/measurement/@group_id"
         groups (set (map vtd/text (vtd/search xml group-id-query)))
         m-meta (into {} (map (fn [g] [g { :outcome (outcome-uris [:outcome idx])
                                           :group (group-uris [:outcome_group idx g])
@@ -382,7 +383,7 @@
 
 (defn baseline-measurements
   [xml idx sample-size-xml baseline-uris group-uris mm-uris category-uris]
-  (let [group-id-query "./*/category_list/category/measurement_list/measurement/@group_id"
+  (let [group-id-query ".//category_list/category/measurement_list/measurement/@group_id"
         groups (set (map vtd/text (vtd/search xml group-id-query)))
         m-meta (into {} (map (fn [group] [group (measurement-meta-rdf (trig/iri :instance (uuid))
                                                               (baseline-uris idx)
@@ -451,7 +452,7 @@
         outcome-xml (vtd/search xml "/clinical_study/clinical_results/outcome_list/outcome")
         outcome-uris (into {} (map #(vector [:outcome %2] (trig/iri :instance (uuid))) outcome-xml (iterate inc 1)))
         outcomes-rdf (map #(outcome-rdf %1 %2 outcome-uris mm-uris) outcome-xml (iterate inc 1))
-        event-xml (vtd/search xml "/clinical_study/clinical_results/reported_events/*/category_list/category/event_list/event")
+        event-xml (vtd/search xml "/clinical_study/clinical_results/reported_events/*//category_list/category/event_list/event")
         event-uris (into {} (map #(vector %2 (trig/iri :instance (uuid))) event-xml (iterate inc 1)))
         events-rdf (map #(adverse-event-rdf %1 %2 event-uris mm-uris) event-xml (iterate inc 1))
         baseline-xml (vtd/search xml "/clinical_study/clinical_results/baseline/measure_list/measure")
