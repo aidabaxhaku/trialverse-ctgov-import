@@ -5,7 +5,7 @@
             :url "https://www.gnu.org/licenses/gpl-3.0.html"}
   :dependencies [[clj-http "2.1.0"]
                  [org.clojure/clojure "1.9.0"]
-                 [riveted "0.1.0"]
+                 [riveted "0.0.9"]
                  [instaparse "1.4.1"]
                  [org.drugis.addis/rdfexport "1.0.1"]
                  [compojure "1.3.1"]
