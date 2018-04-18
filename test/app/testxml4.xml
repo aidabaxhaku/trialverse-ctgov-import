@@ -55,7 +55,7 @@
     <intervention_model>Parallel Assignment</intervention_model>
     <primary_purpose>Treatment</primary_purpose>
     <masking>
-      Double Blind (Participant, Care Provider, Investigator, Outcomes Assessor)
+      Double (Participant, Care Provider, Investigator, Outcomes Assessor)
     </masking>
   </study_design_info>
   <primary_outcome>
@@ -266,8 +266,7 @@
           <param>Number</param>
           <class_list>
             <class>
-              <title>
-                <=18 years</title>
+              <title>&lt;=18 years</title>
                   <category_list>
                     <category>
                       <measurement_list>
@@ -291,7 +290,7 @@
               </category_list>
             </class>
             <class>
-              <title>>=65 years</title>
+              <title>&gt;=65 years</title>
               <category_list>
                 <category>
                   <measurement_list>

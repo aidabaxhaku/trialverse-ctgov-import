@@ -52,9 +52,12 @@
 (defn baseline-measurement-properties
   [measure-xml]
   (let [
-        categories-xml (vtd/at measure-xml ".//*/category_list")
+        categories-xml (vtd/at measure-xml ".//category_list")
         category-titles (concat (map vtd/text (vtd/search categories-xml "./category/sub_title"))
                                 (map vtd/text (vtd/search categories-xml "./category/title")))
+        category-titles (if (> 0 (count category-titles)) ; fallback for incorrect cases where title is not set on categories
+                            category-titles
+                            (map vtd/text (vtd/search measure-xml ".//class/title")))
         param (vtd/text (vtd/at measure-xml "./param"))
         dispersion (vtd/text (vtd/at measure-xml "./dispersion"))
         units (vtd/text (vtd/at measure-xml "./units"))]
@@ -320,7 +323,10 @@
         cond-count (fn [subj value] (if value (trig/spo subj [(trig/iri :ontology "count") (parse-int value)]) subj))]
     (reduce #(trig/spo %1 [(trig/iri :ontology "category_count")
                            (-> (trig/_po [(trig/iri :ontology "category") 
-                                  (category-uris (or (vtd/text (vtd/at %2 "./sub_title")) (vtd/text (vtd/at %2 "./title"))))])
+                                  (category-uris (or 
+                                    (vtd/text (vtd/at %2 "./sub_title")) 
+                                    (vtd/text (vtd/at %2 "./title"))
+                                    (vtd/text (vtd/at %2 "../../title"))))])
                                (cond-count (vtd/attr (vtd/at %2 measurement-query) :value)))])
             subj
             categories-xml)))

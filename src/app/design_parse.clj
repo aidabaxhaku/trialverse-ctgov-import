@@ -19,6 +19,7 @@
                        "Double" "Double Blind"
                        "Triple" "Triple Blind"
                        "Quadruple" "Double Blind"}]
+    (if (nil? (masking-types the-key)) (println (str "unknown masking type: " the-key)))
     (masking-types the-key)))
 
 (defn extra-terms [masking-map] 
