@@ -38,8 +38,8 @@
     {:id canonical-id
      :aliases (map vtd/text (vtd/search xml "/clinical_study/id_info/nct_alias"))
      :title (vtd/text (vtd/at xml "/clinical_study/brief_title"))
-     :created_at (normalize-date (vtd/text (vtd/at xml "/clinical_study/firstreceived_date")))
-     :updated_at (normalize-date (vtd/text (vtd/at xml "/clinical_study/lastchanged_date")))
+     :created_at (normalize-date (vtd/text (vtd/at xml "/clinical_study/study_first_submitted")))
+     :updated_at (normalize-date (vtd/text (vtd/at xml "/clinical_study/last_update_submitted")))
      :sponsor (vtd/text (vtd/at xml "/clinical_study/sponsors/lead_sponsor/agency"))
      :_links {:source {:title (vtd/text (vtd/at xml "/clinical_study/required_header/link_text"))
                        :href (vtd/text (vtd/at xml "/clinical_study/required_header/url"))}

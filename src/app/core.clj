@@ -128,7 +128,7 @@
                 [(trig/iri :ontology "of_variable")
                  (trig/_po [(trig/iri :ontology "measurementType") (trig/iri :ontology (outcome-measurement-type props))])])
       (trig/iri :ontology "has_result_property")
-      (map #(trig/iri :ontology %) (keys properties)))))
+        (map #(trig/iri :ontology %) (keys properties)))))
 
 (defn baseline-var-type
   [props]
@@ -296,21 +296,35 @@
 (defn measurement-value
   [subj xml prop attr]
   (let [value-str (vtd/attr xml attr)
-        value (if (or (= "count" prop) (= "event_count" prop) (= "sample_size" prop)) (parse-int value-str) (parse-double value-str))]
+        value (if (or (= "count" prop) (= "event_count" prop) (= "sample_size" prop)) 
+          (parse-int value-str) 
+          (parse-double value-str))]
     (if value
-      (trig/spo subj [(trig/iri :ontology prop) (trig/lit value)])
-      subj)))
+      (trig/spo subj [(trig/iri :ontology prop) (trig/lit value)]) subj)))
 
 ;    ontology:category_count [
 ;      ontology:category "Female" ;
 ;      ontology:count "43"
 ;    ] .
 
+; sample-size-xml: 
+; <analyzed>
+;   <units>Participants</units>
+;   <scope>Overall</scope>
+;   <count_list>
+;     <count group_id="B1" value="826"/>
+;     <count group_id="B2" value="822"/>
+;     <count group_id="B3" value="824"/>
+;     <count group_id="B4" value="825"/>
+;     <count group_id="B5" value="3297"/>
+;   </count_list>
+; </analyzed>
 
 (defn measurement-data-rdf-basic
   [subj properties sample-size-xml measure-xml group-id]
   (let [measurement-query (format "./*//category_list/category/measurement_list/measurement[@group_id=\"%s\"]" group-id)
-        sample-size (vtd/at sample-size-xml measurement-query)
+        sample-size-query (format ".//count_list/count[@group_id=\"%s\"]" group-id)
+        sample-size (vtd/at sample-size-xml sample-size-query)
         measurement-xml (vtd/at measure-xml measurement-query)]
     (reduce #(measurement-value %1 measurement-xml (first %2) (second %2))
             (measurement-value subj sample-size "sample_size" "value")
@@ -350,16 +364,15 @@
 (defn measurement-data-rdf-complex
   [props sample-size-xml measure-xml group-id m-meta]
   (let [measurement-query (format "./*//category_list/category/measurement_list/measurement[@group_id=\"%s\"]" group-id)
-        sample-size (vtd/at sample-size-xml measurement-query)]
+        sample-size-query (format ".//count_list/count[@group_id=\"%s\"]" group-id)
+        sample-size (vtd/at sample-size-xml sample-size-query)]
   (map #(measurement-data-row-rdf measure-xml group-id m-meta props % sample-size) (:categories props))))
 
 (defn outcome-measurement-data-rdf
   [xml group-id m-meta]
   (let [measures-xml (vtd/at xml "./measure")
-        measure-count (count (vtd/search measures-xml "./measure"))
-        sample-size-xml (if (= 3 measure-count)
-                          (vtd/next-sibling (vtd/first-child measures-xml))
-                          (vtd/first-child measures-xml))
+        measure-count (count (vtd/search xml "./measure"))
+        sample-size-xml (vtd/at xml "./*//analyzed_list/analyzed")
         measure-xml (vtd/last-child measures-xml)
         props (outcome-measurement-properties xml)
         properties (outcome-results-properties props)]
@@ -371,12 +384,12 @@
 
 (defn outcome-measurements
   [xml idx outcome-uris group-uris mm-uris]
-  (let [group-id-query "./measure/*//category_list/category/measurement_list/measurement/@group_id"
+  (let [group-id-query "./*//analyzed_list/analyzed/count_list/count/@group_id"
         groups (set (map vtd/text (vtd/search xml group-id-query)))
-        m-meta (into {} (map (fn [g] [g { :outcome (outcome-uris [:outcome idx])
-                                          :group (group-uris [:outcome_group idx g])
+        m-meta (into {} (map (fn [group] [group { :outcome (outcome-uris [:outcome idx])
+                                          :group (group-uris [:outcome_group idx group])
                                           :mm (mm-uris [:outcome idx]) }]) groups))]
-    (apply concat (map (fn [[g m]] (outcome-measurement-data-rdf xml g m)) m-meta))))
+    (apply concat (map (fn [[group-id meta-info]] (outcome-measurement-data-rdf xml group-id meta-info)) m-meta))))
 
 (defn baseline-measurement-data-rdf
   [subj measure-xml sample-size-xml group-id category-uris]
@@ -462,7 +475,7 @@
         event-uris (into {} (map #(vector %2 (trig/iri :instance (uuid))) event-xml (iterate inc 1)))
         events-rdf (map #(adverse-event-rdf %1 %2 event-uris mm-uris) event-xml (iterate inc 1))
         baseline-xml (vtd/search xml "/clinical_study/clinical_results/baseline/measure_list/measure")
-        baseline-sample-size-xml (first baseline-xml)
+        baseline-sample-size-xml (vtd/at xml "/clinical_study/clinical_results/baseline/analyzed_list/analyzed")
         baseline-var-xml (rest baseline-xml)
         baseline-uris (into {} (map #(vector %2 (trig/iri :instance (uuid))) baseline-var-xml (iterate inc 1)))
         baseline-data (map #(baseline-var-rdf %1 %2 baseline-uris mm-uris) baseline-var-xml (iterate inc 1))
