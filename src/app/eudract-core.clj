@@ -1,5 +1,6 @@
 (ns app.core
   (:require
+    [app.import-shared :as lib]
     [clojure.java.io :refer [as-file]]
     [clojure.string :refer [lower-case]]
     [clojure.set :refer [map-invert]]

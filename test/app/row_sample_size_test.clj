@@ -1,6 +1,6 @@
 (ns app.row-sample-size-test
   (:use clojure.test)
-  (:use app.core))
+  (:use app.ctgov-import))
 
 (deftest example-no-sample-size
   (is (= (row-label-sample-size "Physical Component at baseline (week 0)") [])))

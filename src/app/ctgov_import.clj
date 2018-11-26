@@ -1,4 +1,11 @@
-(ns app.ctgov-import)
+(ns app.ctgov-import
+  (:require     
+    [app.import-shared :as lib]
+    [clojure.string :refer [lower-case]]
+    [riveted.core :as vtd]
+    [app.design-parse :refer [parse-masking]]
+    [clojure.set :refer [map-invert]]
+    [org.drugis.addis.rdf.trig :as trig]  ))
 
 (defn row-label-sample-size
   [label]
@@ -218,22 +225,9 @@
   {:title (lower-case (:title group))
    :description (lower-case (:description group))})
 
-(defn assign-uri-to-cluster
-  [cluster]
-  (let [uri (trig/iri :instance (lib/uuid))]
-    (into {} (map #(vector % uri) cluster))))
-
-(defn sort-equivalent-values
-  [the-map std-fn]
-  (let [clusters (map #(map first %)
-                      (vals (group-by #(std-fn (second %)) the-map)))
-        uris (apply merge (map assign-uri-to-cluster clusters))
-        info (into {} (map #(vector (first %) (the-map (second %))) (map-invert uris)))]
-    [uris info]))
-
 (defn find-groups
   [xml]
-  (sort-equivalent-values (merge (find-arm-groups xml)
+  (lib/sort-equivalent-values (merge (find-arm-groups xml)
                                  (find-baseline-groups xml)
                                  (find-event-groups xml)
                                  (find-outcome-groups xml))
@@ -257,7 +251,7 @@
 
 (defn find-measurement-moments
   [xml]
-  (sort-equivalent-values (merge (find-event-time-frame xml)
+  (lib/sort-equivalent-values (merge (find-event-time-frame xml)
                                  (find-outcome-time-frames xml)
                                  {[:baseline] "Baseline"})
                                  lower-case))
@@ -427,10 +421,7 @@
                       (trig/iri :ontology "AllocationNonRandomized"))])
     subj))
 
-
-
-
-(defn import
+(defn import-xml
   [xml]
   (let [
         nct-id (vtd/text (vtd/at xml "/clinical_study/id_info/nct_id"))
@@ -474,7 +465,7 @@
                                 (trig/_po [(trig/iri :rdfs "comment") (trig/lit (vtd/text (vtd/at xml "/clinical_study/eligibility/criteria/textblock")))])])
 
                      (allocation-rdf (vtd/text (vtd/at xml "/clinical_study/study_design_info/allocation")))
-                     (blinding-rdf (parse-masking (vtd/text (vtd/at xml "/clinical_study/study_design_info/masking"))))
+                     (lib/blinding-rdf (parse-masking (vtd/text (vtd/at xml "/clinical_study/study_design_info/masking"))))
                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals baseline-uris))
                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals outcome-uris))
                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals event-uris))

@@ -1,4 +1,9 @@
-(ns app.import-shared)
+(ns app.import-shared
+  (:require 
+    [riveted.core :as vtd]
+    [clojure.string :refer [lower-case]]
+    [clojure.set :refer [map-invert]]
+    [org.drugis.addis.rdf.trig :as trig]))
 
 (def prefixes {:rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                   :rdfs "http://www.w3.org/2000/01/rdf-schema#"
@@ -26,7 +31,7 @@
 
 (defn assign-uri-to-cluster
   [cluster]
-  (let [uri (trig/iri :instance (lib/uuid))]
+  (let [uri (trig/iri :instance (uuid))]
     (into {} (map #(vector % uri) cluster))))
 
 (defn sort-equivalent-values
@@ -36,3 +41,9 @@
         uris (apply merge (map assign-uri-to-cluster clusters))
         info (into {} (map #(vector (first %) (the-map (second %))) (map-invert uris)))]
     [uris info]))
+
+(defn blinding-rdf [subj blinding]
+  (if blinding
+    (trig/spo subj [(trig/iri :ontology "has_blinding")
+                    (trig/iri :ontology (clojure.string/replace (first blinding) " " ""))])
+    subj))
