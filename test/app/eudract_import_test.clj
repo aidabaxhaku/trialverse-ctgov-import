@@ -5,7 +5,7 @@
   (:use app.eudract-import))
 
 (def xml (vtd/navigator (slurp "test/app/eudract.xml")))
-
+(def hba1c-change-xml (first (vtd/search xml "/result/endPoints/endPoint")))
 (defn same-ignoring-order? [coll1 coll2]
   (= (set coll1)
      (set coll2)))
@@ -56,3 +56,24 @@
         (is (same-ignoring-order? 
              (outcomes-one-through-x 8)
              (keys outcome-uris))))))
+
+(deftest test-outcome-measurement-properties-non-categorical
+  (let [found-measurement-properties (outcome-measurement-properties hba1c-change-xml)]
+    (is (= {:simple     true
+            :is-count?   false
+            :categories ()
+            :param      "MEASURE_TYPE.leastSquares"
+            :dispersion "ENDPOINT_DISPERSION.standardError"
+            :units      "percentage of glycosylated hemoglobin"}
+           found-measurement-properties))))
+(deftest test-outcome-results-properties-non-categorical
+  
+  )
+; prereq: outcome-measurement-properties
+; prereq: outcome-results-properties
+; (deftest test-outcome-rdf
+;   (let [outcome-uris (build-outcome-uris (vtd/search xml "/result/endPoints/endPoint"))
+;         [mm-uris mm-info] (find-measurement-moments xml)
+;         generated-rdf (outcome-rdf xml 1 outcome-uris mm-uris)]
+
+;        )]))
