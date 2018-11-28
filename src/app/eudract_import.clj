@@ -74,29 +74,47 @@
      :dispersion dispersion
      :units      units}))
 
+(defn is-percentage?
+  [props]
+(and (= ""))  
+  )
+
 ; determine results properties from the measurement properties
 (defn outcome-results-properties
   [props]
+(let [parameter-values
+      {"MEASURE_TYPE.leastSquares" {"least_squares_mean" "value"}
+       "MEASURE_TYPE.arithmetic"   {"mean" "value"}
+       "MEASURE_TYPE.geometric"    {"geometric_mean" "value"}
+       "MEASURE_TYPE.log"          {"log_mean" "value"}
+       "MEASURE_TYPE.median"       {"median" "value"}}
+      dispersion-values
+      {"ENDPOINT_DISPERSION.standardDeviation"             {"standard_deviation" "spread"}
+       "ENDPOINT_DISPERSION.standardError"                 {"standard_error" "spread"}
+       "ENDPOINT_DISPERSION.interQuartileRange"            {"first_quartile" "lower_limit"
+                                                            "third_quartile" "upper_limit"}
+       "ENDPOINT_DISPERSION.geometricCoefficientVariation" {"geometric_coefficient_of_variation" "spread"}
+       "ENDPOINT_DISPERSION.fullRange"                     {"min" "lower_limit"
+                                                            "max" "upper_limit"}}
+      found-parameter (or
+                       (parameter-values (:param props))
+                       (if (:is-count? props) {"count" "value"})
+                       (if (is-percentage? props) {"percentage" "value"})
+                       (if (is-proportion? props) {"proportion" "value"}))
+      found-dispersion (dispersion-values (:param dispersion))
+      found-values (concat found-parameter found-dispersion)
+      ]
+))
+  
+  
   (concat
-   (if (= "Mean" (:param props)) {"mean" "value"})
-   (if (= "Median" (:param props)) {"median" "value"})
    (if (:is-count? props) {"count" "value"})
   ;  (if (is-percent-outcome props) {"percentage" "value"}) ; FIXME: add to ontology?
   ;  (if (is-proportion-outcome props) {"proportion" "value"}) ; FIXME: add to ontology?
-   (if (= "Geometric Mean" (:param props)) {"geometric_mean" "value"}) ; FIXME: add to ontology?
-   (if (= "Log Mean" (:param props)) {"log_mean" "value"}) ; FIXME: add to ontology?
-   (if (= "Least Squares Mean" (:param props)) {"least_squares_mean" "value"}) ; FIXME: add to ontology?
    (if (= "90% Confidence Interval" (:dispersion props)) {"quantile_0.05" "lower_limit"
                                                           "quantile_0.95" "upper_limit"})
    (if (= "95% Confidence Interval" (:dispersion props)) {"quantile_0.025" "lower_limit"
                                                           "quantile_0.975" "upper_limit"})
-   (if (= "Full Range" (:dispersion props)) {"min" "lower_limit"
-                                             "max" "upper_limit"})
-   (if (= "Geometric Coefficient of Variation" (:dispersion props)) {"geometric_coefficient_of_variation" "spread"}) ; FIXME: add to ontology?
-   (if (= "Inter-Quartile Range" (:dispersion props)) {"first_quartile" "lower_limit"
-                                                       "third_quartile" "upper_limit"})
-   (if (= "Standard Deviation" (:dispersion props)) {"standard_deviation" "spread"})
-   (if (= "Standard Error" (:dispersion props)) {"standard_error" "spread"})))
 
 ; (map #(outcome-rdf %1 %2 outcome-uris mm-uris) outcome-xml (iterate inc 1))
 

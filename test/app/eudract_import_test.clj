@@ -66,6 +66,7 @@
             :dispersion "ENDPOINT_DISPERSION.standardError"
             :units      "percentage of glycosylated hemoglobin"}
            found-measurement-properties))))
+          
 (deftest test-outcome-results-properties-non-categorical
   
   )

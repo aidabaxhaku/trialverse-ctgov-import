@@ -1,3 +1,6 @@
+<!-- conforms to schemas at:
+https://eudract.ema.europa.eu/docs/technical/schemas/clinicaltrial/results/results.xsd
+https://eudract.ema.europa.eu/docs/technical/schemas/clinicaltrial/results/adverseEvents.xsd -->
 <result xmlns:ns3="http://eudract.ema.europa.eu/schema/clinical_trial_result" 
 xmlns:ns2="http://eudract.ema.europa.eu/schema/clinical_trial_result/adverse_events" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 

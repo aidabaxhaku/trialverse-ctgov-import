@@ -27,7 +27,6 @@
 (defn outcome-measurement-properties
   [xml]
   (let [measures-xml (vtd/search xml ".//measure")
-        measure-count (count measures-xml)
         measure-xml (last measures-xml)
         categories-xml (vtd/at measure-xml "./*//category_list")
         category-count (count (vtd/children categories-xml))
@@ -41,8 +40,7 @@
         :categories category-info
         :param param
         :dispersion dispersion
-        :units units
-        :unit-of-analysis (= 3 measure-count) }))
+        :units units}))
 
 (defn baseline-measurement-properties
   [measure-xml]
@@ -68,11 +66,15 @@
 
 (defn is-proportion-outcome
   [props]
-  (and (= "Number" (:param props)) (string-starts-with-any (lower-case (:units props)) ["proportion"])))
+  (and (= "Number" 
+          (:param props)) 
+       (string-starts-with-any (lower-case (:units props)) ["proportion"])))
 
 (defn is-percent-outcome
   [props]
-  (and (= "Number" (:param props)) (string-starts-with-any (lower-case (:units props)) ["percent" "percentage" "percentages" "%" "observed percentage"])))
+  (and (= "Number" 
+          (:param props)) 
+       (string-starts-with-any (lower-case (:units props)) ["percent" "percentage" "percentages" "%" "observed percentage"])))
 
 (defn is-count-outcome
   [props]
