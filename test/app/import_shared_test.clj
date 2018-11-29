@@ -15,3 +15,8 @@
     (is (= "unique-value" (sorted-info (:a sorted-uris))))
     (is (= "duplicate-value" (sorted-info (:b sorted-uris))))
   ))
+
+(deftest test-starts-with-any
+  (let [input "hEllo this is a string"]
+    (is (string-starts-with-any? input ["hEllo"]))
+    (is (not (string-starts-with-any? input ["case-sensitive" "Hello"])))))

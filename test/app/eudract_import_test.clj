@@ -6,6 +6,8 @@
 
 (def xml (vtd/navigator (slurp "test/app/eudract.xml")))
 (def hba1c-change-xml (first (vtd/search xml "/result/endPoints/endPoint")))
+(def hba1c-below-7-percent (nth (vtd/search xml "/result/endPoints/endPoint") 
+                           6))
 (defn same-ignoring-order? [coll1 coll2]
   (= (set coll1)
      (set coll2)))
@@ -57,24 +59,58 @@
              (outcomes-one-through-x 8)
              (keys outcome-uris))))))
 
-(deftest test-outcome-measurement-properties-non-categorical
-  (let [found-measurement-properties (outcome-measurement-properties hba1c-change-xml)]
-    (is (= {:simple     true
-            :is-count?   false
-            :categories ()
-            :param      "MEASURE_TYPE.leastSquares"
-            :dispersion "ENDPOINT_DISPERSION.standardError"
-            :units      "percentage of glycosylated hemoglobin"}
-           found-measurement-properties))))
-          
-(deftest test-outcome-results-properties-non-categorical
-  
-  )
+(deftest test-outcome-results-properties-continuous
+  (let [props {:simple     true
+               :is-count?  false
+               :categories ()
+               :param      "MEASURE_TYPE.leastSquares"
+               :dispersion "ENDPOINT_DISPERSION.standardError"
+               :units      "percentage of glycosylated hemoglobin"}
+        found-results-properties (outcome-results-properties props)]
+    (is (= '(["least_squares_mean" "value"] ["standard_error" "spread"])
+           found-results-properties))))
+
+(deftest test-outcome-results-properties-dichotomous
+  (let [props {:simple     true
+               :is-count?  false
+               :categories ()
+               :param      "MEASURE_TYPE.number"
+               :dispersion "ENDPOINT_DISPERSION.na"
+               :units      "percentage of subjects"}
+        found-results-properties (outcome-results-properties props)]
+    (is (= '(["percentage" "value"])
+           found-results-properties))))
+
 ; prereq: outcome-measurement-properties
 ; prereq: outcome-results-properties
-; (deftest test-outcome-rdf
-;   (let [outcome-uris (build-outcome-uris (vtd/search xml "/result/endPoints/endPoint"))
-;         [mm-uris mm-info] (find-measurement-moments xml)
-;         generated-rdf (outcome-rdf xml 1 outcome-uris mm-uris)]
+(deftest test-outcome-rdf-least-squares
+  (let [outcome-uris        {[:outcome 1] [:qname :instance "outcome-uri"]}
+        mm-uris             {[:outcome 1] [:qname :instance "mm-uri"]}
+        generated-rdf       (outcome-rdf hba1c-change-xml 1 outcome-uris mm-uris)
+        expected-properties '([[:qname :rdf "type"] [:qname :ontology "Endpoint"]]
+                              [[:qname :rdfs "label"] [:lit "Change in HbA1c"]] 
+                              [[:qname :rdfs "comment"] [:lit "Estimated mean change from baseline in HbA1c at week 30. The post-baseline responses are analysed using a mixed model for repeated measurements with treatment, country and stratification variable (HbA1c level at screening [<= 8.0% or > 8.0%] crossed with use of metformin [yes or no]; 2 by 2 levels) as fixed factors and baseline value as covariate, all nested within visit. Mean estimates are adjusted according to observed baseline distribution. Missing data was imputed using mixed model for repeated measurements. Analysis was performed on full analysis set which included all randomised subjects who had received at least 1 dose of randomised semaglutide or placebo."]] 
+                              [[:qname :ontology "is_measured_at"] [:qname :instance "mm-uri"]] 
+                              [[:qname :ontology "has_result_property"] [:qname :ontology "sample_size"]]
+                              [[:qname :ontology "of_variable"]
+                               [:blank ([[:qname :ontology "measurementType"]
+                                         [:qname :ontology "continuous"]])]]
+                              [[:qname :ontology "has_result_property"] [:qname :ontology "least_squares_mean"]] 
+                              [[:qname :ontology "has_result_property"] [:qname :ontology "standard_error"]])]
+       (is (every? true? (map = expected-properties (second generated-rdf))))))
 
-;        )]))
+(deftest test-outcome-rdf-number
+  (let [outcome-uris        {[:outcome 1] [:qname :instance "outcome-uri"]}
+        mm-uris             {[:outcome 1] [:qname :instance "mm-uri"]}
+        generated-rdf       (outcome-rdf hba1c-below-7-percent 1 outcome-uris mm-uris)
+        expected-properties '([[:qname :rdf "type"] [:qname :ontology "Endpoint"]]
+                              [[:qname :rdfs "label"]  [:lit "HbA1c below 7.0% (53 mmol/mol) American Diabetes Association (ADA) target"]]
+                              [[:qname :rdfs "comment"] [:lit "Percentage of subjects with HbA1C below 7.0% after 30 weeks treatment. Missing data imputedfrom a mixed model for repeated measurements with treatment, country and stratification variable (HbA1c level at screening [<= 8.0% or > 8.0%] crossed with use of metformin [yes or no]; 2 by 2 levels) as fixed factors and baseline value as covariate, all nested within visit. Analysis was performed on full analysis set."]]
+                              [[:qname :ontology "is_measured_at"] [:qname :instance "mm-uri"]]
+                              [[:qname :ontology "has_result_property"] [:qname :ontology "sample_size"]]
+                              [[:qname :ontology "of_variable"]
+                               [:blank ([[:qname :ontology "measurementType"]
+                                         [:qname :ontology "dichotomous"]])]]
+                              [[:qname :ontology "has_result_property"] [:qname :ontology "percentage"]])]
+    (doall (map println (second generated-rdf)))
+    (is (every? true? (map = expected-properties (second generated-rdf))))))

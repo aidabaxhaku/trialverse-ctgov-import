@@ -60,21 +60,19 @@
       :dispersion dispersion
       :units units }))
 
-(defn string-starts-with-any
-  [s words]
-  (some #(.startsWith s %) words))
+
 
 (defn is-proportion-outcome
   [props]
   (and (= "Number" 
           (:param props)) 
-       (string-starts-with-any (lower-case (:units props)) ["proportion"])))
+       (lib/string-starts-with-any? (lower-case (:units props)) ["proportion"])))
 
 (defn is-percent-outcome
   [props]
   (and (= "Number" 
           (:param props)) 
-       (string-starts-with-any (lower-case (:units props)) ["percent" "percentage" "percentages" "%" "observed percentage"])))
+       (lib/string-starts-with-any? (lower-case (:units props)) ["percent" "percentage" "percentages" "%" "observed percentage"])))
 
 (defn is-count-outcome
   [props]

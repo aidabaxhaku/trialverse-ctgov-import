@@ -64,9 +64,9 @@
                             (vtd/search categories-xml "./category/title"))
         category-xml   (vtd/first-child categories-xml)
         ; probe the measure for type: <param> and <dispersion>, plus <units>
-        param          (vtd/text (vtd/at xml "./centralTendencyType/value"))
+        param          (vtd/text (vtd/at xml "centralTendencyType/value"))
         dispersion     (vtd/text (vtd/at xml "dispersionType/value"))
-        units          (vtd/text (vtd/at xml "./unit"))]
+        units          (vtd/text (vtd/at xml "unit"))]
     {:simple     (< category-count 2)
      :is-count?  (= "true" (vtd/text (vtd/at xml "countable")))
      :categories category-info
@@ -76,47 +76,63 @@
 
 (defn is-percentage?
   [props]
-(and (= ""))  
-  )
+  (and (= "MEASURE_TYPE.number" (:param props))
+       (lib/string-starts-with-any?
+        (lower-case (:units props)) 
+        ["percent" "percentage" "percentages" "%" "observed percentage"])))
+
+(defn is-proportion?
+  [props]
+  (and (= "MEASURE_TYPE.number" (:param props))
+       (lib/string-starts-with-any? (lower-case (:units props)) ["proportion"])))
 
 ; determine results properties from the measurement properties
+; FIXME: CIs/quantiles
 (defn outcome-results-properties
   [props]
-(let [parameter-values
-      {"MEASURE_TYPE.leastSquares" {"least_squares_mean" "value"}
-       "MEASURE_TYPE.arithmetic"   {"mean" "value"}
-       "MEASURE_TYPE.geometric"    {"geometric_mean" "value"}
-       "MEASURE_TYPE.log"          {"log_mean" "value"}
-       "MEASURE_TYPE.median"       {"median" "value"}}
-      dispersion-values
-      {"ENDPOINT_DISPERSION.standardDeviation"             {"standard_deviation" "spread"}
-       "ENDPOINT_DISPERSION.standardError"                 {"standard_error" "spread"}
-       "ENDPOINT_DISPERSION.interQuartileRange"            {"first_quartile" "lower_limit"
-                                                            "third_quartile" "upper_limit"}
-       "ENDPOINT_DISPERSION.geometricCoefficientVariation" {"geometric_coefficient_of_variation" "spread"}
-       "ENDPOINT_DISPERSION.fullRange"                     {"min" "lower_limit"
-                                                            "max" "upper_limit"}}
-      found-parameter (or
-                       (parameter-values (:param props))
-                       (if (:is-count? props) {"count" "value"})
-                       (if (is-percentage? props) {"percentage" "value"})
-                       (if (is-proportion? props) {"proportion" "value"}))
-      found-dispersion (dispersion-values (:param dispersion))
-      found-values (concat found-parameter found-dispersion)
-      ]
-))
-  
-  
-  (concat
-   (if (:is-count? props) {"count" "value"})
-  ;  (if (is-percent-outcome props) {"percentage" "value"}) ; FIXME: add to ontology?
-  ;  (if (is-proportion-outcome props) {"proportion" "value"}) ; FIXME: add to ontology?
-   (if (= "90% Confidence Interval" (:dispersion props)) {"quantile_0.05" "lower_limit"
-                                                          "quantile_0.95" "upper_limit"})
-   (if (= "95% Confidence Interval" (:dispersion props)) {"quantile_0.025" "lower_limit"
-                                                          "quantile_0.975" "upper_limit"})
+  (let [parameter-values  {"MEASURE_TYPE.leastSquares" {"least_squares_mean" "value"}
+                           "MEASURE_TYPE.arithmetic"   {"mean" "value"}
+                           "MEASURE_TYPE.geometric"    {"geometric_mean" "value"}
+                           "MEASURE_TYPE.log"          {"log_mean" "value"}
+                           "MEASURE_TYPE.median"       {"median" "value"}}
+        dispersion-values {"ENDPOINT_DISPERSION.standardDeviation"             {"standard_deviation" "spread"}
+                           "ENDPOINT_DISPERSION.standardError"                 {"standard_error" "spread"}
+                           "ENDPOINT_DISPERSION.interQuartileRange"            {"first_quartile" "lower_limit"
+                                                                                "third_quartile" "upper_limit"}
+                           "ENDPOINT_DISPERSION.geometricCoefficientVariation" {"geometric_coefficient_of_variation" "spread"}
+                           "ENDPOINT_DISPERSION.fullRange"                     {"min" "lower_limit"
+                                                                                "max" "upper_limit"}}
+        found-parameter   (or
+                           (parameter-values (:param props))
+                           (if (:is-count? props) {"count" "value"})
+                           (if (is-percentage? props) {"percentage" "value"})
+                           (if (is-proportion? props) {"proportion" "value"}))
+        found-dispersion  (dispersion-values (:dispersion props))
+        found-values      (concat found-parameter found-dispersion)]
+    found-values))
 
-; (map #(outcome-rdf %1 %2 outcome-uris mm-uris) outcome-xml (iterate inc 1))
+(defn outcome-measurement-type
+  [props]
+  (if (= "MEASURE_TYPE.median" (:param props)) "dichotomous" "continuous"))
+
+  (defn outcome-rdf
+    [xml idx outcome-uris mm-uris]
+    (let [uri        (outcome-uris [:outcome idx])
+          props      (outcome-measurement-properties xml)
+          properties (outcome-results-properties props)]
+      (lib/spo-each
+       (trig/spo uri
+                 [(trig/iri :rdf "type") (trig/iri :ontology "Endpoint")]
+                 [(trig/iri :rdfs "label") (trig/lit (vtd/text (vtd/at xml "./title")))]
+                 [(trig/iri :rdfs "comment") (trig/lit (or (vtd/text (vtd/at xml "./description")) ""))]
+                 [(trig/iri :ontology "is_measured_at") (mm-uris [:outcome idx])]
+                 [(trig/iri :ontology "has_result_property") (trig/iri :ontology "sample_size")]
+                 [(trig/iri :ontology "of_variable")
+                  (trig/_po [(trig/iri :ontology "measurementType") 
+                             (trig/iri :ontology (outcome-measurement-type props))])])
+       (trig/iri :ontology "has_result_property")
+       (map #(trig/iri :ontology %) (keys properties)))))
+
 
 ; (defn )          
 ; (defn import-xml
@@ -134,7 +150,7 @@
 ;                           outcome-xml 
 ;                           (iterate inc 1))
 ;         event-xml (vtd/search xml "/clinical_study/clinical_results/reported_events/*//category_list/category/event_list/event")
-;         event-uris (into {} (map #(vector %2 (trig/iri :instance (lib/uuid))) event-xml (iterate inc 1)))
+        ; event-uris (into {} (map #(vector %2 (trig/iri :instance (lib/uuid))) event-xml (iterate inc 1)))
 ;         events-rdf (map #(adverse-event-rdf %1 %2 event-uris mm-uris) event-xml (iterate inc 1))
 ;         baseline-xml (vtd/search xml "/clinical_study/clinical_results/baseline/measure_list/measure")
 ;         baseline-sample-size-xml (vtd/at xml "/clinical_study/clinical_results/baseline/analyzed_list/analyzed")

@@ -42,8 +42,6 @@
         info (into {} (map #(vector (first %) (the-map (second %))) (map-invert uris)))]
     [uris info]))
 
-(defn blinding-rdf [subj blinding]
-  (if blinding
-    (trig/spo subj [(trig/iri :ontology "has_blinding")
-                    (trig/iri :ontology (clojure.string/replace (first blinding) " " ""))])
-    subj))
+(defn string-starts-with-any?
+  [s words]
+  (some #(.startsWith s %) words))
