@@ -2102,10 +2102,10 @@ sponsor="Novo Nordisk">
 		</endPoint>
 		<endPoint>
 			<title>
-				HbA1c below 7.0% (53 mmol/mol) American Diabetes Association (ADA) target
+				HbA1c below 7.0%
 			</title>
 			<description>
-				Percentage of subjects with HbA1C below 7.0% after 30 weeks treatment. Missing data imputed from a mixed model for repeated measurements with treatment, country and stratification variable (HbA1c level at screening [&lt;= 8.0% or &gt; 8.0%] crossed with use of metformin [yes or no]; 2 by 2 levels) as fixed factors and baseline value as covariate, all nested within visit. Analysis was performed on full analysis set.
+				Percentage of subjects with HbA1C below 7.0%
 			</description>
 			<readyForValues>
 				true

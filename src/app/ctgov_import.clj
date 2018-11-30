@@ -171,7 +171,8 @@
                 [(trig/iri :rdfs "comment") (trig/lit (str group-name ", " event-name))]
                 [(trig/iri :ontology "is_measured_at") (mm-uris [:events])]
                 [(trig/iri :ontology "of_variable")
-                 (trig/_po [(trig/iri :ontology "measurementType") (trig/iri :ontology "dichotomous")])])
+                 (trig/_po [(trig/iri :ontology "measurementType") 
+                            (trig/iri :ontology "dichotomous")])])
       (trig/iri :ontology "has_result_property")
       (map #(trig/iri :ontology %) ["sample_size" "count" "event_count"]))))
 

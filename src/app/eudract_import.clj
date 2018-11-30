@@ -46,19 +46,25 @@
                     eudract-id 
                     "/results")]))
 
+(defn build-uris
+  [xml type]
+  (into {}
+        (map #(vector [type %2] (trig/iri :instance (lib/uuid)))
+             xml
+             (iterate inc 1))))
+
 (defn build-outcome-uris
-  [xml] 
-  (into {} (map 
-            #(vector [:outcome %2] (trig/iri :instance (lib/uuid)))
-            xml
-            (iterate inc 1))))
+  [xml] (build-uris xml :outcome))
+
+(defn build-event-uris
+  [xml] (build-uris xml :event))
+
 
 (defn measurement-row-info [] '())
 
 (defn outcome-measurement-properties
   [xml]
-  (let [
-        categories-xml (vtd/at xml "categories")
+  (let [categories-xml (vtd/at xml "categories")
         category-count (count (vtd/children categories-xml))
         category-info  (map #(measurement-row-info xml (vtd/text %))
                             (vtd/search categories-xml "./category/title"))
@@ -102,7 +108,7 @@
                            "ENDPOINT_DISPERSION.geometricCoefficientVariation" {"geometric_coefficient_of_variation" "spread"}
                            "ENDPOINT_DISPERSION.fullRange"                     {"min" "lower_limit"
                                                                                 "max" "upper_limit"}}
-        found-parameter   (or
+        found-parameter   (concat
                            (parameter-values (:param props))
                            (if (:is-count? props) {"count" "value"})
                            (if (is-percentage? props) {"percentage" "value"})
@@ -113,7 +119,7 @@
 
 (defn outcome-measurement-type
   [props]
-  (if (= "MEASURE_TYPE.median" (:param props)) "dichotomous" "continuous"))
+  (if (= "MEASURE_TYPE.number" (:param props)) "dichotomous" "continuous"))
 
   (defn outcome-rdf
     [xml idx outcome-uris mm-uris]
@@ -133,6 +139,41 @@
        (trig/iri :ontology "has_result_property")
        (map #(trig/iri :ontology %) (keys properties)))))
 
+(defn find-adverse-events
+  [xml] 
+  (concat (vtd/search xml "/result/adverseEvents/nonSeriousAdverseEvents/nonSeriousAdverseEvent")
+          (vtd/search xml "/result/adverseEvents/seriousAdverseEvents/seriousAdverseEvent")))
+
+
+(defn adverse-event-rdf
+  [xml idx event-uris mm-uris]
+  (let [uri        (event-uris [:event idx])
+        event-name (vtd/text (vtd/at xml "./term"))]
+    (lib/spo-each
+     (trig/spo uri
+               [(trig/iri :rdf "type") 
+                (trig/iri :ontology "AdverseEvent")]
+               [(trig/iri :rdfs "label") 
+                (trig/lit event-name)]
+               [(trig/iri :ontology "is_serious") 
+                (trig/lit (= "seriousAdverseAvent" (vtd/tag xml)))]
+               [(trig/iri :rdfs "comment")
+                (trig/lit event-name)]
+               [(trig/iri :ontology "is_measured_at") 
+                (mm-uris [:events])]
+               [(trig/iri :ontology "of_variable")
+                (trig/_po [(trig/iri :ontology "measurementType") 
+                           (trig/iri :ontology "dichotomous")])])
+     (trig/iri :ontology "has_result_property")
+     (map #(trig/iri :ontology %) ["sample_size" "count" "event_count"]))))
+
+(defn find-baseline-xml
+  [xml]
+  (concat (vtd/search xml "/result/baselineCharacteristics/studyCategoricalCharacteristics/studyCategoricalCharacteristic")
+          (vtd/search xml "/result/baselineCharacteristics/studyContinuousCharacteristics/studyContinuousCharacteristic")
+          (vtd/search xml "/result/baselineCharacteristics/ageContinuousCharacteristic")
+          (vtd/search xml "/result/baselineCharacteristics/genderCategoricalCharacteristic")
+          (vtd/search xml "/result/baselineCharacteristics/ageCategoricalCharacteristic")))
 
 ; (defn )          
 ; (defn import-xml
@@ -150,7 +191,7 @@
 ;                           outcome-xml 
 ;                           (iterate inc 1))
 ;         event-xml (vtd/search xml "/clinical_study/clinical_results/reported_events/*//category_list/category/event_list/event")
-        ; event-uris (into {} (map #(vector %2 (trig/iri :instance (lib/uuid))) event-xml (iterate inc 1)))
+        ; event-uris (build-event-uris)
 ;         events-rdf (map #(adverse-event-rdf %1 %2 event-uris mm-uris) event-xml (iterate inc 1))
 ;         baseline-xml (vtd/search xml "/clinical_study/clinical_results/baseline/measure_list/measure")
 ;         baseline-sample-size-xml (vtd/at xml "/clinical_study/clinical_results/baseline/analyzed_list/analyzed")
