@@ -6,6 +6,31 @@
    [app.design-parse :refer [parse-masking]]
    [org.drugis.addis.rdf.trig :as trig]))
 
+(def CENTRAL-TENDENCY {"leastSquares" {"least_squares_mean" "value"}
+                       "arithmetic"   {"mean" "value"}
+                       "geometric"    {"geometric_mean" "value"}
+                       "log"          {"log_mean" "value"}
+                       "median"       {"median" "value"}})
+
+(def DISPERSION {"standardDeviation"             {"standard_deviation" "spread"}
+                 "standardError"                 {"standard_error" "spread"}
+                 "interQuartileRange"            {"first_quartile" "lower_limit"
+                                                  "third_quartile" "upper_limit"}
+                 "geometricCoefficientVariation" {"geometric_coefficient_of_variation" "spread"}
+                 "fullRange"                     {"min" "lower_limit"
+                                                  "max" "upper_limit"}})
+
+(defn prefix-types
+  [prefix types]
+  (into {} (map
+            (fn [[key value]] (vector (str prefix "." key) value))
+            types)))
+
+(def MEASURE-TYPES (prefix-types "MEASURE_TYPE" CENTRAL-TENDENCY))
+(def ENDPOINT-DISPERSION-TYPES (prefix-types "ENDPOINT_DISPERSION" DISPERSION))
+(def CENTRAL-TENDENCY-TYPES (prefix-types "CENTRAL_TENDENCY" CENTRAL-TENDENCY))
+(def DISPERSION-TYPES (prefix-types "DISPERSION" DISPERSION))
+
 (defn find-event-time-frame
   [xml]
   {[:events]
@@ -46,28 +71,14 @@
                     eudract-id 
                     "/results")]))
 
-(defn build-uris
-  [xml type]
-  (into {}
-        (map #(vector [type %2] (trig/iri :instance (lib/uuid)))
-             xml
-             (iterate inc 1))))
-
-(defn build-outcome-uris
-  [xml] (build-uris xml :outcome))
-
-(defn build-event-uris
-  [xml] (build-uris xml :event))
-
-
-(defn measurement-row-info [] '())
+(defn measurement-row-info [] '()) ; FIXME
 
 (defn outcome-measurement-properties
   [xml]
   (let [categories-xml (vtd/at xml "categories")
         category-count (count (vtd/children categories-xml))
         category-info  (map #(measurement-row-info xml (vtd/text %))
-                            (vtd/search categories-xml "./category/title"))
+                            (vtd/search categories-xml "./category/name"))
         category-xml   (vtd/first-child categories-xml)
         ; probe the measure for type: <param> and <dispersion>, plus <units>
         param          (vtd/text (vtd/at xml "centralTendencyType/value"))
@@ -96,26 +107,16 @@
 ; FIXME: CIs/quantiles
 (defn outcome-results-properties
   [props]
-  (let [parameter-values  {"MEASURE_TYPE.leastSquares" {"least_squares_mean" "value"}
-                           "MEASURE_TYPE.arithmetic"   {"mean" "value"}
-                           "MEASURE_TYPE.geometric"    {"geometric_mean" "value"}
-                           "MEASURE_TYPE.log"          {"log_mean" "value"}
-                           "MEASURE_TYPE.median"       {"median" "value"}}
-        dispersion-values {"ENDPOINT_DISPERSION.standardDeviation"             {"standard_deviation" "spread"}
-                           "ENDPOINT_DISPERSION.standardError"                 {"standard_error" "spread"}
-                           "ENDPOINT_DISPERSION.interQuartileRange"            {"first_quartile" "lower_limit"
-                                                                                "third_quartile" "upper_limit"}
-                           "ENDPOINT_DISPERSION.geometricCoefficientVariation" {"geometric_coefficient_of_variation" "spread"}
-                           "ENDPOINT_DISPERSION.fullRange"                     {"min" "lower_limit"
-                                                                                "max" "upper_limit"}}
-        found-parameter   (concat
-                           (parameter-values (:param props))
+  (let [found-parameter   (concat
+                           (MEASURE-TYPES (:param props))
+                           (CENTRAL-TENDENCY-TYPES (:param props))
                            (if (:is-count? props) {"count" "value"})
                            (if (is-percentage? props) {"percentage" "value"})
                            (if (is-proportion? props) {"proportion" "value"}))
-        found-dispersion  (dispersion-values (:dispersion props))
-        found-values      (concat found-parameter found-dispersion)]
-    found-values))
+        found-dispersion  (concat
+                           (ENDPOINT-DISPERSION-TYPES (:dispersion props))
+                           (DISPERSION-TYPES (:dispersion props)))]
+    (concat found-parameter found-dispersion)))
 
 (defn outcome-measurement-type
   [props]
@@ -150,30 +151,82 @@
   (let [uri        (event-uris [:event idx])
         event-name (vtd/text (vtd/at xml "./term"))]
     (lib/spo-each
-     (trig/spo uri
-               [(trig/iri :rdf "type") 
-                (trig/iri :ontology "AdverseEvent")]
-               [(trig/iri :rdfs "label") 
-                (trig/lit event-name)]
-               [(trig/iri :ontology "is_serious") 
-                (trig/lit (= "seriousAdverseAvent" (vtd/tag xml)))]
-               [(trig/iri :rdfs "comment")
-                (trig/lit event-name)]
-               [(trig/iri :ontology "is_measured_at") 
-                (mm-uris [:events])]
-               [(trig/iri :ontology "of_variable")
-                (trig/_po [(trig/iri :ontology "measurementType") 
-                           (trig/iri :ontology "dichotomous")])])
+     (trig/spo
+      uri
+      [(trig/iri :rdf "type")
+       (trig/iri :ontology "AdverseEvent")]
+      [(trig/iri :rdfs "label")
+       (trig/lit event-name)]
+      [(trig/iri :ontology "is_serious")
+       (trig/lit (= "seriousAdverseAvent" (vtd/tag xml)))]
+      [(trig/iri :rdfs "comment")
+       (trig/lit event-name)]
+      [(trig/iri :ontology "is_measured_at")
+       (mm-uris [:events])]
+      [(trig/iri :ontology "of_variable")
+       (trig/_po [(trig/iri :ontology "measurementType")
+                  (trig/iri :ontology "dichotomous")])])
      (trig/iri :ontology "has_result_property")
      (map #(trig/iri :ontology %) ["sample_size" "count" "event_count"]))))
 
 (defn find-baseline-xml
   [xml]
-  (concat (vtd/search xml "/result/baselineCharacteristics/studyCategoricalCharacteristics/studyCategoricalCharacteristic")
-          (vtd/search xml "/result/baselineCharacteristics/studyContinuousCharacteristics/studyContinuousCharacteristic")
-          (vtd/search xml "/result/baselineCharacteristics/ageContinuousCharacteristic")
-          (vtd/search xml "/result/baselineCharacteristics/genderCategoricalCharacteristic")
-          (vtd/search xml "/result/baselineCharacteristics/ageCategoricalCharacteristic")))
+(let [base "/result/baselineCharacteristics/"]
+  {:continuous  (concat
+                 (vtd/search xml (str base "studyContinuousCharacteristics/studyContinuousCharacteristic"))
+                 (vtd/search xml (str base "ageContinuousCharacteristic")))
+   :categorical (concat
+                 (vtd/search xml (str base "studyCategoricalCharacteristics/studyCategoricalCharacteristic"))
+                 (vtd/search xml (str base "genderCategoricalCharacteristic"))
+                 (vtd/search xml (str base "ageCategoricalCharacteristic")))}))
+
+(defn measurement-type-for-baseline
+  [tag]
+  (case tag
+    ("studyCategoricalCharacteristic"
+     "genderCategoricalCharacteristic"
+     "ageCategoricalCharacteristic")  "categorical"
+    ("studyContinuousCharacteristic"
+     "ageContinuousCharacteristic") "continuous"))
+
+(defn p* [x] (println x) x) ; FIXME: debug
+
+(defn baseline-var-rdf-shared
+  [xml idx uri mm-uri]
+  (let [characteristic-name (vtd/text (vtd/at xml "./title"))
+   measurement-type    (measurement-type-for-baseline (vtd/tag xml))
+   props               (outcome-measurement-properties xml)
+   properties          (outcome-results-properties props)]
+  (trig/spo uri
+            [(trig/iri :rdf "type")
+             (trig/iri :ontology "PopulationCharacteristic")]
+            [(trig/iri :rdfs "label")
+             (trig/lit characteristic-name)]
+            [(trig/iri :ontology "is_measured_at") mm-uri]
+            [(trig/iri :ontology "of_variable")
+             (trig/_po [(trig/iri :ontology "measurementType")
+                        (trig/iri :ontology measurement-type)])])))
+
+(defn baseline-var-rdf-categorical
+  [xml idx baseline-uris mm-uris]
+  (let [uri                 (baseline-uris [:baseline idx])
+        mm-uri (mm-uris [:baseline])
+        shared-rdf (baseline-var-rdf-shared xml idx uri mm-uri)]
+    ))
+
+
+
+(defn baseline-var-rdf-continuous
+  [xml idx baseline-uris mm-uris]
+  (let [uri        (baseline-uris [:baseline idx])
+        mm-uri     (mm-uris [:baseline])
+        shared-rdf (baseline-var-rdf-shared xml idx uri mm-uri)
+        props               (outcome-measurement-properties xml)
+        properties          (outcome-results-properties props)]
+    (lib/spo-each
+     shared-rdf
+     (trig/iri :ontology "has_result_property")
+     (map #(trig/iri :ontology %) (keys properties)))))
 
 ; (defn )          
 ; (defn import-xml

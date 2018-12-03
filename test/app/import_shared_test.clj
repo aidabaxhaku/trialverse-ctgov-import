@@ -20,3 +20,10 @@
   (let [input "hEllo this is a string"]
     (is (string-starts-with-any? input ["hEllo"]))
     (is (not (string-starts-with-any? input ["case-sensitive" "Hello"])))))
+
+(deftest test-build-uris-of-type
+  (let [uris (build-uris-of-type (range 1 9) :outcome)]
+    (is (= 8 (count uris))
+        (is (same-ignoring-order?
+             (map #(vector %1 %2) (repeat :outcome) (range 1 9))
+             (keys uris))))))

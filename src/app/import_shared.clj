@@ -45,3 +45,14 @@
 (defn string-starts-with-any?
   [s words]
   (some #(.startsWith s %) words))
+
+(defn build-uris-of-type
+  [xml type]
+  (into {}
+        (map #(vector [type %2] (trig/iri :instance (uuid)))
+             xml
+             (iterate inc 1))))
+
+(defn same-ignoring-order? [coll1 coll2]
+  (= (set coll1)
+     (set coll2)))

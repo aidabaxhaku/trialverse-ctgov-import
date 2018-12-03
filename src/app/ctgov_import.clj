@@ -16,12 +16,16 @@
 
 (defn measurement-row-info
   [xml row-title]
-  (let [group-ids (map #(vtd/attr % "group_id") (vtd/search xml "./group_list/group"))
+  (let [group-ids         (map #(vtd/attr % "group_id")
+                               (vtd/search xml "./group_list/group"))
         sample-size-guess (row-label-sample-size row-title)
-        sample-size (if (and sample-size-guess (= (count sample-size-guess) (count group-ids)))
-                        (zipmap group-ids sample-size-guess)
-                        {})]
-    { :title row-title :sample-size sample-size }))
+        sample-size       (if (and sample-size-guess
+                                   (= (count sample-size-guess)
+                                      (count group-ids)))
+                            (zipmap group-ids sample-size-guess)
+                            {})]
+    {:title       row-title
+     :sample-size sample-size}))
 
 ; probe the outcome for measurement properties
 (defn outcome-measurement-properties
@@ -30,8 +34,8 @@
         measure-xml (last measures-xml)
         categories-xml (vtd/at measure-xml "./*//category_list")
         category-count (count (vtd/children categories-xml))
-        category-info (map #(measurement-row-info xml (vtd/text %)) (vtd/search categories-xml "./category/title"))
-        category-xml (vtd/first-child categories-xml)
+        category-info (map #(measurement-row-info xml (vtd/text %)) 
+                           (vtd/search categories-xml "./category/title"))
         ; probe the measure for type: <param> and <dispersion>, plus <units>
         param (vtd/text (vtd/at measure-xml "./param"))
         dispersion (vtd/text (vtd/at measure-xml "./dispersion"))
@@ -44,13 +48,12 @@
 
 (defn baseline-measurement-properties
   [measure-xml]
-  (let [
-        categories-xml (vtd/at measure-xml ".//category_list")
+  (let [categories-xml (vtd/at measure-xml ".//category_list")
         category-titles (concat (map vtd/text (vtd/search categories-xml "./category/sub_title"))
                                 (map vtd/text (vtd/search categories-xml "./category/title")))
-        category-titles (if (> 0 (count category-titles)) ; fallback for incorrect cases where title is not set on categories
-                            category-titles
-                            (map vtd/text (vtd/search measure-xml ".//class/title")))
+        category-titles (if (> (count category-titles) 0) ; fallback for incorrect cases where title is not set on categories
+                          category-titles
+                          (map vtd/text (vtd/search measure-xml ".//class/title")))
         param (vtd/text (vtd/at measure-xml "./param"))
         dispersion (vtd/text (vtd/at measure-xml "./dispersion"))
         units (vtd/text (vtd/at measure-xml "./units"))]
@@ -105,8 +108,8 @@
     (if (= "Standard Error" (:dispersion props)) {"standard_error" "spread"})))
 
 (defn outcome-measurement-type
-  [props]
-  (if (= "Number" (:param props)) "dichotomous" "continuous"))
+  [param]
+  (if (= "Number" param) "dichotomous" "continuous"))
 
 (defn outcome-rdf
   [xml idx outcome-uris mm-uris]
@@ -121,43 +124,55 @@
                 [(trig/iri :ontology "is_measured_at") (mm-uris [:outcome idx])]
                 [(trig/iri :ontology "has_result_property") (trig/iri :ontology "sample_size")]
                 [(trig/iri :ontology "of_variable")
-                 (trig/_po [(trig/iri :ontology "measurementType") (trig/iri :ontology (outcome-measurement-type props))])])
+                 (trig/_po [(trig/iri :ontology "measurementType") 
+                            (trig/iri :ontology (outcome-measurement-type (:param props)))])])
       (trig/iri :ontology "has_result_property")
         (map #(trig/iri :ontology %) (keys properties)))))
 
 (defn baseline-var-type
-  [props]
-  (if (= 0 (count (:categories props)))
-    [nil (trig/_po [(trig/iri :ontology "measurementType") (trig/iri :ontology (outcome-measurement-type props))])]
-    (if (or (= "Number" (:param props)) (= "Count of Participants" (:param props)))
-      (let [category-uris (into {} (map (fn [%] [% (trig/iri :instance (lib/uuid))]) (:categories props)))
-            category-rdfs (map #(trig/spo (second %)
-                                          [(trig/iri :rdfs "label") (trig/lit (first %))]
-                                          [(trig/iri :rdf "type") (trig/iri :ontology "Category")]) category-uris)
-            categories {:uris category-uris :rdfs category-rdfs}]
-        [categories (trig/_po [(trig/iri :ontology "measurementType") (trig/iri :ontology "categorical")]
-                              [(trig/iri :ontology "categoryList") (trig/coll (vals (:uris categories)))])])
+  [{categories :categories
+    param :param}]
+  (if (= 0 (count categories))
+    [nil (trig/_po [(trig/iri :ontology "measurementType")
+                    (trig/iri :ontology (outcome-measurement-type param))])]
+    (if (or (= "Number" param) 
+            (= "Count of Participants" param))
+      (let [category-uris (into {}
+                                (map #(vector % (trig/iri :instance (lib/uuid)))
+                                     categories))
+            category-rdfs (map #(trig/spo
+                                 (second %)
+                                 [(trig/iri :rdfs "label") (trig/lit (first %))]
+                                 [(trig/iri :rdf "type") (trig/iri :ontology "Category")]) category-uris)
+            categories {:uris category-uris
+                        :rdfs category-rdfs}]
+        [categories (trig/_po [(trig/iri :ontology "measurementType") 
+                               (trig/iri :ontology "categorical")]
+                              [(trig/iri :ontology "categoryList") 
+                               (trig/coll (vals (:uris categories)))])])
       [nil (trig/_po)])))
 
 (defn baseline-var-rdf
   [xml idx baseline-uris mm-uris]
-  (let [uri (baseline-uris idx)
-        var-name (vtd/text (vtd/at xml "./title"))
-        props (baseline-measurement-properties xml)
-        properties (outcome-results-properties props)
+  (let [uri                  (baseline-uris idx)
+        var-name             (vtd/text (vtd/at xml "./title"))
+        props                (baseline-measurement-properties xml)
+        properties           (outcome-results-properties props)
         [categories var-rdf] (baseline-var-type props)
-        subj (trig/spo uri
-                       [(trig/iri :rdf "type") (trig/iri :ontology "PopulationCharacteristic")]
-                       [(trig/iri :rdfs "label") (trig/lit var-name)]
-                       [(trig/iri :ontology "is_measured_at") (mm-uris [:baseline])]
-                       [(trig/iri :ontology "of_variable") var-rdf])]
-        [categories
-         (if (= 0 (count (:categories props)))
-           (-> subj
-               (trig/spo [(trig/iri :ontology "has_result_property") (trig/iri :ontology "sample_size")])
-               (lib/spo-each (trig/iri :ontology "has_result_property")
+        subj                 (trig/spo uri
+                                       [(trig/iri :rdf "type") (trig/iri :ontology "PopulationCharacteristic")]
+                                       [(trig/iri :rdfs "label") (trig/lit var-name)]
+                                       [(trig/iri :ontology "is_measured_at") 
+                                        (mm-uris [:baseline])]
+                                       [(trig/iri :ontology "of_variable") var-rdf])]
+    [categories
+     (if categories
+       (-> subj
+           (trig/spo [(trig/iri :ontology "has_result_property") 
+                      (trig/iri :ontology "sample_size")])
+           (lib/spo-each (trig/iri :ontology "has_result_property")
                          (map #(trig/iri :ontology %) (keys properties))))
-           subj)]))
+       subj)]))
 
 (defn adverse-event-rdf
   [xml idx event-uris mm-uris]
@@ -317,14 +332,21 @@
   [subj measure-xml group-id category-uris]
   (let [categories-xml (vtd/search measure-xml "./*//category_list/category")
         measurement-query (format "./measurement_list/measurement[@group_id=\"%s\"]" group-id)
-        cond-count (fn [subj value] (if value (trig/spo subj [(trig/iri :ontology "count") (parse-int value)]) subj))]
-    (reduce #(trig/spo %1 [(trig/iri :ontology "category_count")
-                           (-> (trig/_po [(trig/iri :ontology "category") 
-                                  (category-uris (or 
-                                    (vtd/text (vtd/at %2 "./sub_title")) 
-                                    (vtd/text (vtd/at %2 "./title"))
-                                    (vtd/text (vtd/at %2 "../../title"))))])
-                               (cond-count (vtd/attr (vtd/at %2 measurement-query) :value)))])
+        cond-count (fn [subj value] (if 
+                                     value (trig/spo 
+                                            subj 
+                                            [(trig/iri :ontology "count") 
+                                             (parse-int value)]) 
+                                     subj))]
+    (reduce #(trig/spo 
+              %1 
+              [(trig/iri :ontology "category_count")
+               (-> (trig/_po [(trig/iri :ontology "category") 
+                              (category-uris (or 
+                                              (vtd/text (vtd/at %2 "./sub_title")) 
+                                              (vtd/text (vtd/at %2 "./title"))
+                                              (vtd/text (vtd/at %2 "../../title"))))])
+                   (cond-count (vtd/attr (vtd/at %2 measurement-query) :value)))])
             subj
             categories-xml)))
 
@@ -442,8 +464,10 @@
         baseline-xml (vtd/search xml "/clinical_study/clinical_results/baseline/measure_list/measure")
         baseline-sample-size-xml (vtd/at xml "/clinical_study/clinical_results/baseline/analyzed_list/analyzed")
         baseline-var-xml (rest baseline-xml)
-        baseline-uris (into {} (map #(vector %2 (trig/iri :instance (lib/uuid))) baseline-var-xml (iterate inc 1)))
-        baseline-data (map #(baseline-var-rdf %1 %2 baseline-uris mm-uris) baseline-var-xml (iterate inc 1))
+        baseline-uris (into {} (map #(vector %2 (trig/iri :instance (lib/uuid))) 
+                                    baseline-var-xml (iterate inc 1)))
+        baseline-data (map #(baseline-var-rdf %1 %2 baseline-uris mm-uris) 
+                           baseline-var-xml (iterate inc 1))
         baseline-rdf (map second baseline-data)
         baseline-categories-data (map first baseline-data)
         category-uris (reduce #(merge %1 (:uris %2)) {} baseline-categories-data)
@@ -452,9 +476,22 @@
         groups-rdf (map #(group-rdf (first %) (second %)) group-info)
         mms-rdf (map #(mm-rdf (first %) (second %)) mm-info)
         measurements-rdf (concat
-                           (apply concat (map #(baseline-measurements %1 %2 baseline-sample-size-xml baseline-uris group-uris mm-uris category-uris) baseline-var-xml (iterate inc 1)))
-                           (apply concat (map #(outcome-measurements %1 %2 outcome-uris group-uris mm-uris) outcome-xml (iterate inc 1)))
-                           (apply concat (map #(event-measurements %1 %2 event-uris group-uris mm-uris) event-xml (iterate inc 1))))
+                           (apply concat 
+                                  (map #(baseline-measurements 
+                                         %1 %2 
+                                         baseline-sample-size-xml 
+                                         baseline-uris group-uris 
+                                         mm-uris category-uris) 
+                                       baseline-var-xml (iterate inc 1)))
+                           (apply concat 
+                                  (map #(outcome-measurements 
+                                         %1 %2 outcome-uris group-uris 
+                                         mm-uris) 
+                                       outcome-xml (iterate inc 1)))
+                           (apply concat 
+                                  (map #(event-measurements
+                                         %1 %2 event-uris group-uris mm-uris)
+                                       event-xml (iterate inc 1))))
         study-rdf (-> uri
                      (trig/spo [(trig/iri :ontology "has_publication") reg-uri]
                                [(trig/iri :rdf "type") (trig/iri :ontology "Study")]

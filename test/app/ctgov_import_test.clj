@@ -99,7 +99,7 @@
 
 (def testxml (vtd/navigator (slurp "test/app/testxml3.xml")))
 
-(deftest testxml-4
+(deftest testxml-3
   (is (not (nil? (import-xml testxml)))))
 
 ; (deftest outcome-measurement-properties-test

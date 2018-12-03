@@ -1,5 +1,6 @@
 (ns app.eudract-import-test
   (:require [riveted.core :as vtd]
+            [app.import-shared :as lib]
             [org.drugis.addis.rdf.trig :as trig])
   (:use clojure.test)
   (:use app.eudract-import))
@@ -8,10 +9,9 @@
 (def hba1c-change-xml (first (vtd/search xml "/result/endPoints/endPoint")))
 (def hba1c-under-7-percent (nth (vtd/search xml "/result/endPoints/endPoint") 
                            6))
+(def age-categorical (vtd/at xml "/result/baselineCharacteristics/ageCategoricalCharacteristic"))
+(def age-continuous (vtd/at xml "/result/baselineCharacteristics/ageContinuousCharacteristic"))
 (def decreased-appetite (first (find-adverse-events xml)))
-(defn same-ignoring-order? [coll1 coll2]
-  (= (set coll1)
-     (set coll2)))
 
 (defn outcomes-one-through-x [x]
   (map #(vector :outcome %) (range 1 (+ x 1))))
@@ -38,7 +38,7 @@
 
 (deftest test-find-measurement-moments
   (let [[found-mm-uris found-mm-info] (find-measurement-moments xml)]
-    (is (same-ignoring-order?
+    (is (lib/same-ignoring-order?
          (concat (outcomes-one-through-x 8) '([:baseline] [:events]))
          (keys found-mm-uris)))
     (is (=
@@ -53,12 +53,6 @@
   (is (= 8
          (count (vtd/search xml "/result/endPoints/endPoint")))))
 
-(deftest test-build-outcome-uris
-  (let [outcome-uris (build-outcome-uris (vtd/search xml "/result/endPoints/endPoint"))]
-    (is (= 8 (count outcome-uris))
-        (is (same-ignoring-order? 
-             (outcomes-one-through-x 8)
-             (keys outcome-uris))))))
 
 (def hba1c-properties {:simple     true
                        :is-count?  false
@@ -86,6 +80,9 @@
 (deftest test-outcome-results-properties-continuous
   (is (= '(["least_squares_mean" "value"] ["standard_error" "spread"])
          (outcome-results-properties hba1c-properties))))
+
+; (deftest test-outcome-measurement-properties-categorical
+;   (is (= )))
 
 (deftest test-outcome-results-properties-dichotomous
   (is (= '(["percentage" "value"])
@@ -147,4 +144,29 @@
                                 mm-uris))))))
 
 (deftest test-find-baseline-xml
-  (is (= 10 (count (find-baseline-xml xml)))))
+  (let [ baseline-xml (find-baseline-xml xml)]
+    (is (= 10 (+ 
+               (count (:continuous baseline-xml))
+               (count (:categorical baseline-xml)))))))
+
+(deftest test-baseline-var-rdf-continuous
+  (let [baseline-uris           {[:baseline 1] [:qname :instance "baseline-uri"]}
+        mm-uris                 {[:baseline] [:qname :instance "mm-uri"]}
+        expected-rdf-properties '([[:qname :rdf "type"]
+                                   [:qname :ontology "PopulationCharacteristic"]]
+                                  [[:qname :rdfs "label"] [:lit "Age Continuous"]]
+                                  [[:qname :ontology "is_measured_at"]
+                                   [:qname :instance "mm-uri"]]
+                                  [[:qname :ontology "of_variable"]
+                                   [:blank ([[:qname :ontology "measurementType"]
+                                             [:qname :ontology "continuous"]])]]
+                                  [[:qname :ontology "has_result_property"]
+                                   [:qname :ontology "mean"]]
+                                  [[:qname :ontology "has_result_property"]
+                                   [:qname :ontology "standard_deviation"]])]
+    (is (= expected-rdf-properties
+           (second (baseline-var-rdf-continuous age-continuous 1 baseline-uris mm-uris))))))
+
+
+; (deftest test-baseline-measurement-properties
+;   )
