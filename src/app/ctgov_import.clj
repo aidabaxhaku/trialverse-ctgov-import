@@ -143,7 +143,8 @@
             category-rdfs (map #(trig/spo
                                  (second %)
                                  [(trig/iri :rdfs "label") (trig/lit (first %))]
-                                 [(trig/iri :rdf "type") (trig/iri :ontology "Category")]) category-uris)
+                                 [(trig/iri :rdf "type") (trig/iri :ontology "Category")])
+                               category-uris)
             categories {:uris category-uris
                         :rdfs category-rdfs}]
         [categories (trig/_po [(trig/iri :ontology "measurementType") 
@@ -159,12 +160,13 @@
         props                (baseline-measurement-properties xml)
         properties           (outcome-results-properties props)
         [categories var-rdf] (baseline-var-type props)
-        subj                 (trig/spo uri
-                                       [(trig/iri :rdf "type") (trig/iri :ontology "PopulationCharacteristic")]
-                                       [(trig/iri :rdfs "label") (trig/lit var-name)]
-                                       [(trig/iri :ontology "is_measured_at") 
-                                        (mm-uris [:baseline])]
-                                       [(trig/iri :ontology "of_variable") var-rdf])]
+        subj                 (trig/spo 
+                              uri
+                              [(trig/iri :rdf "type") (trig/iri :ontology "PopulationCharacteristic")]
+                              [(trig/iri :rdfs "label") (trig/lit var-name)]
+                              [(trig/iri :ontology "is_measured_at")
+                               (mm-uris [:baseline])]
+                              [(trig/iri :ontology "of_variable") var-rdf])]
     [categories
      (if categories
        (-> subj
@@ -495,10 +497,13 @@
         study-rdf (-> uri
                      (trig/spo [(trig/iri :ontology "has_publication") reg-uri]
                                [(trig/iri :rdf "type") (trig/iri :ontology "Study")]
-                               [(trig/iri :rdfs "label") (trig/lit (vtd/text (vtd/at xml "/clinical_study/brief_title")))]
-                               [(trig/iri :rdfs "comment") (trig/lit (vtd/text (vtd/at xml "/clinical_study/official_title")))]
+                               [(trig/iri :rdfs "label") 
+                                (trig/lit (vtd/text (vtd/at xml "/clinical_study/brief_title")))]
+                               [(trig/iri :rdfs "comment") 
+                                (trig/lit (vtd/text (vtd/at xml "/clinical_study/official_title")))]
                                [(trig/iri :ontology "has_objective")
-                                (trig/_po [(trig/iri :rdfs "comment") (trig/lit (vtd/text (vtd/at xml "/clinical_study/brief_summary/textblock")))])]
+                                (trig/_po [(trig/iri :rdfs "comment") 
+                                           (trig/lit (vtd/text (vtd/at xml "/clinical_study/brief_summary/textblock")))])]
                                [(trig/iri :ontology "has_eligibility_criteria")
                                 (trig/_po [(trig/iri :rdfs "comment") (trig/lit (vtd/text (vtd/at xml "/clinical_study/eligibility/criteria/textblock")))])])
 

@@ -167,6 +167,33 @@
     (is (= expected-rdf-properties
            (second (baseline-var-rdf-continuous age-continuous 1 baseline-uris mm-uris))))))
 
+(deftest test-get-categories
+  (let [categories      (get-categories age-categorical)
+        expected-ids    '("_efb3e754-0e32-43e7-ab08-b3580c330700"
+                          "_b34cc9cf-da34-46fe-accc-d5dc3f866527"
+                          "_756ede0c-89c8-49d5-9901-5487e7e635b1")
+        expected-titles '("Adults (18-64 years)"
+                          "From 65-84 years"
+                          "85 years and over")]
+    (is (= expected-ids (keys categories)))
+    (is (= expected-titles (map :title (vals categories))))))
 
-; (deftest test-baseline-measurement-properties
-;   )
+
+(deftest test-baseline-var-rdf-categorical
+  (let [baseline-uris           {[:baseline 1] [:qname :instance "baseline-uri"]}
+        mm-uris                 {[:baseline] [:qname :instance "mm-uri"]}
+        categories {"_eers-fsdgf-tss" {:uri   [:qname :instance "category-uri"]
+                                       :title "category title"}}
+        expected-rdf-properties '([[:qname :rdf "type"] 
+                                   [:qname :ontology "PopulationCharacteristic"]] 
+                                  [[:qname :rdfs "label"] [:lit "Age Categorical"]] 
+                                  [[:qname :ontology "is_measured_at"] 
+                                   [:qname :instance "mm-uri"]]
+                                  [[:qname :ontology "of_variable"]
+                                   [:blank ([[:qname :ontology "measurementType"] 
+                                             [:qname :ontology "categorical"]])]])
+        found-baseline-rdf (second
+                            (baseline-var-rdf-categorical
+                             age-categorical 1 baseline-uris mm-uris categories))]
+    (is (= expected-rdf-properties
+           found-baseline-rdf))))

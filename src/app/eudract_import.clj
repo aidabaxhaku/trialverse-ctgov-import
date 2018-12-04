@@ -194,35 +194,45 @@
 (defn baseline-var-rdf-shared
   [xml idx uri mm-uri]
   (let [characteristic-name (vtd/text (vtd/at xml "./title"))
-   measurement-type    (measurement-type-for-baseline (vtd/tag xml))
-   props               (outcome-measurement-properties xml)
-   properties          (outcome-results-properties props)]
-  (trig/spo uri
-            [(trig/iri :rdf "type")
-             (trig/iri :ontology "PopulationCharacteristic")]
-            [(trig/iri :rdfs "label")
-             (trig/lit characteristic-name)]
-            [(trig/iri :ontology "is_measured_at") mm-uri]
-            [(trig/iri :ontology "of_variable")
-             (trig/_po [(trig/iri :ontology "measurementType")
-                        (trig/iri :ontology measurement-type)])])))
+        measurement-type    (measurement-type-for-baseline (vtd/tag xml))]
+    (trig/spo uri
+              [(trig/iri :rdf "type")
+               (trig/iri :ontology "PopulationCharacteristic")]
+              [(trig/iri :rdfs "label")
+               (trig/lit characteristic-name)]
+              [(trig/iri :ontology "is_measured_at") mm-uri]
+              [(trig/iri :ontology "of_variable")
+               (trig/_po [(trig/iri :ontology "measurementType")
+                          (trig/iri :ontology measurement-type)])])))
+
+(defn get-categories
+  [xml]
+  (let [categories-xml (vtd/search xml "./categories/category")]
+    (into {} (map
+              #(vector (vtd/attr % "id")
+                       {:uri   (lib/gen-uri)
+                        :title (vtd/text (vtd/at % "name"))})
+              categories-xml))))
 
 (defn baseline-var-rdf-categorical
-  [xml idx baseline-uris mm-uris]
-  (let [uri                 (baseline-uris [:baseline idx])
-        mm-uri (mm-uris [:baseline])
-        shared-rdf (baseline-var-rdf-shared xml idx uri mm-uri)]
-    ))
-
-
+  [xml idx baseline-uris mm-uris categories]
+  (let [uri        (baseline-uris [:baseline idx])
+        mm-uri     (mm-uris [:baseline])
+        shared-rdf (baseline-var-rdf-shared xml idx uri mm-uri)
+        props      (outcome-measurement-properties xml)
+        properties (outcome-results-properties props)]
+    (lib/spo-each
+     shared-rdf
+     (trig/iri :ontology "has_result_property")
+     (map #(trig/iri :ontology %) (keys properties)))))
 
 (defn baseline-var-rdf-continuous
   [xml idx baseline-uris mm-uris]
   (let [uri        (baseline-uris [:baseline idx])
         mm-uri     (mm-uris [:baseline])
         shared-rdf (baseline-var-rdf-shared xml idx uri mm-uri)
-        props               (outcome-measurement-properties xml)
-        properties          (outcome-results-properties props)]
+        props      (outcome-measurement-properties xml)
+        properties (outcome-results-properties props)]
     (lib/spo-each
      shared-rdf
      (trig/iri :ontology "has_result_property")

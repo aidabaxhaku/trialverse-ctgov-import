@@ -19,9 +19,12 @@
                   :bibo "http://purl.org/ontology/bibo/"})
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
+(defn gen-uri [] (trig/iri :instance (uuid)))
 
 (defn spo-each [subj pred obj*]
-  (reduce (fn [subj obj] (trig/spo subj [pred obj])) subj obj*))
+  (reduce (fn [subj obj] (trig/spo subj [pred obj]))
+          subj
+          obj*))
 
 (defn blinding-rdf [subj blinding]
   (if blinding
@@ -31,7 +34,7 @@
 
 (defn assign-uri-to-cluster
   [cluster]
-  (let [uri (trig/iri :instance (uuid))]
+  (let [uri (gen-uri)]
     (into {} (map #(vector % uri) cluster))))
 
 (defn sort-equivalent-values
