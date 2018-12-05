@@ -59,3 +59,33 @@
 (defn same-ignoring-order? [coll1 coll2]
   (= (set coll1)
      (set coll2)))
+
+(defn measurement-meta-rdf
+  [subj outcome-uri group-uri mm-uri]
+  (trig/spo subj
+            [(trig/iri :ontology "of_outcome") outcome-uri]
+            [(trig/iri :ontology "of_group") group-uri]
+            [(trig/iri :ontology "of_moment") mm-uri]))
+
+(defn text-at [xml expr] (vtd/text (vtd/at xml expr)))
+
+(defn parse-int
+  [s]
+  (try (Integer. s)
+       (catch Exception e
+         nil)))
+
+(defn parse-double
+  [s]
+  (try (Double. s)
+       (catch Exception e
+         nil)))
+
+(defn measurement-value
+  [subj xml prop attr]
+  (let [value-str (vtd/attr xml attr)
+        value     (if (or (= "count" prop) (= "event_count" prop) (= "sample_size" prop))
+                    (parse-int value-str)
+                    (parse-double value-str))]
+    (if value
+      (trig/spo subj [(trig/iri :ontology prop) (trig/lit value)]) subj)))

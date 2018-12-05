@@ -35,7 +35,7 @@
   [xml]
   {[:events]
    (or
-    (vtd/text (vtd/at xml "/result/adverseEvents/timeFrame"))
+    (lib/text-at xml "/result/adverseEvents/timeFrame")
     "Unknown")})
 
 (defn find-endpoint-time-frames
@@ -53,11 +53,11 @@
 
 (defn get-eudract-number
   [xml]
-  (vtd/text (vtd/at xml "/result/@eudractNumber")))
+  (lib/text-at xml "/result/@eudractNumber"))
 
 (defn get-nct-id
   [xml]
-  (vtd/text (vtd/at xml "/result/trialInformation/usctnIdentifier")))
+  (lib/text-at xml "/result/trialInformation/usctnIdentifier"))
 
 (defn build-registration 
     [reg-uri eudract-id]
@@ -81,11 +81,11 @@
                             (vtd/search categories-xml "./category/name"))
         category-xml   (vtd/first-child categories-xml)
         ; probe the measure for type: <param> and <dispersion>, plus <units>
-        param          (vtd/text (vtd/at xml "centralTendencyType/value"))
-        dispersion     (vtd/text (vtd/at xml "dispersionType/value"))
-        units          (vtd/text (vtd/at xml "unit"))]
+        param          (lib/text-at xml "centralTendencyType/value")
+        dispersion     (lib/text-at xml "dispersionType/value")
+        units          (lib/text-at xml "unit")]
     {:simple     (< category-count 2)
-     :is-count?  (= "true" (vtd/text (vtd/at xml "countable")))
+     :is-count?  (= "true" (lib/text-at xml "countable"))
      :categories category-info
      :param      param
      :dispersion dispersion
@@ -130,8 +130,8 @@
       (lib/spo-each
        (trig/spo uri
                  [(trig/iri :rdf "type") (trig/iri :ontology "Endpoint")]
-                 [(trig/iri :rdfs "label") (trig/lit (vtd/text (vtd/at xml "./title")))]
-                 [(trig/iri :rdfs "comment") (trig/lit (or (vtd/text (vtd/at xml "./description")) ""))]
+                 [(trig/iri :rdfs "label") (trig/lit (lib/text-at xml "./title"))]
+                 [(trig/iri :rdfs "comment") (trig/lit (or (lib/text-at xml "./description") ""))]
                  [(trig/iri :ontology "is_measured_at") (mm-uris [:outcome idx])]
                  [(trig/iri :ontology "has_result_property") (trig/iri :ontology "sample_size")]
                  [(trig/iri :ontology "of_variable")
@@ -149,7 +149,7 @@
 (defn adverse-event-rdf
   [xml idx event-uris mm-uris]
   (let [uri        (event-uris [:event idx])
-        event-name (vtd/text (vtd/at xml "./term"))]
+        event-name (lib/text-at xml "./term")]
     (lib/spo-each
      (trig/spo
       uri
@@ -193,7 +193,7 @@
 
 (defn baseline-var-rdf-shared
   [xml idx uri mm-uri]
-  (let [characteristic-name (vtd/text (vtd/at xml "./title"))
+  (let [characteristic-name (lib/text-at xml "./title")
         measurement-type    (measurement-type-for-baseline (vtd/tag xml))]
     (trig/spo uri
               [(trig/iri :rdf "type")
@@ -205,17 +205,8 @@
                (trig/_po [(trig/iri :ontology "measurementType")
                           (trig/iri :ontology measurement-type)])])))
 
-(defn get-categories
-  [xml]
-  (let [categories-xml (vtd/search xml "./categories/category")]
-    (into {} (map
-              #(vector (vtd/attr % "id")
-                       {:uri   (lib/gen-uri)
-                        :title (vtd/text (vtd/at % "name"))})
-              categories-xml))))
-
 (defn baseline-var-rdf-categorical
-  [xml idx baseline-uris mm-uris categories]
+  [xml idx baseline-uris mm-uris]
   (let [uri        (baseline-uris [:baseline idx])
         mm-uri     (mm-uris [:baseline])
         shared-rdf (baseline-var-rdf-shared xml idx uri mm-uri)
@@ -237,6 +228,88 @@
      shared-rdf
      (trig/iri :ontology "has_result_property")
      (map #(trig/iri :ontology %) (keys properties)))))
+
+(defn get-categories-for-variable
+  [xml]
+  (let [categories-xml (vtd/search xml "./categories/category")]
+    (into {} (map
+              #(vector (vtd/attr % "id")
+                       {:uri   (lib/gen-uri)
+                        :title (lib/text-at % "name")})
+              categories-xml))))
+
+(defn categories-rdf
+  [categories]
+  (map
+   #(trig/spo (:uri %)
+              [(trig/iri :rdfs "label") (trig/lit (:title %))]
+              [(trig/iri :rdf "type") (trig/iri :ontology "Category")])
+   (vals categories)))
+
+(defn find-baseline-groups
+  [xml]
+  (let [groups-xml (vtd/search xml "/result/baselineCharacteristics/baselineReportingGroups/baselineReportingGroup")]
+    (map (fn [%] {:id          (vtd/attr % "id")
+                  :armId       (vtd/attr % "armId")
+                  :sampleSize  (lib/text-at % "subjects")
+                  :description (lib/text-at % "description")})
+         groups-xml)))
+
+(defn find-arms
+  [xml]
+  (let [arms-xml (vtd/search xml "/result/subjectDisposition/postAssignmentPeriods/postAssignmentPeriod/arms/arm")]
+    (map (fn [%] {:id          (vtd/attr % "id")
+                  :title       (lib/text-at % "title")
+                  :sampleSize  (lib/text-at % "startedMilestoneAchievement/subjects")
+                  :description (lib/text-at % "description")})
+         arms-xml)))
+
+(defn find-adverse-event-groups
+  [xml]
+  (let [groups-xml (vtd/search xml "/result/adverseEvents/reportingGroups/reportingGroup")]
+    (map (fn [%] {:id          (vtd/attr % "id")
+                  :title       (lib/text-at % "title")
+                  :sampleSize  (lib/text-at % "subjectsExposed")
+                  :description (lib/text-at % "description")})
+         groups-xml)))
+
+(defn build-group-uris
+  [arms adverse-event-groups baseline-groups]
+  (let [uris-by-id          (into {}
+                                  (map #(vector (:id %) (lib/gen-uri))
+                                       (concat arms adverse-event-groups)))
+        baseline-uris-by-id (into {}
+                                  (map #(vector (:id %) (uris-by-id (:armId %)))
+                                       baseline-groups))]
+    (merge uris-by-id baseline-uris-by-id)))
+
+(defn find-groups
+ ; FIXME: consider <totalBaselineGroup> from categorical baselines? 
+  [xml] 
+  (let [baseline-groups      (find-baseline-groups xml)
+        adverse-event-groups (find-adverse-event-groups xml)
+        arms                 (find-arms xml)]
+    {:arms                 arms
+     :baseline-groups      baseline-groups
+     :adverse-event-groups adverse-event-groups}))
+
+; (defn baseline-measurements
+;   [baseline-xml idx sample-size-xml baseline-uris group-uris mm-uris category-uris]
+;   (let [reporting-groups (vtd/search baseline-xml "reportingGroups/reportingGroup")
+;         reporting-group-ids (map #(lib/text-at % "baselineReportingGroupId")
+;                                  reporting-groups)
+;         m-meta           (into {}
+;                                (map (fn [group]
+;                                       [group (lib/measurement-meta-rdf
+;                                               (trig/iri :instance (lib/uuid))
+;                                               (baseline-uris [:baseline idx])
+;                                               (group-uris [:baseline_group group])
+;                                               (mm-uris [:baseline]))])
+;                                     reporting-group-ids))]
+;     (map (fn [[group subj]] 
+;            (baseline-measurement-data-rdf subj xml sample-size-xml group category-uris))
+;          m-meta)))
+
 
 ; (defn )          
 ; (defn import-xml
@@ -268,22 +341,35 @@
 ;         [group-uris group-info] (find-groups xml)
 ;         groups-rdf (map #(group-rdf (first %) (second %)) group-info)
 ;         mms-rdf (map #(mm-rdf (first %) (second %)) mm-info)
-;         measurements-rdf (concat
-;                            (apply concat (map #(baseline-measurements %1 %2 baseline-sample-size-xml baseline-uris group-uris mm-uris category-uris) baseline-var-xml (iterate inc 1)))
-;                            (apply concat (map #(outcome-measurements %1 %2 outcome-uris group-uris mm-uris) outcome-xml (iterate inc 1)))
-;                            (apply concat (map #(event-measurements %1 %2 event-uris group-uris mm-uris) event-xml (iterate inc 1))))
+        ; measurements-rdf (concat
+        ;                   (apply concat
+        ;                          (map #(baseline-measurements
+        ;                                 %1 %2
+        ;                                 baseline-sample-size-xml
+        ;                                 baseline-uris group-uris
+        ;                                 mm-uris category-uris)
+        ;                               baseline-var-xml (iterate inc 1)))
+        ;                   (apply concat
+        ;                          (map #(outcome-measurements
+        ;                                 %1 %2 outcome-uris group-uris
+        ;                                 mm-uris)
+        ;                               outcome-xml (iterate inc 1)))
+        ;                   (apply concat
+        ;                          (map #(event-measurements
+        ;                                 %1 %2 event-uris group-uris mm-uris)
+        ;                               event-xml (iterate inc 1))))
 ;         study-rdf (-> uri
 ;                      (trig/spo [(trig/iri :ontology "has_publication") reg-uri]
 ;                                [(trig/iri :rdf "type") (trig/iri :ontology "Study")]
-;                                [(trig/iri :rdfs "label") (trig/lit (vtd/text (vtd/at xml "/clinical_study/brief_title")))]
-;                                [(trig/iri :rdfs "comment") (trig/lit (vtd/text (vtd/at xml "/clinical_study/official_title")))]
+;                                [(trig/iri :rdfs "label") (trig/lit (lib/text-at xml "/clinical_study/brief_title")))]
+;                                [(trig/iri :rdfs "comment") (trig/lit (lib/text-at xml "/clinical_study/official_title")))]
 ;                                [(trig/iri :ontology "has_objective")
-;                                 (trig/_po [(trig/iri :rdfs "comment") (trig/lit (vtd/text (vtd/at xml "/clinical_study/brief_summary/textblock")))])]
+;                                 (trig/_po [(trig/iri :rdfs "comment") (trig/lit (lib/text-at xml "/clinical_study/brief_summary/textblock")))])]
 ;                                [(trig/iri :ontology "has_eligibility_criteria")
-;                                 (trig/_po [(trig/iri :rdfs "comment") (trig/lit (vtd/text (vtd/at xml "/clinical_study/eligibility/criteria/textblock")))])])
+;                                 (trig/_po [(trig/iri :rdfs "comment") (trig/lit (lib/text-at xml "/clinical_study/eligibility/criteria/textblock")))])])
 
-;                      (allocation-rdf (vtd/text (vtd/at xml "/clinical_study/study_design_info/allocation")))
-;                      (blinding-rdf (parse-masking (vtd/text (vtd/at xml "/clinical_study/study_design_info/masking"))))
+;                      (allocation-rdf (lib/text-at xml "/clinical_study/study_design_info/allocation")))
+;                      (blinding-rdf (parse-masking (lib/text-at xml "/clinical_study/study_design_info/masking"))))
 ;                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals baseline-uris))
 ;                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals outcome-uris))
 ;                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals event-uris))

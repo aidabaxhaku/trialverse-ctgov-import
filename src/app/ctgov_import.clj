@@ -245,10 +245,11 @@
 
 (defn find-groups
   [xml]
-  (lib/sort-equivalent-values (merge (find-arm-groups xml)
-                                 (find-baseline-groups xml)
-                                 (find-event-groups xml)
-                                 (find-outcome-groups xml))
+  (lib/sort-equivalent-values (merge
+                               (find-arm-groups xml)
+                               (find-baseline-groups xml)
+                               (find-event-groups xml)
+                               (find-outcome-groups xml))
                           std-group))
 
 (defn mm-rdf
@@ -274,34 +275,6 @@
                                  {[:baseline] "Baseline"})
                                  lower-case))
 
-(defn measurement-meta-rdf
-  [subj outcome-uri group-uri mm-uri]
-  (trig/spo subj
-            [(trig/iri :ontology "of_outcome") outcome-uri]
-            [(trig/iri :ontology "of_group") group-uri]
-            [(trig/iri :ontology "of_moment") mm-uri]))
-
-(defn parse-int
-  [s]
-  (try (Integer. s)
-       (catch Exception e
-         nil)))
-
-(defn parse-double
-  [s]
-  (try (Double. s)
-       (catch Exception e
-         nil)))
-
-(defn measurement-value
-  [subj xml prop attr]
-  (let [value-str (vtd/attr xml attr)
-        value (if (or (= "count" prop) (= "event_count" prop) (= "sample_size" prop)) 
-          (parse-int value-str) 
-          (parse-double value-str))]
-    (if value
-      (trig/spo subj [(trig/iri :ontology prop) (trig/lit value)]) subj)))
-
 ;    ontology:category_count [
 ;      ontology:category "Female" ;
 ;      ontology:count "43"
@@ -326,8 +299,8 @@
         sample-size-query (format ".//count_list/count[@group_id=\"%s\"]" group-id)
         sample-size (vtd/at sample-size-xml sample-size-query)
         measurement-xml (vtd/at measure-xml measurement-query)]
-    (reduce #(measurement-value %1 measurement-xml (first %2) (second %2))
-            (measurement-value subj sample-size "sample_size" "value")
+    (reduce #(lib/measurement-value %1 measurement-xml (first %2) (second %2))
+            (lib/measurement-value subj sample-size "sample_size" "value")
             properties)))
 
 (defn measurement-data-rdf-categorical
@@ -338,7 +311,7 @@
                                      value (trig/spo 
                                             subj 
                                             [(trig/iri :ontology "count") 
-                                             (parse-int value)]) 
+                                             (lib/parse-int value)]) 
                                      subj))]
     (reduce #(trig/spo 
               %1 
@@ -361,10 +334,10 @@
                        [(trig/iri :rdfs "comment") (trig/lit (:title row-info))])
         row-specific ((:sample-size row-info) group-id)
         subj-with-sample-size (if (nil? row-specific)
-                                  (measurement-value subj sample-size-xml "sample_size" "value")
+                                  (lib/measurement-value subj sample-size-xml "sample_size" "value")
                                   (trig/spo subj [(trig/iri :ontology "sample_size") row-specific]))
         properties (outcome-results-properties props)]
-    (reduce #(measurement-value %1 measurement-xml (first %2) (second %2))
+    (reduce #(lib/measurement-value %1 measurement-xml (first %2) (second %2))
             subj-with-sample-size
             properties)))
 
@@ -385,7 +358,7 @@
         properties (outcome-results-properties props)]
     (if (:simple props)
       [(measurement-data-rdf-basic
-         (measurement-meta-rdf (trig/iri :instance (lib/uuid)) (:outcome m-meta) (:group m-meta) (:mm m-meta))
+         (lib/measurement-meta-rdf (trig/iri :instance (lib/uuid)) (:outcome m-meta) (:group m-meta) (:mm m-meta))
          properties sample-size-xml measure-xml group-id)]
       (measurement-data-rdf-complex props sample-size-xml measure-xml group-id m-meta))))
 
@@ -411,10 +384,11 @@
   [xml idx sample-size-xml baseline-uris group-uris mm-uris category-uris]
   (let [group-id-query ".//category_list/category/measurement_list/measurement/@group_id"
         groups (set (map vtd/text (vtd/search xml group-id-query)))
-        m-meta (into {} (map (fn [group] [group (measurement-meta-rdf (trig/iri :instance (lib/uuid))
-                                                              (baseline-uris idx)
-                                                              (group-uris [:baseline_group group])
-                                                              (mm-uris [:baseline]))]) groups))]
+        m-meta (into {} 
+                     (map (fn [group] [group (lib/measurement-meta-rdf (trig/iri :instance (lib/uuid))
+                                                                       (baseline-uris idx)
+                                                                       (group-uris [:baseline_group group])
+                                                                       (mm-uris [:baseline]))]) groups))]
     (map (fn [[group subj]] (baseline-measurement-data-rdf subj xml sample-size-xml group category-uris)) m-meta)))
 
 (defn event-measurement-rdf
@@ -426,7 +400,7 @@
         properties {"count" "subjects_affected"
                     "event_count" "events"
                     "sample_size" "subjects_at_risk"}]
-    (reduce #(measurement-value %1 xml (first %2) (second %2)) m-meta properties)))
+    (reduce #(lib/measurement-value %1 xml (first %2) (second %2)) m-meta properties)))
 
 (defn event-measurements
   [xml idx event-uris group-uris mm-uris]

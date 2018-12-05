@@ -27,3 +27,12 @@
         (is (same-ignoring-order?
              (map #(vector %1 %2) (repeat :outcome) (range 1 9))
              (keys uris))))))
+
+(deftest measurement-meta-rdf-test
+  (is (= [[:uri "http://subject.com"]
+          '([[:qname :ontology "of_outcome"] [:lit "outcome-uri"]]
+            [[:qname :ontology "of_group"] [:lit "group-uri"]]
+            [[:qname :ontology "of_moment"] [:lit "mm-uri"]])]
+         (measurement-meta-rdf 
+          [:uri "http://subject.com"]
+          "outcome-uri" "group-uri" "mm-uri"))))

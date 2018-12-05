@@ -167,8 +167,25 @@
     (is (= expected-rdf-properties
            (second (baseline-var-rdf-continuous age-continuous 1 baseline-uris mm-uris))))))
 
-(deftest test-get-categories
-  (let [categories      (get-categories age-categorical)
+(deftest test-baseline-var-rdf-categorical
+  (let [baseline-uris           {[:baseline 1] [:qname :instance "baseline-uri"]}
+        mm-uris                 {[:baseline] [:qname :instance "mm-uri"]}
+        expected-rdf-properties '([[:qname :rdf "type"]
+                                   [:qname :ontology "PopulationCharacteristic"]]
+                                  [[:qname :rdfs "label"] [:lit "Age Categorical"]]
+                                  [[:qname :ontology "is_measured_at"]
+                                   [:qname :instance "mm-uri"]]
+                                  [[:qname :ontology "of_variable"]
+                                   [:blank ([[:qname :ontology "measurementType"]
+                                             [:qname :ontology "categorical"]])]])
+        found-baseline-rdf      (second
+                                 (baseline-var-rdf-categorical
+                                  age-categorical 1 baseline-uris mm-uris))]
+    (is (= expected-rdf-properties
+           found-baseline-rdf))))
+
+(deftest test-get-categories-for-variable
+  (let [categories      (get-categories-for-variable age-categorical)
         expected-ids    '("_efb3e754-0e32-43e7-ab08-b3580c330700"
                           "_b34cc9cf-da34-46fe-accc-d5dc3f866527"
                           "_756ede0c-89c8-49d5-9901-5487e7e635b1")
@@ -178,22 +195,84 @@
     (is (= expected-ids (keys categories)))
     (is (= expected-titles (map :title (vals categories))))))
 
+(deftest test-categories-rdf
+  (let [categories   {"key" {:uri   [:qname :instance "category-uri"]
+                             :title "category title"}}
+        expected-rdf '([[:qname :instance "category-uri"]
+                        ([[:qname :rdfs "label"] [:lit "category title"]]
+                         [[:qname :rdf "type"] [:qname :ontology "Category"]])])]
+    (is (= expected-rdf
+           (categories-rdf categories)))))
 
-(deftest test-baseline-var-rdf-categorical
-  (let [baseline-uris           {[:baseline 1] [:qname :instance "baseline-uri"]}
-        mm-uris                 {[:baseline] [:qname :instance "mm-uri"]}
-        categories {"_eers-fsdgf-tss" {:uri   [:qname :instance "category-uri"]
-                                       :title "category title"}}
-        expected-rdf-properties '([[:qname :rdf "type"] 
-                                   [:qname :ontology "PopulationCharacteristic"]] 
-                                  [[:qname :rdfs "label"] [:lit "Age Categorical"]] 
-                                  [[:qname :ontology "is_measured_at"] 
-                                   [:qname :instance "mm-uri"]]
-                                  [[:qname :ontology "of_variable"]
-                                   [:blank ([[:qname :ontology "measurementType"] 
-                                             [:qname :ontology "categorical"]])]])
-        found-baseline-rdf (second
-                            (baseline-var-rdf-categorical
-                             age-categorical 1 baseline-uris mm-uris categories))]
-    (is (= expected-rdf-properties
-           found-baseline-rdf))))
+(deftest test-find-baseline-groups
+  (let [expected-groups '({:id          "_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f"
+                           :armId       "_0de4ff64-eed2-4e32-bc57-67a7321b0551"
+                           :sampleSize  "132"
+                           :description "Subjects received semaglutide 0.25 mg subcutaneous (sc) injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30."}
+                          {:id          "_a459fa77-6faa-46e2-a362-3d5a57270bd7"
+                           :armId       "_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6"
+                           :sampleSize  "131"
+                           :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30."}
+                          {:id          "_f1834e51-2d05-463b-b702-4763711a5860"
+                           :armId       "_1e5dbff9-91af-4728-81b2-b93138547c86"
+                           :sampleSize  "133"
+                           :description "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks."})]
+    (is (= expected-groups
+           (find-baseline-groups xml)))))
+
+(deftest test-find-arms
+  (let [expected-arms '({:id          "_0de4ff64-eed2-4e32-bc57-67a7321b0551"
+                         :title       "Semaglutide 0.5 mg"
+                         :sampleSize  "132"
+                         :description "Subjects received semaglutide 0.25 mg subcutaneous (sc) injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30."}
+                        {:id          "_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6"
+                         :title       "Semaglutide 1.0 mg"
+                         :sampleSize  "131"
+                         :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30."}
+                        {:id          "_1e5dbff9-91af-4728-81b2-b93138547c86"
+                         :title       "Placebo"
+                         :sampleSize  "133"
+                         :description "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks."})]
+    (is (= expected-arms
+           (find-arms xml)))))
+
+(deftest test-find-adverse-event-groups
+  (let [expected-groups '({:id          "ReportingGroup-1"
+                           :title       "Semaglutide 0.5 mg"
+                           :sampleSize  "132"
+                           :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30."} 
+                          {:id          "ReportingGroup-2"
+                           :title       "Semaglutide 1.0 mg"
+                           :sampleSize  "131"
+                           :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30."}
+                          {:id          "ReportingGroup-3"
+                           :title       "Placebo"
+                           :sampleSize  "133"
+                           :description "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks."})]
+       (is (= expected-groups
+              (find-adverse-event-groups xml)))))
+
+(deftest test-find-groups
+  (is (every? #(= 3 %) 
+      (map count (vals (find-groups xml))))))
+
+(deftest test-group-uris
+  (let [baseline-groups      (find-baseline-groups xml)
+        adverse-event-groups (find-adverse-event-groups xml)
+        arms                 (find-arms xml)
+        group-uris           (build-group-uris arms 
+                                               adverse-event-groups 
+                                               baseline-groups)
+        arm-ids              '("_0de4ff64-eed2-4e32-bc57-67a7321b0551"
+                               "_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6"
+                               "_1e5dbff9-91af-4728-81b2-b93138547c86")
+        adverse-event-ids    '("ReportingGroup-1" "ReportingGroup-2" "ReportingGroup-3")
+        baseline-group-ids   '("_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f"
+                               "_a459fa77-6faa-46e2-a362-3d5a57270bd7"
+                               "_f1834e51-2d05-463b-b702-4763711a5860")
+        expected-ids         (concat arm-ids adverse-event-ids baseline-group-ids)]
+    (is (= expected-ids
+           (keys group-uris)))
+    (is (every? true?
+                (map #(= (group-uris %1) (group-uris %2))
+                     arm-ids baseline-group-ids)))))

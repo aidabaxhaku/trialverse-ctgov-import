@@ -100,7 +100,8 @@
 (def testxml (vtd/navigator (slurp "test/app/testxml3.xml")))
 
 (deftest testxml-3
-  (is (not (nil? (import-xml testxml)))))
+  (let [imported-rdf (import-xml testxml)]
+    (is (= 363582 (count imported-rdf)))))
 
 ; (deftest outcome-measurement-properties-test
 ;   (is (= (outcome-measurement-properties outcome-xml)
@@ -111,15 +112,6 @@
 ;           :dispersion nil
 ;           :units nil
 ;           :unit-of-analysis false })))
-
-
-; (deftest measurement-meta-rdf-test
-;   (is (= (measurement-meta-rdf subj "outcome-uri" "group-uri" "mm-uri")
-;          [[:uri "http://subject.com"]
-;           (list
-;            [[:qname :ontology "of_outcome"] [:lit "outcome-uri"]]
-;            [[:qname :ontology "of_group"] [:lit "group-uri"]]
-;            [[:qname :ontology "of_moment"] [:lit "mm-uri"]])])))
 
 ; (deftest baseline-measurement-data-rdf-test
 ;   (is (= (baseline-measurement-data-rdf subj baseline-xml baseline-xml "group-uri" category-uris)
