@@ -1,6 +1,8 @@
 (ns app.eudract-import-test
   (:require [riveted.core :as vtd]
             [app.import-shared :as lib]
+             [clojure.set :refer [difference]]
+  
             [org.drugis.addis.rdf.trig :as trig])
   (:use clojure.test)
   (:use app.eudract-import))
@@ -13,6 +15,11 @@
 (def age-continuous (vtd/at xml "/result/baselineCharacteristics/ageContinuousCharacteristic"))
 (def decreased-appetite (first (find-adverse-events xml)))
 
+(def arm-ids '("arm1Id" "arm2Id" "arm3Id"))
+(def baseline-group-ids '("baselineGroup1Id" "baselineGroup2Id" "baselineGroup3Id"))
+(def adverse-event-group-ids '("ReportingGroup-1" "ReportingGroup-2" "ReportingGroup-3"))
+(def group-ids (concat arm-ids adverse-event-group-ids baseline-group-ids))
+                
 (defn outcomes-one-through-x [x]
   (map #(vector :outcome %) (range 1 (+ x 1))))
 
@@ -37,10 +44,10 @@
            built-registration))))
 
 (deftest test-find-measurement-moments
-  (let [[found-mm-uris found-mm-info] (find-measurement-moments xml)]
+  (let [[found-mm-ids found-mm-info] (find-measurement-moments xml)]
     (is (lib/same-ignoring-order?
          (concat (outcomes-one-through-x 8) '([:baseline] [:events]))
-         (keys found-mm-uris)))
+         (keys found-mm-ids)))
     (is (=
          '("From baseline to week 30"
            "Baseline"
@@ -202,34 +209,34 @@
                         ([[:qname :rdfs "label"] [:lit "category title"]]
                          [[:qname :rdf "type"] [:qname :ontology "Category"]])])]
     (is (= expected-rdf
-           (categories-rdf categories)))))
+           (categories-rdf-from-map categories)))))
 
 (deftest test-find-baseline-groups
-  (let [expected-groups '({:id          "_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f"
-                           :armId       "_0de4ff64-eed2-4e32-bc57-67a7321b0551"
+  (let [expected-groups '({:id          "baselineGroup1Id"
+                           :armId       "arm1Id"
                            :sampleSize  "132"
                            :description "Subjects received semaglutide 0.25 mg subcutaneous (sc) injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30."}
-                          {:id          "_a459fa77-6faa-46e2-a362-3d5a57270bd7"
-                           :armId       "_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6"
+                          {:id          "baselineGroup2Id"
+                           :armId       "arm2Id"
                            :sampleSize  "131"
                            :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30."}
-                          {:id          "_f1834e51-2d05-463b-b702-4763711a5860"
-                           :armId       "_1e5dbff9-91af-4728-81b2-b93138547c86"
+                          {:id          "baselineGroup3Id"
+                           :armId       "arm3Id"
                            :sampleSize  "133"
                            :description "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks."})]
     (is (= expected-groups
            (find-baseline-groups xml)))))
 
 (deftest test-find-arms
-  (let [expected-arms '({:id          "_0de4ff64-eed2-4e32-bc57-67a7321b0551"
+  (let [expected-arms '({:id          "arm1Id"
                          :title       "Semaglutide 0.5 mg"
                          :sampleSize  "132"
                          :description "Subjects received semaglutide 0.25 mg subcutaneous (sc) injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30."}
-                        {:id          "_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6"
+                        {:id          "arm2Id"
                          :title       "Semaglutide 1.0 mg"
                          :sampleSize  "131"
                          :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30."}
-                        {:id          "_1e5dbff9-91af-4728-81b2-b93138547c86"
+                        {:id          "arm3Id"
                          :title       "Placebo"
                          :sampleSize  "133"
                          :description "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks."})]
@@ -263,16 +270,54 @@
         group-uris           (build-group-uris arms 
                                                adverse-event-groups 
                                                baseline-groups)
-        arm-ids              '("_0de4ff64-eed2-4e32-bc57-67a7321b0551"
-                               "_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6"
-                               "_1e5dbff9-91af-4728-81b2-b93138547c86")
-        adverse-event-ids    '("ReportingGroup-1" "ReportingGroup-2" "ReportingGroup-3")
-        baseline-group-ids   '("_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f"
-                               "_a459fa77-6faa-46e2-a362-3d5a57270bd7"
-                               "_f1834e51-2d05-463b-b702-4763711a5860")
-        expected-ids         (concat arm-ids adverse-event-ids baseline-group-ids)]
+        expected-ids         group-ids]
     (is (= expected-ids
            (keys group-uris)))
     (is (every? true?
                 (map #(= (group-uris %1) (group-uris %2))
                      arm-ids baseline-group-ids)))))
+
+(deftest test-group-rdf
+  (let [baseline-groups      '({:id          "baselineGroup1Id"
+                                :armId       "arm1Id"
+                                :sampleSize  "132"
+                                :description "baseline desc"}
+                               {:id          "nonArmBaseline"
+                                :armId       nil
+                                :sampleSize  "131"
+                                :description "non-arm baseline group"})
+        adverse-event-groups '({:id          "ReportingGroup-1"
+                                :title       "Semaglutide 0.5 mg"
+                                :sampleSize  "132"
+                                :description "adverse event group  desc"})
+        arms                 '({:id          "arm1Id"
+                                :title       "Semaglutide 0.5 mg"
+                                :sampleSize  "132"
+                                :description "arm group desc"})
+        groups               {:arms                 arms
+                              :baseline-groups      baseline-groups
+                              :adverse-event-groups adverse-event-groups}
+        mock-uri             (trig/iri :instance "generatedUuid")
+        group-uris           (assoc (into {} (map
+                                              #(vector % mock-uri)
+                                              group-ids))
+                                    "nonArmBaseline" mock-uri)
+        found-groups-rdf     (groups-rdf groups group-uris)
+        expected-groups-rdf  '([[:qname :instance "generatedUuid"]
+                                ([[:qname :rdfs "label"] [:lit "Semaglutide 0.5 mg"]]
+                                 [[:qname :rdfs "comment"] [:lit "arm group desc"]] 
+                                 [[:qname :rdf "type"] [:qname :ontology "Arm"]])]
+                               [[:qname :instance "generatedUuid"] 
+                                ([[:qname :rdfs "label"] [:lit ""]] 
+                                 [[:qname :rdfs "comment"] [:lit "non-arm baseline group"]]
+                                 [[:qname :rdf "type"] [:qname :ontology "Group"]])]
+                               [[:qname :instance "generatedUuid"] 
+                                ([[:qname :rdfs "label"] [:lit ""]] 
+                                 [[:qname :rdfs "comment"] [:lit "baseline desc"]] 
+                                 [[:qname :rdf "type"] [:qname :ontology "Group"]])] 
+                               [[:qname :instance "generatedUuid"]
+                                ([[:qname :rdfs "label"] [:lit "Semaglutide 0.5 mg"]]
+                                 [[:qname :rdfs "comment"] [:lit "adverse event group  desc"]]
+                                 [[:qname :rdf "type"] [:qname :ontology "Group"]])])]
+    (is (= expected-groups-rdf
+           found-groups-rdf))))

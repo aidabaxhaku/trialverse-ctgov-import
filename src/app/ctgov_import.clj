@@ -193,14 +193,6 @@
       (trig/iri :ontology "has_result_property")
       (map #(trig/iri :ontology %) ["sample_size" "count" "event_count"]))))
 
-(defn group-rdf
-  [group-uri group-info]
-  (trig/spo group-uri
-            [(trig/iri :rdfs "label") (trig/lit (:title group-info))]
-            [(trig/iri :rdfs "comment") (trig/lit (:description group-info))]
-            [(trig/iri :rdf "type") (trig/iri :ontology "Group")]))
-
-
 (defn find-arm-groups
   [xml]
   (into {} (map (fn [ag idx] [[:arm_group idx]
@@ -251,12 +243,6 @@
                                (find-event-groups xml)
                                (find-outcome-groups xml))
                           std-group))
-
-(defn mm-rdf
-  [mm-uri mm-title]
-  (trig/spo mm-uri
-            [(trig/iri :rdfs "label") (trig/lit mm-title)]
-            [(trig/iri :rdf "type") (trig/iri :ontology "MeasurementMoment")]))
 
 (defn find-event-time-frame
   [xml]
@@ -449,8 +435,8 @@
         category-uris (reduce #(merge %1 (:uris %2)) {} baseline-categories-data)
         category-rdf (reduce #(concat %1 (:rdfs %2)) [] baseline-categories-data)
         [group-uris group-info] (find-groups xml)
-        groups-rdf (map #(group-rdf (first %) (second %)) group-info)
-        mms-rdf (map #(mm-rdf (first %) (second %)) mm-info)
+        groups-rdf (map #(lib/group-rdf (first %) (second %)) group-info)
+        mms-rdf (map #(lib/mm-rdf (first %) (second %)) mm-info)
         measurements-rdf (concat
                            (apply concat 
                                   (map #(baseline-measurements 

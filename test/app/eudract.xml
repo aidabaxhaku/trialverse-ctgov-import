@@ -297,7 +297,7 @@ sponsor="Novo Nordisk">
 					</value>
 				</allocation>
 				<arms>
-					<arm id="_0de4ff64-eed2-4e32-bc57-67a7321b0551">
+					<arm id="arm1Id">
 						<title>
 							Semaglutide 0.5 mg
 						</title>
@@ -372,7 +372,7 @@ sponsor="Novo Nordisk">
 						</notCompletedReasonDetails>
 						<joinedReasonDetails />
 					</arm>
-					<arm id="_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6">
+					<arm id="arm2Id">
 						<title>
 							Semaglutide 1.0 mg
 						</title>
@@ -447,7 +447,7 @@ sponsor="Novo Nordisk">
 						</notCompletedReasonDetails>
 						<joinedReasonDetails />
 					</arm>
-					<arm id="_1e5dbff9-91af-4728-81b2-b93138547c86">
+					<arm id="arm3Id">
 						<title>
 							Placebo
 						</title>
@@ -559,7 +559,7 @@ sponsor="Novo Nordisk">
 					percentage of glycosylated haemoglobin
 				</unit>
 				<reportingGroups>
-					<reportingGroup baselineReportingGroupId="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+					<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 						<tendencyValue>
 							<value>
 								8.36
@@ -572,7 +572,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+					<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 						<tendencyValue>
 							<value>
 								8.31
@@ -585,7 +585,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_f1834e51-2d05-463b-b702-4763711a5860">
+					<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 						<tendencyValue>
 							<value>
 								8.42
@@ -623,7 +623,7 @@ sponsor="Novo Nordisk">
 					kg
 				</unit>
 				<reportingGroups>
-					<reportingGroup baselineReportingGroupId="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+					<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 						<tendencyValue>
 							<value>
 								92.74
@@ -636,7 +636,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+					<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 						<tendencyValue>
 							<value>
 								92.49
@@ -649,7 +649,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_f1834e51-2d05-463b-b702-4763711a5860">
+					<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 						<tendencyValue>
 							<value>
 								89.88
@@ -687,7 +687,7 @@ sponsor="Novo Nordisk">
 					mg/dL
 				</unit>
 				<reportingGroups>
-					<reportingGroup baselineReportingGroupId="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+					<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 						<tendencyValue>
 							<value>
 								161.0
@@ -700,7 +700,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+					<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 						<tendencyValue>
 							<value>
 								152.5
@@ -713,7 +713,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_f1834e51-2d05-463b-b702-4763711a5860">
+					<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 						<tendencyValue>
 							<value>
 								154.1
@@ -753,7 +753,7 @@ sponsor="Novo Nordisk">
 					international unit
 				</unit>
 				<reportingGroups>
-					<reportingGroup baselineReportingGroupId="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+					<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 						<tendencyValue>
 							<value>
 								35.00
@@ -768,7 +768,7 @@ sponsor="Novo Nordisk">
 							</highRangeValue>
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+					<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 						<tendencyValue>
 							<value>
 								36.00
@@ -783,7 +783,7 @@ sponsor="Novo Nordisk">
 							</highRangeValue>
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_f1834e51-2d05-463b-b702-4763711a5860">
+					<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 						<tendencyValue>
 							<value>
 								36.00
@@ -823,7 +823,7 @@ sponsor="Novo Nordisk">
 					mm Hg
 				</unit>
 				<reportingGroups>
-					<reportingGroup baselineReportingGroupId="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+					<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 						<tendencyValue>
 							<value>
 								78.89
@@ -836,7 +836,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+					<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 						<tendencyValue>
 							<value>
 								78.73
@@ -849,7 +849,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_f1834e51-2d05-463b-b702-4763711a5860">
+					<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 						<tendencyValue>
 							<value>
 								79.35
@@ -887,7 +887,7 @@ sponsor="Novo Nordisk">
 					mm Hg
 				</unit>
 				<reportingGroups>
-					<reportingGroup baselineReportingGroupId="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+					<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 						<tendencyValue>
 							<value>
 								134.87
@@ -900,7 +900,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+					<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 						<tendencyValue>
 							<value>
 								134.40
@@ -913,7 +913,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_f1834e51-2d05-463b-b702-4763711a5860">
+					<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 						<tendencyValue>
 							<value>
 								134.99
@@ -953,7 +953,7 @@ sponsor="Novo Nordisk">
 					scores on a scale
 				</unit>
 				<reportingGroups>
-					<reportingGroup baselineReportingGroupId="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+					<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 						<tendencyValue>
 							<value>
 								28.86
@@ -966,7 +966,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+					<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 						<tendencyValue>
 							<value>
 								28.62
@@ -979,7 +979,7 @@ sponsor="Novo Nordisk">
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
 					</reportingGroup>
-					<reportingGroup baselineReportingGroupId="_f1834e51-2d05-463b-b702-4763711a5860">
+					<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 						<tendencyValue>
 							<value>
 								27.54
@@ -1018,7 +1018,7 @@ sponsor="Novo Nordisk">
 				years
 			</unit>
 			<reportingGroups>
-				<reportingGroup baselineReportingGroupId="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+				<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 					<tendencyValue>
 						<value>
 							59.1
@@ -1031,7 +1031,7 @@ sponsor="Novo Nordisk">
 						<highRangeValue xsi:nil="true" />
 					</dispersionValue>
 				</reportingGroup>
-				<reportingGroup baselineReportingGroupId="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+				<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 					<tendencyValue>
 						<value>
 							58.5
@@ -1044,7 +1044,7 @@ sponsor="Novo Nordisk">
 						<highRangeValue xsi:nil="true" />
 					</dispersionValue>
 				</reportingGroup>
-				<reportingGroup baselineReportingGroupId="_f1834e51-2d05-463b-b702-4763711a5860">
+				<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 					<tendencyValue>
 						<value>
 							58.8
@@ -1082,7 +1082,7 @@ sponsor="Novo Nordisk">
 				Subjects
 			</unit>
 			<reportingGroups>
-				<reportingGroup baselineReportingGroupId="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+				<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 					<countableValues>
 						<countableValue categoryId="_c07d8f4c-97b3-4c1e-8796-aca47f9e427a">
 							<value>
@@ -1096,7 +1096,7 @@ sponsor="Novo Nordisk">
 						</countableValue>
 					</countableValues>
 				</reportingGroup>
-				<reportingGroup baselineReportingGroupId="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+				<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 					<countableValues>
 						<countableValue categoryId="_c07d8f4c-97b3-4c1e-8796-aca47f9e427a">
 							<value>
@@ -1110,7 +1110,7 @@ sponsor="Novo Nordisk">
 						</countableValue>
 					</countableValues>
 				</reportingGroup>
-				<reportingGroup baselineReportingGroupId="_f1834e51-2d05-463b-b702-4763711a5860">
+				<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 					<countableValues>
 						<countableValue categoryId="_c07d8f4c-97b3-4c1e-8796-aca47f9e427a">
 							<value>
@@ -1168,7 +1168,7 @@ sponsor="Novo Nordisk">
 				Subjects
 			</unit>
 			<reportingGroups>
-				<reportingGroup baselineReportingGroupId="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+				<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 					<countableValues>
 						<countableValue categoryId="_efb3e754-0e32-43e7-ab08-b3580c330700">
 							<value>
@@ -1187,7 +1187,7 @@ sponsor="Novo Nordisk">
 						</countableValue>
 					</countableValues>
 				</reportingGroup>
-				<reportingGroup baselineReportingGroupId="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+				<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 					<countableValues>
 						<countableValue categoryId="_efb3e754-0e32-43e7-ab08-b3580c330700">
 							<value>
@@ -1206,7 +1206,7 @@ sponsor="Novo Nordisk">
 						</countableValue>
 					</countableValues>
 				</reportingGroup>
-				<reportingGroup baselineReportingGroupId="_f1834e51-2d05-463b-b702-4763711a5860">
+				<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 					<countableValues>
 						<countableValue categoryId="_efb3e754-0e32-43e7-ab08-b3580c330700">
 							<value>
@@ -1268,7 +1268,7 @@ sponsor="Novo Nordisk">
 			</categories>
 		</ageCategoricalCharacteristic>
 		<baselineReportingGroups>
-			<baselineReportingGroup postAssignmentPeriodId="_08868639-8cb6-4453-8891-85e5f322cf28" armId="_0de4ff64-eed2-4e32-bc57-67a7321b0551" id="_3d5a692a-2dda-4b9d-9956-4a53bfc1a88f">
+			<baselineReportingGroup postAssignmentPeriodId="_08868639-8cb6-4453-8891-85e5f322cf28" armId="arm1Id" id="baselineGroup1Id">
 				<subjects>
 					132
 				</subjects>
@@ -1276,7 +1276,7 @@ sponsor="Novo Nordisk">
 					Subjects received semaglutide 0.25 mg subcutaneous (sc) injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30.
 				</description>
 			</baselineReportingGroup>
-			<baselineReportingGroup postAssignmentPeriodId="_08868639-8cb6-4453-8891-85e5f322cf28" armId="_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6" id="_a459fa77-6faa-46e2-a362-3d5a57270bd7">
+			<baselineReportingGroup postAssignmentPeriodId="_08868639-8cb6-4453-8891-85e5f322cf28" armId="arm2Id" id="baselineGroup2Id">
 				<subjects>
 					131
 				</subjects>
@@ -1284,7 +1284,7 @@ sponsor="Novo Nordisk">
 					Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30.
 				</description>
 			</baselineReportingGroup>
-			<baselineReportingGroup postAssignmentPeriodId="_08868639-8cb6-4453-8891-85e5f322cf28" armId="_1e5dbff9-91af-4728-81b2-b93138547c86" id="_f1834e51-2d05-463b-b702-4763711a5860">
+			<baselineReportingGroup postAssignmentPeriodId="_08868639-8cb6-4453-8891-85e5f322cf28" armId="arm3Id" id="baselineGroup3Id">
 				<subjects>
 					133
 				</subjects>
@@ -1331,7 +1331,7 @@ sponsor="Novo Nordisk">
 			</dispersionType>
 			<categories />
 			<armReportingGroups>
-				<armReportingGroup armId="_0de4ff64-eed2-4e32-bc57-67a7321b0551" id="_a1918913-d5cf-4da3-be62-3cd32d66941c">
+				<armReportingGroup armId="arm1Id" id="_a1918913-d5cf-4da3-be62-3cd32d66941c">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1352,7 +1352,7 @@ sponsor="Novo Nordisk">
 						132
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6" id="_ebeac690-06d1-45ed-a480-0969eff67304">
+				<armReportingGroup armId="arm2Id" id="_ebeac690-06d1-45ed-a480-0969eff67304">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1373,7 +1373,7 @@ sponsor="Novo Nordisk">
 						131
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_1e5dbff9-91af-4728-81b2-b93138547c86" id="_88ec59ef-6d7f-4316-ba20-eaf6e80b2c47">
+				<armReportingGroup armId="arm3Id" id="_88ec59ef-6d7f-4316-ba20-eaf6e80b2c47">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1577,7 +1577,7 @@ sponsor="Novo Nordisk">
 			</dispersionType>
 			<categories />
 			<armReportingGroups>
-				<armReportingGroup armId="_0de4ff64-eed2-4e32-bc57-67a7321b0551" id="_9d6dd311-448f-4b00-b499-898ecf1c8a91">
+				<armReportingGroup armId="arm1Id" id="_9d6dd311-448f-4b00-b499-898ecf1c8a91">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1598,7 +1598,7 @@ sponsor="Novo Nordisk">
 						132
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6" id="_0fc1f558-2eb7-45ef-8ace-c67b9dc8e148">
+				<armReportingGroup armId="arm2Id" id="_0fc1f558-2eb7-45ef-8ace-c67b9dc8e148">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1619,7 +1619,7 @@ sponsor="Novo Nordisk">
 						131
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_1e5dbff9-91af-4728-81b2-b93138547c86" id="_a0b619ce-468a-4c2f-ba08-2e2f457a9fc1">
+				<armReportingGroup armId="arm3Id" id="_a0b619ce-468a-4c2f-ba08-2e2f457a9fc1">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1680,7 +1680,7 @@ sponsor="Novo Nordisk">
 			</dispersionType>
 			<categories />
 			<armReportingGroups>
-				<armReportingGroup armId="_0de4ff64-eed2-4e32-bc57-67a7321b0551" id="_9666f5f4-593a-457f-a5b6-2cfd003cbbed">
+				<armReportingGroup armId="arm1Id" id="_9666f5f4-593a-457f-a5b6-2cfd003cbbed">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1701,7 +1701,7 @@ sponsor="Novo Nordisk">
 						132
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6" id="_b8a174d2-8383-4832-a239-750fdb31c70a">
+				<armReportingGroup armId="arm2Id" id="_b8a174d2-8383-4832-a239-750fdb31c70a">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1722,7 +1722,7 @@ sponsor="Novo Nordisk">
 						131
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_1e5dbff9-91af-4728-81b2-b93138547c86" id="_fc406484-66e8-44ac-9c50-e927b67480a2">
+				<armReportingGroup armId="arm3Id" id="_fc406484-66e8-44ac-9c50-e927b67480a2">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1783,7 +1783,7 @@ sponsor="Novo Nordisk">
 			</dispersionType>
 			<categories />
 			<armReportingGroups>
-				<armReportingGroup armId="_0de4ff64-eed2-4e32-bc57-67a7321b0551" id="_fb9a63cf-01fc-4722-9423-000dab31ee1f">
+				<armReportingGroup armId="arm1Id" id="_fb9a63cf-01fc-4722-9423-000dab31ee1f">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1804,7 +1804,7 @@ sponsor="Novo Nordisk">
 						132
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6" id="_4883be2d-9340-4bec-8232-437c1118f8b9">
+				<armReportingGroup armId="arm2Id" id="_4883be2d-9340-4bec-8232-437c1118f8b9">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1825,7 +1825,7 @@ sponsor="Novo Nordisk">
 						131
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_1e5dbff9-91af-4728-81b2-b93138547c86" id="_7ea08ecf-0c15-4e58-82e9-d6a3a648c033">
+				<armReportingGroup armId="arm3Id" id="_7ea08ecf-0c15-4e58-82e9-d6a3a648c033">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -1897,7 +1897,7 @@ sponsor="Novo Nordisk">
 				</category>
 			</categories>
 			<armReportingGroups>
-				<armReportingGroup armId="_0de4ff64-eed2-4e32-bc57-67a7321b0551" id="_89ac6bd3-48fa-4b55-939d-acbaaab6db2f">
+				<armReportingGroup armId="arm1Id" id="_89ac6bd3-48fa-4b55-939d-acbaaab6db2f">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue categoryId="_46e15560-11b6-4f07-8488-dd91060b4e86">
@@ -1929,7 +1929,7 @@ sponsor="Novo Nordisk">
 						132
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6" id="_3a75fa90-587b-4b80-9a4c-348177ce2825">
+				<armReportingGroup armId="arm2Id" id="_3a75fa90-587b-4b80-9a4c-348177ce2825">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue categoryId="_46e15560-11b6-4f07-8488-dd91060b4e86">
@@ -1961,7 +1961,7 @@ sponsor="Novo Nordisk">
 						131
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_1e5dbff9-91af-4728-81b2-b93138547c86" id="_c65c22d6-362d-47de-87d4-7c6ce3debf62">
+				<armReportingGroup armId="arm3Id" id="_c65c22d6-362d-47de-87d4-7c6ce3debf62">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue categoryId="_46e15560-11b6-4f07-8488-dd91060b4e86">
@@ -2033,7 +2033,7 @@ sponsor="Novo Nordisk">
 			</dispersionType>
 			<categories />
 			<armReportingGroups>
-				<armReportingGroup armId="_0de4ff64-eed2-4e32-bc57-67a7321b0551" id="_8d7a55bc-11e8-4f73-9e12-c9d42d145ebd">
+				<armReportingGroup armId="arm1Id" id="_8d7a55bc-11e8-4f73-9e12-c9d42d145ebd">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -2054,7 +2054,7 @@ sponsor="Novo Nordisk">
 						132
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6" id="_325a874a-5195-407d-972d-b13cfaaaeb3b">
+				<armReportingGroup armId="arm2Id" id="_325a874a-5195-407d-972d-b13cfaaaeb3b">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -2075,7 +2075,7 @@ sponsor="Novo Nordisk">
 						131
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_1e5dbff9-91af-4728-81b2-b93138547c86" id="_33d94988-77f4-4f2c-8cfd-e704b04d1ae9">
+				<armReportingGroup armId="arm3Id" id="_33d94988-77f4-4f2c-8cfd-e704b04d1ae9">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -2136,7 +2136,7 @@ sponsor="Novo Nordisk">
 			</dispersionType>
 			<categories />
 			<armReportingGroups>
-				<armReportingGroup armId="_0de4ff64-eed2-4e32-bc57-67a7321b0551" id="_2b84764c-8f3c-4813-941f-ce847d7b3672">
+				<armReportingGroup armId="arm1Id" id="_2b84764c-8f3c-4813-941f-ce847d7b3672">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -2155,7 +2155,7 @@ sponsor="Novo Nordisk">
 						132
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6" id="_944efbc1-87f5-42b6-b38c-bd87498e4aa0">
+				<armReportingGroup armId="arm2Id" id="_944efbc1-87f5-42b6-b38c-bd87498e4aa0">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -2174,7 +2174,7 @@ sponsor="Novo Nordisk">
 						131
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_1e5dbff9-91af-4728-81b2-b93138547c86" id="_da02bb1d-0aaa-440f-b7f6-60d7ea06227e">
+				<armReportingGroup armId="arm3Id" id="_da02bb1d-0aaa-440f-b7f6-60d7ea06227e">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -2233,7 +2233,7 @@ sponsor="Novo Nordisk">
 			</dispersionType>
 			<categories />
 			<armReportingGroups>
-				<armReportingGroup armId="_0de4ff64-eed2-4e32-bc57-67a7321b0551" id="_eb96c9e5-16f5-45b8-b19b-9eb477331bc5">
+				<armReportingGroup armId="arm1Id" id="_eb96c9e5-16f5-45b8-b19b-9eb477331bc5">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -2252,7 +2252,7 @@ sponsor="Novo Nordisk">
 						132
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_98b40eb2-6cad-4c17-a8e3-b2a14e37b9f6" id="_19a45836-9a66-476d-9a25-2767930a4f41">
+				<armReportingGroup armId="arm2Id" id="_19a45836-9a66-476d-9a25-2767930a4f41">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>
@@ -2271,7 +2271,7 @@ sponsor="Novo Nordisk">
 						131
 					</subjects>
 				</armReportingGroup>
-				<armReportingGroup armId="_1e5dbff9-91af-4728-81b2-b93138547c86" id="_360fb526-ae5e-43f1-8211-a87ead2c5ad8">
+				<armReportingGroup armId="arm3Id" id="_360fb526-ae5e-43f1-8211-a87ead2c5ad8">
 					<countableValues />
 					<tendencyValues>
 						<tendencyValue>

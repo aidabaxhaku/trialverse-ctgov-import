@@ -1,6 +1,7 @@
 (ns app.import-shared-test
   (:use clojure.test)
-  (:use app.import-shared))
+  (:use app.import-shared)
+  (:require  [org.drugis.addis.rdf.trig :as trig]))
 
 (deftest test-sort-equivalent-values
   (let [[sorted-uris sorted-info] (sort-equivalent-values
@@ -36,3 +37,23 @@
          (measurement-meta-rdf 
           [:uri "http://subject.com"]
           "outcome-uri" "group-uri" "mm-uri"))))
+
+(deftest test-group-rdf
+ (let [group-uri [:qname :instance "uuid"]
+       expected-rdf [group-uri
+                     '([[:qname :rdfs "label"] [:lit "title"]]
+                       [[:qname :rdfs "comment"] [:lit "something"]]
+                       [[:qname :rdf "type"] [:qname :ontology "Group"]])]]
+   (is (= expected-rdf
+          (group-rdf group-uri
+                     {:title       "title"
+                      :description "something"})))))
+
+                  
+(deftest test-mm-rdf
+  (let [instance-uri [:qname :instance "uuid"]
+        expected-rdf [instance-uri
+                      '([[:qname :rdfs "label"] [:lit "title"]]
+                        [[:qname :rdf "type"] [:qname :ontology "MeasurementMoment"]])]]
+    (is (= expected-rdf
+           (mm-rdf instance-uri "title")))))

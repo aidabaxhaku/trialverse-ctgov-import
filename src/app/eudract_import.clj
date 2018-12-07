@@ -3,6 +3,7 @@
    [app.import-shared :as lib]
    [riveted.core :as vtd]
    [clojure.string :refer [lower-case]]
+   [clojure.set :refer [difference]]
    [app.design-parse :refer [parse-masking]]
    [org.drugis.addis.rdf.trig :as trig]))
 
@@ -171,14 +172,14 @@
 
 (defn find-baseline-xml
   [xml]
-(let [base "/result/baselineCharacteristics/"]
-  {:continuous  (concat
-                 (vtd/search xml (str base "studyContinuousCharacteristics/studyContinuousCharacteristic"))
-                 (vtd/search xml (str base "ageContinuousCharacteristic")))
-   :categorical (concat
-                 (vtd/search xml (str base "studyCategoricalCharacteristics/studyCategoricalCharacteristic"))
-                 (vtd/search xml (str base "genderCategoricalCharacteristic"))
-                 (vtd/search xml (str base "ageCategoricalCharacteristic")))}))
+  (let [base "/result/baselineCharacteristics/"]
+    {:continuous  (concat
+                   (vtd/search xml (str base "studyContinuousCharacteristics/studyContinuousCharacteristic"))
+                   (vtd/search xml (str base "ageContinuousCharacteristic")))
+     :categorical (concat
+                   (vtd/search xml (str base "studyCategoricalCharacteristics/studyCategoricalCharacteristic"))
+                   (vtd/search xml (str base "genderCategoricalCharacteristic"))
+                   (vtd/search xml (str base "ageCategoricalCharacteristic")))}))
 
 (defn measurement-type-for-baseline
   [tag]
@@ -229,16 +230,20 @@
      (trig/iri :ontology "has_result_property")
      (map #(trig/iri :ontology %) (keys properties)))))
 
+(defn make-category-vector
+  [category-xml]
+  [(vtd/attr category-xml "id")
+   {:uri   (lib/gen-uri)
+    :title (lib/text-at category-xml "name")}])
+
 (defn get-categories-for-variable
   [xml]
   (let [categories-xml (vtd/search xml "./categories/category")]
     (into {} (map
-              #(vector (vtd/attr % "id")
-                       {:uri   (lib/gen-uri)
-                        :title (lib/text-at % "name")})
+              #(make-category-vector %)
               categories-xml))))
 
-(defn categories-rdf
+(defn categories-rdf-from-map
   [categories]
   (map
    #(trig/spo (:uri %)
@@ -292,6 +297,19 @@
     {:arms                 arms
      :baseline-groups      baseline-groups
      :adverse-event-groups adverse-event-groups}))
+
+(defn groups-rdf
+  [{arms                 :arms
+    baseline-groups      :baseline-groups
+    adverse-event-groups :adverse-event-groups}
+   group-uris]
+  (let [non-arm-baseline-groups (difference (set baseline-groups)
+                                            (set arms))]
+    (concat
+     (map #(lib/arm-rdf (group-uris (:id %)) %)
+          arms)
+     (map #(lib/group-rdf (group-uris (:id %)) %)
+          (concat non-arm-baseline-groups adverse-event-groups)))))
 
 ; (defn baseline-measurements
 ;   [baseline-xml idx sample-size-xml baseline-uris group-uris mm-uris category-uris]

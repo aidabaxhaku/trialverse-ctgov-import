@@ -89,3 +89,20 @@
                     (parse-double value-str))]
     (if value
       (trig/spo subj [(trig/iri :ontology prop) (trig/lit value)]) subj)))
+
+(defn group-rdf-flex-type
+  [group-uri group-info group-type]
+  (trig/spo group-uri
+            [(trig/iri :rdfs "label") (trig/lit (:title group-info))]
+            [(trig/iri :rdfs "comment") (trig/lit (:description group-info))]
+            [(trig/iri :rdf "type") (trig/iri :ontology group-type)]))
+
+(def group-rdf #(group-rdf-flex-type %1 %2 "Group"))
+(def arm-rdf #(group-rdf-flex-type %1 %2 "Arm"))
+ 
+(defn mm-rdf
+  [mm-uri mm-title]
+  (trig/spo mm-uri
+            [(trig/iri :rdfs "label") (trig/lit mm-title)]
+            [(trig/iri :rdf "type") (trig/iri :ontology "MeasurementMoment")]))
+
