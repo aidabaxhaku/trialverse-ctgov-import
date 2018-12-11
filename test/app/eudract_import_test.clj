@@ -280,44 +280,51 @@
 (deftest test-group-rdf
   (let [baseline-groups      '({:id          "baselineGroup1Id"
                                 :armId       "arm1Id"
-                                :sampleSize  "132"
-                                :description "baseline desc"}
+                                :sampleSize  132
+                                :description "baseline descr"}
                                {:id          "nonArmBaseline"
                                 :armId       nil
-                                :sampleSize  "131"
+                                :sampleSize  131
                                 :description "non-arm baseline group"})
         adverse-event-groups '({:id          "ReportingGroup-1"
                                 :title       "Semaglutide 0.5 mg"
-                                :sampleSize  "132"
+                                :sampleSize  132
                                 :description "adverse event group  desc"})
         arms                 '({:id          "arm1Id"
                                 :title       "Semaglutide 0.5 mg"
-                                :sampleSize  "132"
+                                :sampleSize  132
                                 :description "arm group desc"})
         groups               {:arms                 arms
                               :baseline-groups      baseline-groups
                               :adverse-event-groups adverse-event-groups}
-        mock-uri             (trig/iri :instance "generatedUuid")
-        group-uris           (assoc (into {} (map
-                                              #(vector % mock-uri)
-                                              group-ids))
-                                    "nonArmBaseline" mock-uri)
+        mock-uris             (map #(trig/iri :instance (str "generatedUuid" %))
+                                   (range 1 (+ 2 (count group-ids))))
+        group-uris           (assoc (zipmap group-ids mock-uris)
+                                    "nonArmBaseline" (last mock-uris))
         found-groups-rdf     (groups-rdf groups group-uris)
-        expected-groups-rdf  '([[:qname :instance "generatedUuid"]
+        expected-groups-rdf  '([[:qname :instance "generatedUuid1"]
                                 ([[:qname :rdfs "label"] [:lit "Semaglutide 0.5 mg"]]
                                  [[:qname :rdfs "comment"] [:lit "arm group desc"]] 
                                  [[:qname :rdf "type"] [:qname :ontology "Arm"]])]
-                               [[:qname :instance "generatedUuid"] 
-                                ([[:qname :rdfs "label"] [:lit ""]] 
+                               [[:qname :instance "generatedUuid10"]
+                                ([[:qname :rdfs "label"] [:lit ""]]
                                  [[:qname :rdfs "comment"] [:lit "non-arm baseline group"]]
                                  [[:qname :rdf "type"] [:qname :ontology "Group"]])]
-                               [[:qname :instance "generatedUuid"] 
+                               [[:qname :instance "generatedUuid7"] 
                                 ([[:qname :rdfs "label"] [:lit ""]] 
-                                 [[:qname :rdfs "comment"] [:lit "baseline desc"]] 
-                                 [[:qname :rdf "type"] [:qname :ontology "Group"]])] 
-                               [[:qname :instance "generatedUuid"]
+                                 [[:qname :rdfs "comment"] [:lit "baseline descr"]] 
+                                [[:qname :rdf "type"] [:qname :ontology "Group"]])] 
+                               [[:qname :instance "generatedUuid4"]
                                 ([[:qname :rdfs "label"] [:lit "Semaglutide 0.5 mg"]]
                                  [[:qname :rdfs "comment"] [:lit "adverse event group  desc"]]
                                  [[:qname :rdf "type"] [:qname :ontology "Group"]])])]
     (is (= expected-groups-rdf
            found-groups-rdf))))
+
+; (deftest test-outcome-group-measurement-rdf
+;   (let [outcome-uris {[:outcome 1] [:qname :instance "outcome-uri"]}
+;         mm-uris      {[:outcome 1] [:qname :instance "mm-uri"]}]
+;     (outcome-group-measurement-rdf hba1c-change-xml)))
+
+
+

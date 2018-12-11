@@ -332,7 +332,9 @@
   (let [measurement-query (format "./*//category_list/category/measurement_list/measurement[@group_id=\"%s\"]" group-id)
         sample-size-query (format ".//count_list/count[@group_id=\"%s\"]" group-id)
         sample-size (vtd/at sample-size-xml sample-size-query)]
-  (map #(measurement-data-row-rdf measure-xml group-id m-meta props % sample-size) (:categories props))))
+  (map #(measurement-data-row-rdf 
+         measure-xml group-id m-meta props % sample-size) 
+       (:categories props))))
 
 (defn outcome-measurement-data-rdf
   [xml group-id m-meta]
@@ -344,18 +346,27 @@
         properties (outcome-results-properties props)]
     (if (:simple props)
       [(measurement-data-rdf-basic
-         (lib/measurement-meta-rdf (trig/iri :instance (lib/uuid)) (:outcome m-meta) (:group m-meta) (:mm m-meta))
+         (lib/measurement-meta-rdf 
+          (trig/iri :instance (lib/uuid)) 
+          (:outcome m-meta) (:group m-meta) (:mm m-meta))
          properties sample-size-xml measure-xml group-id)]
-      (measurement-data-rdf-complex props sample-size-xml measure-xml group-id m-meta))))
+      (measurement-data-rdf-complex 
+       props sample-size-xml measure-xml group-id m-meta))))
 
 (defn outcome-measurements
   [xml idx outcome-uris group-uris mm-uris]
   (let [group-id-query "./*//analyzed_list/analyzed/count_list/count/@group_id"
         groups (set (map vtd/text (vtd/search xml group-id-query)))
-        m-meta (into {} (map (fn [group] [group { :outcome (outcome-uris [:outcome idx])
-                                          :group (group-uris [:outcome_group idx group])
-                                          :mm (mm-uris [:outcome idx]) }]) groups))]
-    (apply concat (map (fn [[group-id meta-info]] (outcome-measurement-data-rdf xml group-id meta-info)) m-meta))))
+        m-meta (into {} 
+                     (map (fn [group] 
+                            [group {:outcome (outcome-uris [:outcome idx])
+                                    :group   (group-uris [:outcome_group idx group])
+                                    :mm      (mm-uris [:outcome idx])}]) 
+                          groups))]
+    (apply concat 
+           (map (fn [[group-id meta-info]] 
+                  (outcome-measurement-data-rdf xml group-id meta-info)) 
+                m-meta))))
 
 (defn baseline-measurement-data-rdf
   [subj measure-xml sample-size-xml group-id category-uris]

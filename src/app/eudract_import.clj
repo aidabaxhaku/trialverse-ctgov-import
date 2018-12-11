@@ -280,23 +280,22 @@
 
 (defn build-group-uris
   [arms adverse-event-groups baseline-groups]
-  (let [uris-by-id          (into {}
-                                  (map #(vector (:id %) (lib/gen-uri))
-                                       (concat arms adverse-event-groups)))
-        baseline-uris-by-id (into {}
-                                  (map #(vector (:id %) (uris-by-id (:armId %)))
-                                       baseline-groups))]
+  (let [uris-by-id
+        (into {}
+              (map #(vector (:id %) (lib/gen-uri))
+                   (concat arms adverse-event-groups)))
+        baseline-uris-by-id
+        (into {}
+              (map #(vector (:id %) (uris-by-id (:armId %)))
+                   baseline-groups))]
     (merge uris-by-id baseline-uris-by-id)))
 
 (defn find-groups
  ; FIXME: consider <totalBaselineGroup> from categorical baselines? 
-  [xml] 
-  (let [baseline-groups      (find-baseline-groups xml)
-        adverse-event-groups (find-adverse-event-groups xml)
-        arms                 (find-arms xml)]
-    {:arms                 arms
-     :baseline-groups      baseline-groups
-     :adverse-event-groups adverse-event-groups}))
+  [xml]
+  {:arms                 (find-arms xml)
+   :baseline-groups      (find-baseline-groups xml)
+   :adverse-event-groups (find-adverse-event-groups xml)})
 
 (defn groups-rdf
   [{arms                 :arms
