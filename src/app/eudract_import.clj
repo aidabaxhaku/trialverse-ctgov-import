@@ -310,6 +310,22 @@
      (map #(lib/group-rdf (group-uris (:id %)) %)
           (concat non-arm-baseline-groups adverse-event-groups)))))
 
+(defn read-measurement
+  [xml]
+  {:armId           (vtd/attr xml "armId")
+   :tendencyValue   (lib/parse-double (lib/text-at xml "tendencyValues/tendencyValue/value"))
+   :dispersionValue (lib/parse-double (lib/text-at xml "dispersionValues/dispersionValue/value"))
+   :sampleSize      (lib/parse-int (lib/text-at xml "subjects"))})
+
+(defn read-endpoint-measurements
+  [xml outcome-uri mm-uri group-uris]
+  (let [measurements-xml  (vtd/search xml "./armReportingGroups/armReportingGroup")
+        measurements      (map read-measurement measurements-xml)
+        measurements-meta (map #(lib/measurement-meta-rdf  (lib/gen-uri)
+                                                           outcome-uri
+                                                           (group-uris (:armId %))
+                                                           mm-uri)
+                               measurements)]))
 ; (defn baseline-measurements
 ;   [baseline-xml idx sample-size-xml baseline-uris group-uris mm-uris category-uris]
 ;   (let [reporting-groups (vtd/search baseline-xml "reportingGroups/reportingGroup")

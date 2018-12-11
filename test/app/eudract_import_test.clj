@@ -321,10 +321,36 @@
     (is (= expected-groups-rdf
            found-groups-rdf))))
 
-; (deftest test-outcome-group-measurement-rdf
-;   (let [outcome-uris {[:outcome 1] [:qname :instance "outcome-uri"]}
-;         mm-uris      {[:outcome 1] [:qname :instance "mm-uri"]}]
-;     (outcome-group-measurement-rdf hba1c-change-xml)))
+(deftest test-read-measurement-continuous-endpoint
+  (let [measurement-xml (first (vtd/search hba1c-change-xml "./armReportingGroups/armReportingGroup"))
+        expected-result {:armId           "arm1Id"
+                         :tendencyValue   -1.45
+                         :dispersionValue 0.09
+                         :sampleSize      132}]
+    (is (= expected-result
+           (read-measurement measurement-xml)))))
 
-
-
+(deftest read-endpoint-measurements-continuous
+  (let [arm1-uri [:qname :instance "arm1Uri"]
+        arm2-uri [:qname :instance "arm2Uri"]
+        arm3-uri [:qname :instance "arm3Uri"]
+        group-uris {"arm1Id" arm1-uri
+                    "arm2Id" arm2-uri
+                    "arm3Id" arm3-uri}
+        outcome-uri  [:qname :instance "outcome-uri"]
+        mm-uri       [:qname :instance "mm-uri"]
+        expected-rdf (list
+                      (list [[:qname :ontology "of_outcome"] outcome-uri]
+                            [[:qname :ontology "of_group"] arm1-uri]
+                            [[:qname :ontology "of_moment"] mm-uri])
+                      (list [[:qname :ontology "of_outcome"] outcome-uri]
+                            [[:qname :ontology "of_group"] arm2-uri]
+                            [[:qname :ontology "of_moment"] mm-uri])
+                      (list [[:qname :ontology "of_outcome"] outcome-uri]
+                            [[:qname :ontology "of_group"] arm3-uri]
+                            [[:qname :ontology "of_moment"] mm-uri]))]
+    (is (= expected-rdf
+           (map second (read-endpoint-measurements hba1c-change-xml
+                                              outcome-uri
+                                              mm-uri
+                                              group-uris))))))
