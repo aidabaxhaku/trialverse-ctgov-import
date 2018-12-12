@@ -67,6 +67,7 @@
                        :param      "MEASURE_TYPE.leastSquares"
                        :dispersion "ENDPOINT_DISPERSION.standardError"
                        :units      "percentage of glycosylated hemoglobin"})
+                      
 (def hba1c-under-7-percent-properties {:simple     true
                                        :is-count?  false
                                        :categories ()
@@ -74,22 +75,19 @@
                                        :dispersion "ENDPOINT_DISPERSION.na"
                                        :units      "percentage of subjects"})
 
-(deftest test-outcome-measurement-properties
-  (let [found-properties (outcome-measurement-properties hba1c-change-xml)
+(deftest test-outcome-properties
+  (let [found-properties (outcome-properties hba1c-change-xml)
         expected-properties hba1c-properties]
     (is (= expected-properties found-properties))))
 
-(deftest test-outcome-measurement-properties-number
-  (let [found-properties (outcome-measurement-properties hba1c-under-7-percent)
+(deftest test-outcome-properties-number
+  (let [found-properties (outcome-properties hba1c-under-7-percent)
         expected-properties hba1c-under-7-percent-properties]
     (is (= expected-properties found-properties))))
 
 (deftest test-outcome-results-properties-continuous
   (is (= '(["least_squares_mean" "value"] ["standard_error" "spread"])
          (outcome-results-properties hba1c-properties))))
-
-; (deftest test-outcome-measurement-properties-categorical
-;   (is (= )))
 
 (deftest test-outcome-results-properties-dichotomous
   (is (= '(["percentage" "value"])
@@ -172,7 +170,7 @@
                                   [[:qname :ontology "has_result_property"]
                                    [:qname :ontology "standard_deviation"]])]
     (is (= expected-rdf-properties
-           (second (baseline-var-rdf-continuous age-continuous 1 baseline-uris mm-uris))))))
+           (second (baseline-var-rdf age-continuous 1 baseline-uris mm-uris))))))
 
 (deftest test-baseline-var-rdf-categorical
   (let [baseline-uris           {[:baseline 1] [:qname :instance "baseline-uri"]}
@@ -186,7 +184,7 @@
                                    [:blank ([[:qname :ontology "measurementType"]
                                              [:qname :ontology "categorical"]])]])
         found-baseline-rdf      (second
-                                 (baseline-var-rdf-categorical
+                                 (baseline-var-rdf
                                   age-categorical 1 baseline-uris mm-uris))]
     (is (= expected-rdf-properties
            found-baseline-rdf))))
@@ -330,6 +328,15 @@
     (is (= expected-result
            (read-measurement measurement-xml)))))
 
+(deftest test-read-measurement-continuous-endpoint
+  (let [measurement-xml (first (vtd/search hba1c-change-xml "./armReportingGroups/armReportingGroup"))
+        expected-result {:armId           "arm1Id"
+                         :tendencyValue   -1.45
+                         :dispersionValue 0.09
+                         :sampleSize      132}]
+    (is (= expected-result
+           (read-measurement measurement-xml)))))
+          
 (deftest read-endpoint-measurements-continuous
   (let [arm1-uri [:qname :instance "arm1Uri"]
         arm2-uri [:qname :instance "arm2Uri"]

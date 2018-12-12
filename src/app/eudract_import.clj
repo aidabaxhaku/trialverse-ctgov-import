@@ -74,7 +74,7 @@
 
 (defn measurement-row-info [] '()) ; FIXME
 
-(defn outcome-measurement-properties
+(defn outcome-properties
   [xml]
   (let [categories-xml (vtd/at xml "categories")
         category-count (count (vtd/children categories-xml))
@@ -107,17 +107,20 @@
 ; determine results properties from the measurement properties
 ; FIXME: CIs/quantiles
 (defn outcome-results-properties
-  [props]
-  (let [found-parameter   (concat
-                           (MEASURE-TYPES (:param props))
-                           (CENTRAL-TENDENCY-TYPES (:param props))
-                           (if (:is-count? props) {"count" "value"})
-                           (if (is-percentage? props) {"percentage" "value"})
-                           (if (is-proportion? props) {"proportion" "value"}))
-        found-dispersion  (concat
-                           (ENDPOINT-DISPERSION-TYPES (:dispersion props))
-                           (DISPERSION-TYPES (:dispersion props)))]
-    (concat found-parameter found-dispersion)))
+  [xml]
+  (let [props            (outcome-properties xml)
+        found-tendency   (concat
+                          (MEASURE-TYPES (:param props))
+                          (CENTRAL-TENDENCY-TYPES (:param props))
+                          (if (:is-count? props) {"count" "value"})
+                          (if (is-percentage? props) {"percentage" "value"})
+                          (if (is-proportion? props) {"proportion" "value"}))
+        found-dispersion (concat
+                          (ENDPOINT-DISPERSION-TYPES (:dispersion props))
+                          (DISPERSION-TYPES (:dispersion props)))]
+    {:properties (concat found-tendency found-dispersion)
+     :dispersion found-dispersion
+     :tendency   found-tendency}))
 
 (defn outcome-measurement-type
   [props]
@@ -125,16 +128,20 @@
 
   (defn outcome-rdf
     [xml idx outcome-uris mm-uris]
-    (let [uri        (outcome-uris [:outcome idx])
-          props      (outcome-measurement-properties xml)
-          properties (outcome-results-properties props)]
+    (let [uri        (outcome-uris [:outcome idx])          
+          properties (outcome-results-properties xml)]
       (lib/spo-each
        (trig/spo uri
-                 [(trig/iri :rdf "type") (trig/iri :ontology "Endpoint")]
-                 [(trig/iri :rdfs "label") (trig/lit (lib/text-at xml "./title"))]
-                 [(trig/iri :rdfs "comment") (trig/lit (or (lib/text-at xml "./description") ""))]
-                 [(trig/iri :ontology "is_measured_at") (mm-uris [:outcome idx])]
-                 [(trig/iri :ontology "has_result_property") (trig/iri :ontology "sample_size")]
+                 [(trig/iri :rdf "type") 
+                  (trig/iri :ontology "Endpoint")]
+                 [(trig/iri :rdfs "label") 
+                  (trig/lit (lib/text-at xml "./title"))]
+                 [(trig/iri :rdfs "comment") 
+                  (trig/lit (or (lib/text-at xml "./description") ""))]
+                 [(trig/iri :ontology "is_measured_at") 
+                  (mm-uris [:outcome idx])]
+                 [(trig/iri :ontology "has_result_property") 
+                  (trig/iri :ontology "sample_size")]
                  [(trig/iri :ontology "of_variable")
                   (trig/_po [(trig/iri :ontology "measurementType") 
                              (trig/iri :ontology (outcome-measurement-type props))])])
@@ -192,43 +199,25 @@
 
 (defn p* [x] (println x) x) ; FIXME: debug
 
-(defn baseline-var-rdf-shared
-  [xml idx uri mm-uri]
-  (let [characteristic-name (lib/text-at xml "./title")
-        measurement-type    (measurement-type-for-baseline (vtd/tag xml))]
-    (trig/spo uri
-              [(trig/iri :rdf "type")
-               (trig/iri :ontology "PopulationCharacteristic")]
-              [(trig/iri :rdfs "label")
-               (trig/lit characteristic-name)]
-              [(trig/iri :ontology "is_measured_at") mm-uri]
-              [(trig/iri :ontology "of_variable")
-               (trig/_po [(trig/iri :ontology "measurementType")
-                          (trig/iri :ontology measurement-type)])])))
-
-(defn baseline-var-rdf-categorical
+(defn baseline-var-rdf
   [xml idx baseline-uris mm-uris]
-  (let [uri        (baseline-uris [:baseline idx])
-        mm-uri     (mm-uris [:baseline])
-        shared-rdf (baseline-var-rdf-shared xml idx uri mm-uri)
-        props      (outcome-measurement-properties xml)
-        properties (outcome-results-properties props)]
+  (let [uri                 (baseline-uris [:baseline idx])
+        mm-uri              (mm-uris [:baseline])
+        characteristic-name (lib/text-at xml "./title")
+        measurement-type    (measurement-type-for-baseline (vtd/tag xml))
+        result-properties   (outcome-results-properties xml)]
     (lib/spo-each
-     shared-rdf
+     (trig/spo uri
+               [(trig/iri :rdf "type")
+                (trig/iri :ontology "PopulationCharacteristic")]
+               [(trig/iri :rdfs "label")
+                (trig/lit characteristic-name)]
+               [(trig/iri :ontology "is_measured_at") mm-uri]
+               [(trig/iri :ontology "of_variable")
+                (trig/_po [(trig/iri :ontology "measurementType")
+                           (trig/iri :ontology measurement-type)])])
      (trig/iri :ontology "has_result_property")
-     (map #(trig/iri :ontology %) (keys properties)))))
-
-(defn baseline-var-rdf-continuous
-  [xml idx baseline-uris mm-uris]
-  (let [uri        (baseline-uris [:baseline idx])
-        mm-uri     (mm-uris [:baseline])
-        shared-rdf (baseline-var-rdf-shared xml idx uri mm-uri)
-        props      (outcome-measurement-properties xml)
-        properties (outcome-results-properties props)]
-    (lib/spo-each
-     shared-rdf
-     (trig/iri :ontology "has_result_property")
-     (map #(trig/iri :ontology %) (keys properties)))))
+     (map #(trig/iri :ontology %) (keys result-properties)))))
 
 (defn make-category-vector
   [category-xml]
@@ -317,15 +306,19 @@
    :dispersionValue (lib/parse-double (lib/text-at xml "dispersionValues/dispersionValue/value"))
    :sampleSize      (lib/parse-int (lib/text-at xml "subjects"))})
 
+(defn build-measurement-rdf
+  [measurement result-properties]
+  (let [m-meta          (lib/measurement-meta-rdf  (lib/gen-uri)
+                                                   outcome-uri
+                                                   (group-uris (:armId %))
+                                                   mm-uri)
+        measurement-rdf ()]))
+
 (defn read-endpoint-measurements
-  [xml outcome-uri mm-uri group-uris]
-  (let [measurements-xml  (vtd/search xml "./armReportingGroups/armReportingGroup")
-        measurements      (map read-measurement measurements-xml)
-        measurements-meta (map #(lib/measurement-meta-rdf  (lib/gen-uri)
-                                                           outcome-uri
-                                                           (group-uris (:armId %))
-                                                           mm-uri)
-                               measurements)]))
+  [xml outcome-properties outcome-uri mm-uri group-uris]
+  (let [measurements-xml (vtd/search xml "./armReportingGroups/armReportingGroup")
+        measurements     (map read-measurement measurements-xml)]
+    (map build-measurement-rdf measurements outcome-properties)))
 ; (defn baseline-measurements
 ;   [baseline-xml idx sample-size-xml baseline-uris group-uris mm-uris category-uris]
 ;   (let [reporting-groups (vtd/search baseline-xml "reportingGroups/reportingGroup")

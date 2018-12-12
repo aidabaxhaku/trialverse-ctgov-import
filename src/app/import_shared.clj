@@ -84,11 +84,15 @@
 (defn measurement-value
   [subj xml prop attr]
   (let [value-str (vtd/attr xml attr)
-        value     (if (or (= "count" prop) (= "event_count" prop) (= "sample_size" prop))
+        value     (if (or
+                       (= "count" prop)
+                       (= "event_count" prop)
+                       (= "sample_size" prop))
                     (parse-int value-str)
                     (parse-double value-str))]
     (if value
-      (trig/spo subj [(trig/iri :ontology prop) (trig/lit value)]) subj)))
+      (trig/spo subj [(trig/iri :ontology prop) (trig/lit value)])
+      subj)))
 
 (defn group-rdf-flex-type
   [group-uri group-info group-type]

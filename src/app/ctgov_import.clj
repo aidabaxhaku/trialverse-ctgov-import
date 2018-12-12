@@ -113,21 +113,21 @@
 
 (defn outcome-rdf
   [xml idx outcome-uris mm-uris]
-  (let [uri (outcome-uris [:outcome idx])
-        props (outcome-measurement-properties xml)
+  (let [uri        (outcome-uris [:outcome idx])
+        props      (outcome-measurement-properties xml)
         properties (outcome-results-properties props)]
     (lib/spo-each
-      (trig/spo uri
-                [(trig/iri :rdf "type") (trig/iri :ontology "Endpoint")]
-                [(trig/iri :rdfs "label") (trig/lit (vtd/text (vtd/at xml "./title")))]
-                [(trig/iri :rdfs "comment") (trig/lit (or (vtd/text (vtd/at xml "./description")) ""))]
-                [(trig/iri :ontology "is_measured_at") (mm-uris [:outcome idx])]
-                [(trig/iri :ontology "has_result_property") (trig/iri :ontology "sample_size")]
-                [(trig/iri :ontology "of_variable")
-                 (trig/_po [(trig/iri :ontology "measurementType") 
-                            (trig/iri :ontology (outcome-measurement-type (:param props)))])])
-      (trig/iri :ontology "has_result_property")
-        (map #(trig/iri :ontology %) (keys properties)))))
+     (trig/spo uri
+               [(trig/iri :rdf "type") (trig/iri :ontology "Endpoint")]
+               [(trig/iri :rdfs "label") (trig/lit (vtd/text (vtd/at xml "./title")))]
+               [(trig/iri :rdfs "comment") (trig/lit (or (vtd/text (vtd/at xml "./description")) ""))]
+               [(trig/iri :ontology "is_measured_at") (mm-uris [:outcome idx])]
+               [(trig/iri :ontology "has_result_property") (trig/iri :ontology "sample_size")]
+               [(trig/iri :ontology "of_variable")
+                (trig/_po [(trig/iri :ontology "measurementType")
+                           (trig/iri :ontology (outcome-measurement-type (:param props)))])])
+     (trig/iri :ontology "has_result_property")
+     (map #(trig/iri :ontology %) (keys properties)))))
 
 (defn baseline-var-type
   [{categories :categories
