@@ -7,19 +7,17 @@
    [app.design-parse :refer [parse-masking]]
    [org.drugis.addis.rdf.trig :as trig]))
 
-(def CENTRAL-TENDENCY {"leastSquares" {"least_squares_mean" "value"}
-                       "arithmetic"   {"mean" "value"}
-                       "geometric"    {"geometric_mean" "value"}
-                       "log"          {"log_mean" "value"}
-                       "median"       {"median" "value"}})
+(def CENTRAL-TENDENCY {"leastSquares" "least_squares_mean"
+                       "arithmetic"   "mean"
+                       "geometric"    "geometric_mean"
+                       "log"          "log_mean"
+                       "median"       "median"})
 
-(def DISPERSION {"standardDeviation"             {"standard_deviation" "spread"}
-                 "standardError"                 {"standard_error" "spread"}
-                 "interQuartileRange"            {"first_quartile" "lower_limit"
-                                                  "third_quartile" "upper_limit"}
-                 "geometricCoefficientVariation" {"geometric_coefficient_of_variation" "spread"}
-                 "fullRange"                     {"min" "lower_limit"
-                                                  "max" "upper_limit"}})
+(def DISPERSION {"standardDeviation"             "standard_deviation"
+                 "standardError"                 "standard_error"
+                 "interQuartileRange"            '("first_quartile" "third_quartile")
+                 "geometricCoefficientVariation" "geometric_coefficient_of_variation"
+                 "fullRange"                     '("min" "max")})
 
 (defn prefix-types
   [prefix types]
@@ -104,27 +102,32 @@
   (and (= "MEASURE_TYPE.number" (:param props))
        (lib/string-starts-with-any? (lower-case (:units props)) ["proportion"])))
 
+(defn outcome-measurement-type
+  [props]
+  (if (= "MEASURE_TYPE.number" (:param props)) "dichotomous" "continuous"))
+
 ; determine results properties from the measurement properties
 ; FIXME: CIs/quantiles
 (defn outcome-results-properties
   [xml]
   (let [props            (outcome-properties xml)
-        found-tendency   (concat
-                          (MEASURE-TYPES (:param props))
-                          (CENTRAL-TENDENCY-TYPES (:param props))
-                          (if (:is-count? props) {"count" "value"})
-                          (if (is-percentage? props) {"percentage" "value"})
-                          (if (is-proportion? props) {"proportion" "value"}))
-        found-dispersion (concat
+        found-tendency   (filter
+                          (comp not nil?)
+                          (list
+                           (MEASURE-TYPES (:param props))
+                           (CENTRAL-TENDENCY-TYPES (:param props))
+                           (if (:is-count? props) "count")
+                           (if (is-percentage? props) "percentage")
+                           (if (is-proportion? props) "proportion")))
+        found-dispersion (filter
+                          (comp not nil?)
+                          (list
                           (ENDPOINT-DISPERSION-TYPES (:dispersion props))
-                          (DISPERSION-TYPES (:dispersion props)))]
+                          (DISPERSION-TYPES (:dispersion props))))]
     {:properties (concat found-tendency found-dispersion)
+     :measurement-type (outcome-measurement-type props)
      :dispersion found-dispersion
      :tendency   found-tendency}))
-
-(defn outcome-measurement-type
-  [props]
-  (if (= "MEASURE_TYPE.number" (:param props)) "dichotomous" "continuous"))
 
   (defn outcome-rdf
     [xml idx outcome-uris mm-uris]
@@ -144,9 +147,9 @@
                   (trig/iri :ontology "sample_size")]
                  [(trig/iri :ontology "of_variable")
                   (trig/_po [(trig/iri :ontology "measurementType") 
-                             (trig/iri :ontology (outcome-measurement-type props))])])
+                             (trig/iri :ontology (:measurement-type properties))])])
        (trig/iri :ontology "has_result_property")
-       (map #(trig/iri :ontology %) (keys properties)))))
+       (map #(trig/iri :ontology %) (:properties properties)))))
 
 (defn find-adverse-events
   [xml] 
@@ -217,7 +220,7 @@
                 (trig/_po [(trig/iri :ontology "measurementType")
                            (trig/iri :ontology measurement-type)])])
      (trig/iri :ontology "has_result_property")
-     (map #(trig/iri :ontology %) (keys result-properties)))))
+     (map #(trig/iri :ontology %) (:properties result-properties)))))
 
 (defn make-category-vector
   [category-xml]
@@ -244,7 +247,7 @@
   [xml]
   (let [groups-xml (vtd/search xml "/result/baselineCharacteristics/baselineReportingGroups/baselineReportingGroup")]
     (map (fn [%] {:id          (vtd/attr % "id")
-                  :armId       (vtd/attr % "armId")
+                  :arm-id       (vtd/attr % "armId")
                   :sampleSize  (lib/text-at % "subjects")
                   :description (lib/text-at % "description")})
          groups-xml)))
@@ -275,7 +278,7 @@
                    (concat arms adverse-event-groups)))
         baseline-uris-by-id
         (into {}
-              (map #(vector (:id %) (uris-by-id (:armId %)))
+              (map #(vector (:id %) (uris-by-id (:arm-id %)))
                    baseline-groups))]
     (merge uris-by-id baseline-uris-by-id)))
 
@@ -299,43 +302,62 @@
      (map #(lib/group-rdf (group-uris (:id %)) %)
           (concat non-arm-baseline-groups adverse-event-groups)))))
 
-(defn read-measurement
+(defn read-endpoint-measurement
   [xml]
-  {:armId           (vtd/attr xml "armId")
-   :tendencyValue   (lib/parse-double (lib/text-at xml "tendencyValues/tendencyValue/value"))
-   :dispersionValue (lib/parse-double (lib/text-at xml "dispersionValues/dispersionValue/value"))
-   :sampleSize      (lib/parse-int (lib/text-at xml "subjects"))})
+  {:arm-id           (vtd/attr xml "armId")
+   :tendency-value   (lib/parse-double (lib/text-at xml "tendencyValues/tendencyValue/value"))
+   :dispersion-value (lib/parse-double (lib/text-at xml "dispersionValues/dispersionValue/value"))
+   :sample-size      (lib/parse-int (lib/text-at xml "subjects"))})
 
-(defn build-measurement-rdf
-  [measurement result-properties]
-  (let [m-meta          (lib/measurement-meta-rdf  (lib/gen-uri)
-                                                   outcome-uri
-                                                   (group-uris (:armId %))
-                                                   mm-uri)
-        measurement-rdf ()]))
+(defn build-continuous-measurement-rdf
+  [measurement result-properties outcome-uri mm-uri group-uris]
+  (as-> measurement m
+    (lib/measurement-meta-rdf  (lib/gen-uri)
+                               outcome-uri
+                               (group-uris (:arm-id m))
+                               mm-uri)
+    (trig/spo m [(trig/iri :ontology "sample_size")
+                 (trig/lit (:sample-size measurement))])
+       ; eudract does not currently sypport >1 central tendency and dispersion properties
+    (trig/spo m
+              [(trig/iri :ontology (:tendency result-properties))
+               (trig/lit (:tendency-value measurement))]
+              [(trig/iri :ontology (:dispersion result-properties))
+               (trig/lit (:dispersion-value measurement))])))
 
 (defn read-endpoint-measurements
-  [xml outcome-properties outcome-uri mm-uri group-uris]
+  [xml outcome-results-properties outcome-uri mm-uri group-uris]
   (let [measurements-xml (vtd/search xml "./armReportingGroups/armReportingGroup")
-        measurements     (map read-measurement measurements-xml)]
-    (map build-measurement-rdf measurements outcome-properties)))
-; (defn baseline-measurements
-;   [baseline-xml idx sample-size-xml baseline-uris group-uris mm-uris category-uris]
-;   (let [reporting-groups (vtd/search baseline-xml "reportingGroups/reportingGroup")
-;         reporting-group-ids (map #(lib/text-at % "baselineReportingGroupId")
-;                                  reporting-groups)
-;         m-meta           (into {}
-;                                (map (fn [group]
-;                                       [group (lib/measurement-meta-rdf
-;                                               (trig/iri :instance (lib/uuid))
-;                                               (baseline-uris [:baseline idx])
-;                                               (group-uris [:baseline_group group])
-;                                               (mm-uris [:baseline]))])
-;                                     reporting-group-ids))]
-;     (map (fn [[group subj]] 
-;            (baseline-measurement-data-rdf subj xml sample-size-xml group category-uris))
-;          m-meta)))
+        measurements     (map read-endpoint-measurement measurements-xml)]
+    (map #(build-continuous-measurement-rdf
+           % outcome-results-properties
+           outcome-uri mm-uri group-uris)
+         measurements)))
 
+(defn read-adverse-event-measurement
+  [xml]
+  {:group-id    (vtd/attr  xml "reportingGroupId")
+   :count       (lib/parse-int (lib/text-at xml "./occurrences"))
+   :sample-size (lib/parse-int (lib/text-at xml "subjectsExposed"))})
+
+(defn build-dichotomous-measurement-rdf
+  [measurement outcome-uri mm-uri group-uris]
+  (as-> measurement m
+    (lib/measurement-meta-rdf (lib/gen-uri)
+                              outcome-uri
+                              (group-uris (:arm-id m))
+                              mm-uri)
+    (trig/spo m [(trig/iri :ontology "sample_size")
+                 (trig/lit (:sample-size measurement))]
+              [(trig/iri :ontology "count")
+               (trig/lit (:count measurement))])))
+
+(defn read-adverse-event-measurements
+  [xml outcome-uri mm-uri group-uris]
+  (let [measurements-xml (vtd/search xml "./values/value")
+        measurements     (map read-adverse-event-measurement measurements-xml)]
+    (map #(build-dichotomous-measurement-rdf % outcome-uri mm-uri group-uris)
+         measurements)))
 
 ; (defn )          
 ; (defn import-xml

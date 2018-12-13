@@ -9,7 +9,7 @@
 
 (def xml (vtd/navigator (slurp "test/app/eudract.xml")))
 (def hba1c-change-xml (first (vtd/search xml "/result/endPoints/endPoint")))
-(def hba1c-under-7-percent (nth (vtd/search xml "/result/endPoints/endPoint") 
+(def hba1c-under-7-percent-xml (nth (vtd/search xml "/result/endPoints/endPoint") 
                            6))
 (def age-categorical (vtd/at xml "/result/baselineCharacteristics/ageCategoricalCharacteristic"))
 (def age-continuous (vtd/at xml "/result/baselineCharacteristics/ageContinuousCharacteristic"))
@@ -60,38 +60,33 @@
   (is (= 8
          (count (vtd/search xml "/result/endPoints/endPoint")))))
 
-
-(def hba1c-properties {:simple     true
-                       :is-count?  false
-                       :categories ()
-                       :param      "MEASURE_TYPE.leastSquares"
-                       :dispersion "ENDPOINT_DISPERSION.standardError"
-                       :units      "percentage of glycosylated hemoglobin"})
-                      
-(def hba1c-under-7-percent-properties {:simple     true
-                                       :is-count?  false
-                                       :categories ()
-                                       :param      "MEASURE_TYPE.number"
-                                       :dispersion "ENDPOINT_DISPERSION.na"
-                                       :units      "percentage of subjects"})
-
 (deftest test-outcome-properties
   (let [found-properties (outcome-properties hba1c-change-xml)
-        expected-properties hba1c-properties]
+        expected-properties {:simple     true
+                             :is-count?  false
+                             :categories ()
+                             :param      "MEASURE_TYPE.leastSquares"
+                             :dispersion "ENDPOINT_DISPERSION.standardError"
+                             :units      "percentage of glycosylated hemoglobin"}]
     (is (= expected-properties found-properties))))
 
 (deftest test-outcome-properties-number
-  (let [found-properties (outcome-properties hba1c-under-7-percent)
-        expected-properties hba1c-under-7-percent-properties]
+  (let [found-properties (outcome-properties hba1c-under-7-percent-xml)
+        expected-properties  {:simple     true
+                              :is-count?  false
+                              :categories ()
+                              :param      "MEASURE_TYPE.number"
+                              :dispersion "ENDPOINT_DISPERSION.na"
+                              :units      "percentage of subjects"}]
     (is (= expected-properties found-properties))))
 
 (deftest test-outcome-results-properties-continuous
-  (is (= '(["least_squares_mean" "value"] ["standard_error" "spread"])
-         (outcome-results-properties hba1c-properties))))
+  (is (= '("least_squares_mean" "standard_error")
+         (:properties (outcome-results-properties hba1c-change-xml)))))
 
 (deftest test-outcome-results-properties-dichotomous
-  (is (= '(["percentage" "value"])
-         (outcome-results-properties hba1c-under-7-percent-properties))))
+  (is (= '("percentage")
+         (:properties (outcome-results-properties hba1c-under-7-percent-xml)))))
 
 (deftest test-outcome-rdf-least-squares
   (let [outcome-uris        {[:outcome 1] [:qname :instance "outcome-uri"]}
@@ -112,7 +107,7 @@
 (deftest test-outcome-rdf-number
   (let [outcome-uris        {[:outcome 1] [:qname :instance "outcome-uri"]}
         mm-uris             {[:outcome 1] [:qname :instance "mm-uri"]}
-        generated-rdf       (outcome-rdf hba1c-under-7-percent 1 outcome-uris mm-uris)
+        generated-rdf       (outcome-rdf hba1c-under-7-percent-xml 1 outcome-uris mm-uris)
         expected-properties '([[:qname :rdf "type"] [:qname :ontology "Endpoint"]]
                               [[:qname :rdfs "label"]  [:lit "HbA1c below 7.0%"]]
                               [[:qname :rdfs "comment"] [:lit "Percentage of subjects with HbA1C below 7.0%"]]
@@ -211,15 +206,15 @@
 
 (deftest test-find-baseline-groups
   (let [expected-groups '({:id          "baselineGroup1Id"
-                           :armId       "arm1Id"
+                           :arm-id       "arm1Id"
                            :sampleSize  "132"
                            :description "Subjects received semaglutide 0.25 mg subcutaneous (sc) injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30."}
                           {:id          "baselineGroup2Id"
-                           :armId       "arm2Id"
+                           :arm-id       "arm2Id"
                            :sampleSize  "131"
                            :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30."}
                           {:id          "baselineGroup3Id"
-                           :armId       "arm3Id"
+                           :arm-id       "arm3Id"
                            :sampleSize  "133"
                            :description "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks."})]
     (is (= expected-groups
@@ -277,11 +272,11 @@
 
 (deftest test-group-rdf
   (let [baseline-groups      '({:id          "baselineGroup1Id"
-                                :armId       "arm1Id"
+                                :arm-id       "arm1Id"
                                 :sampleSize  132
                                 :description "baseline descr"}
                                {:id          "nonArmBaseline"
-                                :armId       nil
+                                :arm-id       nil
                                 :sampleSize  131
                                 :description "non-arm baseline group"})
         adverse-event-groups '({:id          "ReportingGroup-1"
@@ -319,28 +314,21 @@
     (is (= expected-groups-rdf
            found-groups-rdf))))
 
-(deftest test-read-measurement-continuous-endpoint
+(deftest test-read-endpoint-measurement
   (let [measurement-xml (first (vtd/search hba1c-change-xml "./armReportingGroups/armReportingGroup"))
-        expected-result {:armId           "arm1Id"
-                         :tendencyValue   -1.45
-                         :dispersionValue 0.09
-                         :sampleSize      132}]
+        expected-result {:arm-id           "arm1Id"
+                         :tendency-value   -1.45
+                         :dispersion-value 0.09
+                         :sample-size      132}]
     (is (= expected-result
-           (read-measurement measurement-xml)))))
-
-(deftest test-read-measurement-continuous-endpoint
-  (let [measurement-xml (first (vtd/search hba1c-change-xml "./armReportingGroups/armReportingGroup"))
-        expected-result {:armId           "arm1Id"
-                         :tendencyValue   -1.45
-                         :dispersionValue 0.09
-                         :sampleSize      132}]
-    (is (= expected-result
-           (read-measurement measurement-xml)))))
+           (read-endpoint-measurement measurement-xml)))))
           
-(deftest read-endpoint-measurements-continuous
+(deftest test-read-endpoint-measurements-continuous
   (let [arm1-uri [:qname :instance "arm1Uri"]
         arm2-uri [:qname :instance "arm2Uri"]
         arm3-uri [:qname :instance "arm3Uri"]
+        outcome-result-properties {:dispersion "standard_error"
+                                   :tendency "least_squares_mean"}
         group-uris {"arm1Id" arm1-uri
                     "arm2Id" arm2-uri
                     "arm3Id" arm3-uri}
@@ -349,15 +337,58 @@
         expected-rdf (list
                       (list [[:qname :ontology "of_outcome"] outcome-uri]
                             [[:qname :ontology "of_group"] arm1-uri]
-                            [[:qname :ontology "of_moment"] mm-uri])
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 132]]
+                            [[:qname :ontology "least_squares_mean"] [:lit -1.45]]
+                            [[:qname :ontology "standard_error"] [:lit 0.09]])
                       (list [[:qname :ontology "of_outcome"] outcome-uri]
                             [[:qname :ontology "of_group"] arm2-uri]
-                            [[:qname :ontology "of_moment"] mm-uri])
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 131]]
+                            [[:qname :ontology "least_squares_mean"] [:lit -1.85]]
+                            [[:qname :ontology "standard_error"] [:lit 0.09]])
                       (list [[:qname :ontology "of_outcome"] outcome-uri]
                             [[:qname :ontology "of_group"] arm3-uri]
-                            [[:qname :ontology "of_moment"] mm-uri]))]
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 133]]
+                            [[:qname :ontology "least_squares_mean"] [:lit -0.09]]
+                            [[:qname :ontology "standard_error"] [:lit 0.09]]))]
     (is (= expected-rdf
            (map second (read-endpoint-measurements hba1c-change-xml
-                                              outcome-uri
-                                              mm-uri
-                                              group-uris))))))
+                                                   outcome-result-properties
+                                                   outcome-uri
+                                                   mm-uri
+                                                   group-uris))))))
+
+
+(deftest test-read-adverse-event-measurements
+  (let [group1-uri  [:qname :instance "ReportingGroup-1"]
+        group2-uri   [:qname :instance "ReportingGroup-2"]
+        group3-uri   [:qname :instance "ReportingGroup-3"]
+        group-uris   {"ReportingGroup-1" group1-uri
+                      "ReportingGroup-2" group2-uri
+                      "ReportingGroup-3" group3-uri}
+        outcome-uri  [:qname :instance "outcome-uri"]
+        mm-uri       [:qname :instance "mm-uri"]
+        expected-rdf (list
+                      (list [[:qname :ontology "of_outcome"] outcome-uri]
+                            [[:qname :ontology "of_group"] group1-uri]
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 132]]
+                            [[:qname :ontology "count"] [:lit -1.45]])
+                      (list [[:qname :ontology "of_outcome"] outcome-uri]
+                            [[:qname :ontology "of_group"] group2-uri]
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 132]]
+                            [[:qname :ontology "count"] [:lit -1.85]])
+                      (list [[:qname :ontology "of_outcome"] outcome-uri]
+                            [[:qname :ontology "of_group"] group3-uri]
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 132]]
+                            [[:qname :ontology "count"] [:lit -0.09]]))]
+    (is (= expected-rdf
+           (map second (read-adverse-event-measurements
+                        decreased-appetite
+                        outcome-uri
+                        mm-uri
+                        group-uris))))))
