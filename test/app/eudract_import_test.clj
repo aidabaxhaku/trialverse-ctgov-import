@@ -1,8 +1,7 @@
 (ns app.eudract-import-test
   (:require [riveted.core :as vtd]
             [app.import-shared :as lib]
-             [clojure.set :refer [difference]]
-  
+            [clojure.set :refer [difference]]
             [org.drugis.addis.rdf.trig :as trig])
   (:use clojure.test)
   (:use app.eudract-import))
@@ -299,14 +298,14 @@
                                 ([[:qname :rdfs "label"] [:lit "Semaglutide 0.5 mg"]]
                                  [[:qname :rdfs "comment"] [:lit "arm group desc"]] 
                                  [[:qname :rdf "type"] [:qname :ontology "Arm"]])]
-                               [[:qname :instance "generatedUuid10"]
-                                ([[:qname :rdfs "label"] [:lit ""]]
-                                 [[:qname :rdfs "comment"] [:lit "non-arm baseline group"]]
-                                 [[:qname :rdf "type"] [:qname :ontology "Group"]])]
                                [[:qname :instance "generatedUuid7"] 
                                 ([[:qname :rdfs "label"] [:lit ""]] 
                                  [[:qname :rdfs "comment"] [:lit "baseline descr"]] 
                                 [[:qname :rdf "type"] [:qname :ontology "Group"]])] 
+                               [[:qname :instance "generatedUuid10"]
+                                ([[:qname :rdfs "label"] [:lit ""]]
+                                 [[:qname :rdfs "comment"] [:lit "non-arm baseline group"]]
+                                 [[:qname :rdf "type"] [:qname :ontology "Group"]])]
                                [[:qname :instance "generatedUuid4"]
                                 ([[:qname :rdfs "label"] [:lit "Semaglutide 0.5 mg"]]
                                  [[:qname :rdfs "comment"] [:lit "adverse event group  desc"]]
@@ -362,7 +361,7 @@
 
 
 (deftest test-read-adverse-event-measurements
-  (let [group1-uri  [:qname :instance "ReportingGroup-1"]
+  (let [group1-uri   [:qname :instance "ReportingGroup-1"]
         group2-uri   [:qname :instance "ReportingGroup-2"]
         group3-uri   [:qname :instance "ReportingGroup-3"]
         group-uris   {"ReportingGroup-1" group1-uri
@@ -375,17 +374,17 @@
                             [[:qname :ontology "of_group"] group1-uri]
                             [[:qname :ontology "of_moment"] mm-uri]
                             [[:qname :ontology "sample_size"] [:lit 132]]
-                            [[:qname :ontology "count"] [:lit -1.45]])
+                            [[:qname :ontology "count"] [:lit 5]])
                       (list [[:qname :ontology "of_outcome"] outcome-uri]
                             [[:qname :ontology "of_group"] group2-uri]
                             [[:qname :ontology "of_moment"] mm-uri]
-                            [[:qname :ontology "sample_size"] [:lit 132]]
-                            [[:qname :ontology "count"] [:lit -1.85]])
+                            [[:qname :ontology "sample_size"] [:lit 131]]
+                            [[:qname :ontology "count"] [:lit 7]])
                       (list [[:qname :ontology "of_outcome"] outcome-uri]
                             [[:qname :ontology "of_group"] group3-uri]
                             [[:qname :ontology "of_moment"] mm-uri]
-                            [[:qname :ontology "sample_size"] [:lit 132]]
-                            [[:qname :ontology "count"] [:lit -0.09]]))]
+                            [[:qname :ontology "sample_size"] [:lit 133]]
+                            [[:qname :ontology "count"] [:lit 1]]))]
     (is (= expected-rdf
            (map second (read-adverse-event-measurements
                         decreased-appetite

@@ -345,7 +345,7 @@
   (as-> measurement m
     (lib/measurement-meta-rdf (lib/gen-uri)
                               outcome-uri
-                              (group-uris (:arm-id m))
+                              (group-uris (:group-id m))
                               mm-uri)
     (trig/spo m [(trig/iri :ontology "sample_size")
                  (trig/lit (:sample-size measurement))]
