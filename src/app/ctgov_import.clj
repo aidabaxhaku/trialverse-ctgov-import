@@ -37,9 +37,9 @@
         category-info (map #(measurement-row-info xml (vtd/text %)) 
                            (vtd/search categories-xml "./category/title"))
         ; probe the measure for type: <param> and <dispersion>, plus <units>
-        param (vtd/text (vtd/at measure-xml "./param"))
-        dispersion (vtd/text (vtd/at measure-xml "./dispersion"))
-        units (vtd/text (vtd/at measure-xml "./units"))]
+        param (lib/text-at measure-xml "./param")
+        dispersion (lib/text-at measure-xml "./dispersion")
+        units (lib/text-at measure-xml "./units")]
       { :simple (= 1 category-count)
         :categories category-info
         :param param
@@ -54,9 +54,9 @@
         category-titles (if (> (count category-titles) 0) ; fallback for incorrect cases where title is not set on categories
                           category-titles
                           (map vtd/text (vtd/search measure-xml ".//class/title")))
-        param (vtd/text (vtd/at measure-xml "./param"))
-        dispersion (vtd/text (vtd/at measure-xml "./dispersion"))
-        units (vtd/text (vtd/at measure-xml "./units"))]
+        param (lib/text-at measure-xml "./param")
+        dispersion (lib/text-at measure-xml "./dispersion")
+        units (lib/text-at measure-xml "./units")]
     { :categories category-titles
       :simple (empty? category-titles)
       :param param
@@ -119,8 +119,8 @@
     (lib/spo-each
      (trig/spo uri
                [(trig/iri :rdf "type") (trig/iri :ontology "Endpoint")]
-               [(trig/iri :rdfs "label") (trig/lit (vtd/text (vtd/at xml "./title")))]
-               [(trig/iri :rdfs "comment") (trig/lit (or (vtd/text (vtd/at xml "./description")) ""))]
+               [(trig/iri :rdfs "label") (trig/lit (lib/text-at xml "./title"))]
+               [(trig/iri :rdfs "comment") (trig/lit (or (lib/text-at xml "./description") ""))]
                [(trig/iri :ontology "is_measured_at") (mm-uris [:outcome idx])]
                [(trig/iri :ontology "has_result_property") (trig/iri :ontology "sample_size")]
                [(trig/iri :ontology "of_variable")
@@ -138,7 +138,7 @@
     (if (or (= "Number" param) 
             (= "Count of Participants" param))
       (let [category-uris (into {}
-                                (map #(vector % (trig/iri :instance (lib/uuid)))
+                                (map #(vector % (lib/gen-uri))
                                      categories))
             category-rdfs (map #(trig/spo
                                  (second %)
@@ -156,7 +156,7 @@
 (defn baseline-var-rdf
   [xml idx baseline-uris mm-uris]
   (let [uri                  (baseline-uris idx)
-        var-name             (vtd/text (vtd/at xml "./title"))
+        var-name             (lib/text-at xml "./title")
         props                (baseline-measurement-properties xml)
         properties           (outcome-results-properties props)
         [categories var-rdf] (baseline-var-type props)
@@ -179,8 +179,8 @@
 (defn adverse-event-rdf
   [xml idx event-uris mm-uris]
   (let [uri (event-uris idx)
-        event-name (vtd/text (vtd/at xml "./sub_title"))
-        group-name (vtd/text (vtd/at xml "../../title"))]
+        event-name (lib/text-at xml "./sub_title")
+        group-name (lib/text-at xml "../../title")]
     (lib/spo-each
       (trig/spo uri
                 [(trig/iri :rdf "type") (trig/iri :ontology "AdverseEvent")]
@@ -196,15 +196,15 @@
 (defn find-arm-groups
   [xml]
   (into {} (map (fn [ag idx] [[:arm_group idx]
-                              {:title (vtd/text (vtd/at ag "./arm_group_label"))
-                               :description (or (vtd/text (vtd/at ag "./description")) "")}])
+                              {:title (lib/text-at ag "./arm_group_label")
+                               :description (or (lib/text-at ag "./description") "")}])
                 (vtd/search xml "/clinical_study/arm_group")
                 (iterate inc 1))))
 
 (defn group-info
   [group-xml]
-  {:title (vtd/text (vtd/at group-xml "./title"))
-   :description (or (vtd/text (vtd/at group-xml "./description")) "")})
+  {:title (lib/text-at group-xml "./title")
+   :description (or (lib/text-at group-xml "./description") "")})
 
 (defn find-baseline-groups
   [xml]
@@ -246,7 +246,8 @@
 
 (defn find-event-time-frame
   [xml]
-  { [:events] (or (vtd/text (vtd/at xml "/clinical_study/clinical_results/reported_events/time_frame")) "Unknown") })
+  { [:events] (or (lib/text-at xml "/clinical_study/clinical_results/reported_events/time_frame")
+                  "Unknown") })
 
 (defn find-outcome-time-frames
   [xml]
@@ -291,23 +292,24 @@
 
 (defn measurement-data-rdf-categorical
   [subj measure-xml group-id category-uris]
-  (let [categories-xml (vtd/search measure-xml "./*//category_list/category")
-        measurement-query (format "./measurement_list/measurement[@group_id=\"%s\"]" group-id)
-        cond-count (fn [subj value] (if 
-                                     value (trig/spo 
-                                            subj 
-                                            [(trig/iri :ontology "count") 
-                                             (lib/parse-int value)]) 
-                                     subj))]
-    (reduce #(trig/spo 
-              %1 
-              [(trig/iri :ontology "category_count")
-               (-> (trig/_po [(trig/iri :ontology "category") 
-                              (category-uris (or 
-                                              (vtd/text (vtd/at %2 "./sub_title")) 
-                                              (vtd/text (vtd/at %2 "./title"))
-                                              (vtd/text (vtd/at %2 "../../title"))))])
-                   (cond-count (vtd/attr (vtd/at %2 measurement-query) :value)))])
+  (let [categories-xml    (vtd/search measure-xml "./*//category_list/category")
+        measurement-query (format
+                           "./measurement_list/measurement[@group_id=\"%s\"]"
+                           group-id)
+        cond-count        (fn [subj value]
+                            (if value
+                              (trig/spo subj [(trig/iri :ontology "count")
+                                              (lib/parse-int value)])
+                              subj))]
+    (reduce #(trig/spo %1
+                       [(trig/iri :ontology "category_count")
+                        (-> (trig/_po
+                             [(trig/iri :ontology "category")
+                              (category-uris (or
+                                              (lib/text-at %2 "./sub_title")
+                                              (lib/text-at %2 "./title")
+                                              (lib/text-at %2 "../../title")))])
+                            (cond-count (vtd/attr (vtd/at %2 measurement-query) :value)))])
             subj
             categories-xml)))
 
@@ -420,7 +422,7 @@
 (defn import-xml
   [xml]
   (let [
-        nct-id (vtd/text (vtd/at xml "/clinical_study/id_info/nct_id"))
+        nct-id (lib/text-at xml "/clinical_study/id_info/nct_id")
         uri (trig/iri :study nct-id)
         reg-uri (trig/iri :ictrp nct-id)
         registration (trig/spo reg-uri
@@ -469,17 +471,17 @@
                      (trig/spo [(trig/iri :ontology "has_publication") reg-uri]
                                [(trig/iri :rdf "type") (trig/iri :ontology "Study")]
                                [(trig/iri :rdfs "label") 
-                                (trig/lit (vtd/text (vtd/at xml "/clinical_study/brief_title")))]
+                                (trig/lit (lib/text-at xml "/clinical_study/brief_title"))]
                                [(trig/iri :rdfs "comment") 
-                                (trig/lit (vtd/text (vtd/at xml "/clinical_study/official_title")))]
+                                (trig/lit (lib/text-at xml "/clinical_study/official_title"))]
                                [(trig/iri :ontology "has_objective")
                                 (trig/_po [(trig/iri :rdfs "comment") 
-                                           (trig/lit (vtd/text (vtd/at xml "/clinical_study/brief_summary/textblock")))])]
+                                           (trig/lit (lib/text-at xml "/clinical_study/brief_summary/textblock"))])]
                                [(trig/iri :ontology "has_eligibility_criteria")
-                                (trig/_po [(trig/iri :rdfs "comment") (trig/lit (vtd/text (vtd/at xml "/clinical_study/eligibility/criteria/textblock")))])])
+                                (trig/_po [(trig/iri :rdfs "comment") (trig/lit (lib/text-at xml "/clinical_study/eligibility/criteria/textblock"))])])
 
-                     (allocation-rdf (vtd/text (vtd/at xml "/clinical_study/study_design_info/allocation")))
-                     (lib/blinding-rdf (parse-masking (vtd/text (vtd/at xml "/clinical_study/study_design_info/masking"))))
+                     (allocation-rdf (lib/text-at xml "/clinical_study/study_design_info/allocation"))
+                     (lib/blinding-rdf (parse-masking (lib/text-at xml "/clinical_study/study_design_info/masking")))
                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals baseline-uris))
                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals outcome-uris))
                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals event-uris))
