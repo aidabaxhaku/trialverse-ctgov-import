@@ -70,16 +70,15 @@
                     eudract-id 
                     "/results")]))
 
-(defn measurement-row-info [] '()) ; FIXME
-
 (defn outcome-properties
   [xml]
-  (let [categories-xml (vtd/at xml "categories")
+  (let [categories-xml (vtd/search xml "./categories/category")
         category-count (count (vtd/children categories-xml))
-        category-info  (map #(measurement-row-info xml (vtd/text %))
-                            (vtd/search categories-xml "./category/name"))
-        category-xml   (vtd/first-child categories-xml)
-        ; probe the measure for type: <param> and <dispersion>, plus <units>
+        category-info  (map (fn [category-xml]
+                              {:id   (vtd/attr category-xml "id")
+                               :name (lib/text-at category-xml "name")
+                               :uri  (lib/gen-uri)})
+                            categories-xml)
         param          (lib/text-at xml "centralTendencyType/value")
         dispersion     (lib/text-at xml "dispersionType/value")
         units          (lib/text-at xml "unit")]
@@ -222,27 +221,6 @@
      (trig/iri :ontology "has_result_property")
      (map #(trig/iri :ontology %) (:properties result-properties)))))
 
-(defn make-category-vector
-  [category-xml]
-  [(vtd/attr category-xml "id")
-   {:uri   (lib/gen-uri)
-    :title (lib/text-at category-xml "name")}])
-
-(defn get-categories-for-variable
-  [xml]
-  (let [categories-xml (vtd/search xml "./categories/category")]
-    (into {} (map
-              #(make-category-vector %)
-              categories-xml))))
-
-(defn categories-rdf-from-map
-  [categories]
-  (map
-   #(trig/spo (:uri %)
-              [(trig/iri :rdfs "label") (trig/lit (:title %))]
-              [(trig/iri :rdf "type") (trig/iri :ontology "Category")])
-   (vals categories)))
-
 (defn find-baseline-groups
   [xml]
   (let [groups-xml (vtd/search xml "/result/baselineCharacteristics/baselineReportingGroups/baselineReportingGroup")]
@@ -342,13 +320,13 @@
 
 (defn build-dichotomous-measurement-rdf
   [measurement outcome-uri mm-uri group-uris]
-  (as-> measurement m
+  (as-> measurement meas
     (lib/measurement-meta-rdf (lib/gen-uri)
                               outcome-uri
-                              (group-uris (:group-id m))
+                              (group-uris (:group-id meas))
                               mm-uri)
-    (trig/spo m [(trig/iri :ontology "sample_size")
-                 (trig/lit (:sample-size measurement))]
+    (trig/spo meas [(trig/iri :ontology "sample_size")
+                    (trig/lit (:sample-size measurement))]
               [(trig/iri :ontology "count")
                (trig/lit (:count measurement))])))
 
@@ -359,6 +337,38 @@
     (map #(build-dichotomous-measurement-rdf % outcome-uri mm-uri group-uris)
          measurements)))
 
+(defn make-category-vector
+  [category-xml]
+  (let [uri   (lib/gen-uri)
+        title (lib/text-at category-xml "name")]
+    [(vtd/attr category-xml "id")
+     {:uri   uri
+      :title title
+      :rdf   (trig/spo uri
+                       [(trig/iri :rdfs "label")
+                        (trig/lit title)]
+                       [(trig/iri :rdf "type")
+                        (trig/iri :ontology "Category")])}]))
+
+(defn get-categories-for-variable
+  [xml]
+  (let [categories-xml (vtd/search xml "./categories/category")]
+    (into {}
+          (map #(make-category-vector %)
+               categories-xml))))
+
+(defn read-categorical-measurement[] {})
+
+(defn build-categorical-measurement-rdf[]{})
+
+(defn read-baseline-measurements-categorical
+  [xml outcome-uri mm-uri group-uris]
+  (let [categories       (get-categories-for-variable xml)
+        measurements-xml (vtd/search xml "/reportingGroups/reportingGroup")
+        measurements     (map #(read-categorical-measurement % categories)
+                              measurements-xml)]
+    (map #(build-categorical-measurement-rdf % outcome-uri mm-uri group-uris
+                                             categories))))
 ; (defn )          
 ; (defn import-xml
 ;   [xml]

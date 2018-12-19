@@ -309,7 +309,9 @@
                                               (lib/text-at %2 "./sub_title")
                                               (lib/text-at %2 "./title")
                                               (lib/text-at %2 "../../title")))])
-                            (cond-count (vtd/attr (vtd/at %2 measurement-query) :value)))])
+                            (cond-count (vtd/attr ; this is arg 2 (threading macro)
+                                         (vtd/at %2 measurement-query) 
+                                         "value")))])
             subj
             categories-xml)))
 

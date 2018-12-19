@@ -1170,17 +1170,17 @@ sponsor="Novo Nordisk">
 			<reportingGroups>
 				<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 					<countableValues>
-						<countableValue categoryId="_efb3e754-0e32-43e7-ab08-b3580c330700">
+						<countableValue categoryId="adultsCategoryId">
 							<value>
 								93
 							</value>
 						</countableValue>
-						<countableValue categoryId="_b34cc9cf-da34-46fe-accc-d5dc3f866527">
+						<countableValue categoryId="pensionersCategoryId">
 							<value>
 								39
 							</value>
 						</countableValue>
-						<countableValue categoryId="_756ede0c-89c8-49d5-9901-5487e7e635b1">
+						<countableValue categoryId="octogenarianCategoryId">
 							<value>
 								0
 							</value>
@@ -1189,17 +1189,17 @@ sponsor="Novo Nordisk">
 				</reportingGroup>
 				<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 					<countableValues>
-						<countableValue categoryId="_efb3e754-0e32-43e7-ab08-b3580c330700">
+						<countableValue categoryId="adultsCategoryId">
 							<value>
 								102
 							</value>
 						</countableValue>
-						<countableValue categoryId="_b34cc9cf-da34-46fe-accc-d5dc3f866527">
+						<countableValue categoryId="pensionersCategoryId">
 							<value>
 								29
 							</value>
 						</countableValue>
-						<countableValue categoryId="_756ede0c-89c8-49d5-9901-5487e7e635b1">
+						<countableValue categoryId="octogenarianCategoryId">
 							<value>
 								0
 							</value>
@@ -1208,17 +1208,17 @@ sponsor="Novo Nordisk">
 				</reportingGroup>
 				<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 					<countableValues>
-						<countableValue categoryId="_efb3e754-0e32-43e7-ab08-b3580c330700">
+						<countableValue categoryId="adultsCategoryId">
 							<value>
 								86
 							</value>
 						</countableValue>
-						<countableValue categoryId="_b34cc9cf-da34-46fe-accc-d5dc3f866527">
+						<countableValue categoryId="pensionersCategoryId">
 							<value>
 								46
 							</value>
 						</countableValue>
-						<countableValue categoryId="_756ede0c-89c8-49d5-9901-5487e7e635b1">
+						<countableValue categoryId="octogenarianCategoryId">
 							<value>
 								1
 							</value>
@@ -1232,17 +1232,17 @@ sponsor="Novo Nordisk">
 					Total title
 				</title>
 				<countableValues>
-					<countableValue categoryId="_efb3e754-0e32-43e7-ab08-b3580c330700">
+					<countableValue categoryId="adultsCategoryId">
 						<value>
 							281
 						</value>
 					</countableValue>
-					<countableValue categoryId="_b34cc9cf-da34-46fe-accc-d5dc3f866527">
+					<countableValue categoryId="pensionersCategoryId">
 						<value>
 							114
 						</value>
 					</countableValue>
-					<countableValue categoryId="_756ede0c-89c8-49d5-9901-5487e7e635b1">
+					<countableValue categoryId="octogenarianCategoryId">
 						<value>
 							1
 						</value>
@@ -1250,17 +1250,17 @@ sponsor="Novo Nordisk">
 				</countableValues>
 			</totalBaselineGroup>
 			<categories>
-				<category id="_efb3e754-0e32-43e7-ab08-b3580c330700">
+				<category id="adultsCategoryId">
 					<name>
 						Adults (18-64 years)
 					</name>
 				</category>
-				<category id="_b34cc9cf-da34-46fe-accc-d5dc3f866527">
+				<category id="pensionersCategoryId">
 					<name>
 						From 65-84 years
 					</name>
 				</category>
-				<category id="_756ede0c-89c8-49d5-9901-5487e7e635b1">
+				<category id="octogenarianCategoryId">
 					<name>
 						85 years and over
 					</name>
