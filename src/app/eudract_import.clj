@@ -338,9 +338,8 @@
          measurements)))
 
 (defn make-category-vector
-  [category-xml]
-  (let [uri   (lib/gen-uri)
-        title (lib/text-at category-xml "name")]
+  [category-xml uri]
+  (let [title (lib/text-at category-xml "name")]
     [(vtd/attr category-xml "id")
      {:uri   uri
       :title title
@@ -354,7 +353,7 @@
   [xml]
   (let [categories-xml (vtd/search xml "./categories/category")]
     (into {}
-          (map #(make-category-vector %)
+          (map #(make-category-vector % (lib/gen-uri))
                categories-xml))))
 
 (defn read-categorical-measurement[] {})

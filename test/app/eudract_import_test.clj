@@ -183,32 +183,30 @@
     (is (= expected-rdf-properties
            found-baseline-rdf))))
 
-; (deftest test-get-categories-for-variable
-;   (let [categories      (get-categories-for-variable age-categorical)
-;         expected-ids    '("_efb3e754-0e32-43e7-ab08-b3580c330700"
-;                           "_b34cc9cf-da34-46fe-accc-d5dc3f866527"
-;                           "_756ede0c-89c8-49d5-9901-5487e7e635b1")
-;         expected-titles '("Adults (18-64 years)"
-;                           "From 65-84 years"
-;                           "85 years and over")]
-;     (is (= expected-ids (keys categories)))
-;     (is (= expected-titles (map :title (vals categories))))))
-
-; (deftest test-categories-rdf
-;   (let [categories   {"key" {:uri   [:qname :instance "category-uri"]
-;                              :title "category title"}}
-;         expected-rdf '([[:qname :instance "category-uri"]
-;                         ([[:qname :rdfs "label"] [:lit "category title"]]
-;                          [[:qname :rdf "type"] [:qname :ontology "Category"]])])]
-;     (is (= expected-rdf
-;            (categories-rdf-from-map categories)))))
+(deftest test-get-categories-for-variable
+  (let [categories      (get-categories-for-variable age-categorical)
+        expected-ids    '("adultsCategoryId"
+                          "pensionersCategoryId"
+                          "octogenarianCategoryId")
+        expected-titles '("Adults (18-64 years)"
+                          "From 65-84 years"
+                          "85 years and over")]
+    (is (= expected-ids (keys categories)))
+    (is (= expected-titles (map :title (vals categories))))))
 
 (deftest test-make-category-vector
-  (let [category-xml           (first (vtd/search age-categorical "./categories/category"))
-        expected-category-info {}
-        expected-result        ["adultsCategoryId" expected-category-info]]
+  (let [uri             [:qname :instance "uuid"]
+        category-xml    (first (vtd/search age-categorical "./categories/category"))
+        category-info   {:uri   uri
+                         :title "Adults (18-64 years)"
+                         :rdf   [uri
+                                 '([[:qname :rdfs "label"] 
+                                    [:lit "Adults (18-64 years)"]]
+                                   [[:qname :rdf "type"] 
+                                    [:qname :ontology "Category"]])]}
+        expected-result ["adultsCategoryId" category-info]]
     (is (= expected-result
-           (get-categories-for-variable age-categorical)))))
+           (make-category-vector category-xml uri)))))
 
 (deftest test-find-baseline-groups
   (let [expected-groups '({:id          "baselineGroup1Id"
@@ -368,12 +366,12 @@
 
 
 (deftest test-read-adverse-event-measurements
-  (let [group1-uri   [:qname :instance "baselineGroup1Id"]
-        group2-uri   [:qname :instance "baselineGroup2Id"]
-        group3-uri   [:qname :instance "baselineGroup3Id"]
-        group-uris   {"baselineGroup1Id" group1-uri
-                      "baselineGroup2Id" group2-uri
-                      "baselineGroup3Id" group3-uri}
+  (let [group1-uri   [:qname :instance "ReportingGroup-1"]
+        group2-uri   [:qname :instance "ReportingGroup-2"]
+        group3-uri   [:qname :instance "ReportingGroup-3"]
+        group-uris   {"ReportingGroup-1" group1-uri
+                      "ReportingGroup-2" group2-uri
+                      "ReportingGroup-3" group3-uri}
         outcome-uri  [:qname :instance "outcome-uri"]
         mm-uri       [:qname :instance "mm-uri"]
         expected-rdf (list
