@@ -123,10 +123,11 @@
                           (list
                           (ENDPOINT-DISPERSION-TYPES (:dispersion props))
                           (DISPERSION-TYPES (:dispersion props))))]
-    {:properties (concat found-tendency found-dispersion)
+    {:properties       (concat found-tendency found-dispersion)
      :measurement-type (outcome-measurement-type props)
-     :dispersion found-dispersion
-     :tendency   found-tendency}))
+     :dispersion       found-dispersion
+     :tendency         found-tendency
+     :categories       (:categories props)}))
 
   (defn outcome-rdf
     [xml idx outcome-uris mm-uris]
@@ -201,23 +202,38 @@
 
 (defn p* [x] (println x) x) ; FIXME: debug
 
+(defn get-of-variable-rdf
+  [measurement-type result-properties]
+  (let 
+   [category-uris (map :uri (:categories result-properties))
+    category-rdf  (if (= measurement-type "categorical")
+                    [(trig/iri :ontology "categoryList")
+                     (trig/coll category-uris)])
+    variable-base [(trig/iri :ontology "measurementType")
+                   (trig/iri :ontology measurement-type)]
+    of-variable   (if category-rdf
+                    (trig/_po variable-base category-rdf)
+                    (trig/_po variable-base))]
+    [(trig/iri :ontology "of_variable")
+     of-variable]))
+
 (defn baseline-var-rdf
   [xml idx baseline-uris mm-uris]
-  (let [uri                 (baseline-uris [:baseline idx])
-        mm-uri              (mm-uris [:baseline])
-        characteristic-name (lib/text-at xml "./title")
-        measurement-type    (measurement-type-for-baseline (vtd/tag xml))
-        result-properties   (outcome-results-properties xml)]
+  (let
+   [uri               (baseline-uris [:baseline idx])
+    mm-uri            (mm-uris [:baseline])
+    name              (lib/text-at xml "./title")
+    measurement-type  (measurement-type-for-baseline (vtd/tag xml))
+    result-properties (outcome-results-properties xml)
+    variable-rdf      (get-of-variable-rdf measurement-type result-properties)]
     (lib/spo-each
      (trig/spo uri
                [(trig/iri :rdf "type")
                 (trig/iri :ontology "PopulationCharacteristic")]
                [(trig/iri :rdfs "label")
-                (trig/lit characteristic-name)]
+                (trig/lit name)]
                [(trig/iri :ontology "is_measured_at") mm-uri]
-               [(trig/iri :ontology "of_variable")
-                (trig/_po [(trig/iri :ontology "measurementType")
-                           (trig/iri :ontology measurement-type)])])
+               variable-rdf)
      (trig/iri :ontology "has_result_property")
      (map #(trig/iri :ontology %) (:properties result-properties)))))
 
@@ -350,11 +366,11 @@
                         (trig/iri :ontology "Category")])}]))
 
 (defn get-categories-for-variable
-  [xml]
-  (let [categories-xml (vtd/search xml "./categories/category")]
+  [variable-xml]
+  (let [categories-variable-xml (vtd/search variable-xml "./categories/category")]
     (into {}
           (map #(make-category-vector % (lib/gen-uri))
-               categories-xml))))
+               categories-variable-xml))))
 
 (defn read-categorical-measurement[] {})
 
