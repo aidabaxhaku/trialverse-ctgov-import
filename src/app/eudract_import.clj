@@ -365,25 +365,25 @@
                        [(trig/iri :rdf "type")
                         (trig/iri :ontology "Category")])}]))
 
-(defn get-categories-for-variable
-  [variable-xml]
-  (let [categories-variable-xml (vtd/search variable-xml "./categories/category")]
-    (into {}
-          (map #(make-category-vector % (lib/gen-uri))
-               categories-variable-xml))))
-
 (defn read-categorical-measurement[] {})
 
 (defn build-categorical-measurement-rdf[]{})
 
 (defn read-baseline-measurements-categorical
-  [xml outcome-uri mm-uri group-uris]
-  (let [categories       (get-categories-for-variable xml)
-        measurements-xml (vtd/search xml "/reportingGroups/reportingGroup")
+  [xml outcome-uri mm-uri group-uris categories]
+  (let [measurements-xml (vtd/search xml "/reportingGroups/reportingGroup")
         measurements     (map #(read-categorical-measurement % categories)
                               measurements-xml)]
     (map #(build-categorical-measurement-rdf % outcome-uri mm-uri group-uris
                                              categories))))
+
+(defn find-categories
+  [xml]
+  (let [category-nodes (vtd/search xml "/*//categories/category")]
+    (into {}
+          (map #(make-category-vector % (lib/gen-uri))
+               category-nodes))))
+
 ; (defn )          
 ; (defn import-xml
 ;   [xml]
