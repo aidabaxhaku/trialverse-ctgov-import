@@ -435,6 +435,11 @@
                         mm-uri
                         group-uris))))))
 
+(deftest test-build-category-count
+  (let 
+   [expected-rdf (list
+                  (list))]))
+
 (deftest test-build-categorical-measurement-rdf
   (let
    [measurement    {"category1" 3
@@ -459,9 +464,9 @@
                                     [:qname :ontology "category" category-2-uri]
                                     [:qname :ontology "count" 39])]]))]
     (is (= expected-rdf
-           (build-categorical-measurement-rdf
+           (second (build-categorical-measurement-rdf
             measurement
-            outcome-uri mm-uri group-uris categories)))))
+            outcome-uri mm-uri group-uris categories))))))
 
 ; (deftest test-read-baseline-measurements-categorical
 ;   (let [group1-uri            [:qname :instance "baselineGroup1Id"]

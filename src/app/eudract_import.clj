@@ -387,18 +387,18 @@
 
 (defn build-categorical-measurement-rdf
   [measurement outcome-uri mm-uri group-uris categories]
-  (println (map #(vector (:uri (categories (first %)))
-                                       (second %))
-                (remove #(= (first %) :group-id) measurement)))
-  (as-> measurement meas
-    (lib/measurement-meta-rdf (lib/gen-uri)
-                              outcome-uri
-                              (group-uris (:group-id measurement))
-                              mm-uri)
-    (trig/spo meas 
-              (map #(build-category-count (categories (first %))
-                                          (second %))
-                   (remove #(= (first %) :group-id) measurement)))))
+  (let
+   [instance-uri             (lib/gen-uri)
+    category-uris-and-counts (map (fn [[category-id count]]
+                                    [(categories category-id) count])
+                                  (remove #(= (first %) :group-id) measurement))
+    category-count-rdf       (map build-category-count category-uris-and-counts)]
+    (-> instance-uri
+        (lib/measurement-meta-rdf
+         outcome-uri
+         (group-uris (:group-id measurement))
+         mm-uri)
+        (trig/spo))))
 
 (defn read-baseline-measurements-categorical
   [xml outcome-uri mm-uri group-uris categories]
