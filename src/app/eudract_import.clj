@@ -305,15 +305,16 @@
 
 (defn build-continuous-measurement-rdf
   [measurement result-properties outcome-uri mm-uri group-uris]
-  (as-> measurement m
-    (lib/measurement-meta-rdf  (lib/gen-uri)
-                               outcome-uri
-                               (group-uris (:arm-id m))
-                               mm-uri)
-    (trig/spo m [(trig/iri :ontology "sample_size")
-                 (trig/lit (:sample-size measurement))])
+  (as-> measurement meas
+    (lib/measurement-meta-rdf (lib/gen-uri)
+                              outcome-uri
+                              (group-uris (:arm-id meas))
+                              mm-uri)
+    (trig/spo meas
+              [(trig/iri :ontology "sample_size")
+               (trig/lit (:sample-size measurement))])
        ; eudract does not currently sypport >1 central tendency and dispersion properties
-    (trig/spo m
+    (trig/spo meas
               [(trig/iri :ontology (:tendency result-properties))
                (trig/lit (:tendency-value measurement))]
               [(trig/iri :ontology (:dispersion result-properties))
@@ -341,8 +342,9 @@
                               outcome-uri
                               (group-uris (:group-id meas))
                               mm-uri)
-    (trig/spo meas [(trig/iri :ontology "sample_size")
-                    (trig/lit (:sample-size measurement))]
+    (trig/spo meas 
+              [(trig/iri :ontology "sample_size")
+               (trig/lit (:sample-size measurement))]
               [(trig/iri :ontology "count")
                (trig/lit (:count measurement))])))
 
@@ -365,17 +367,47 @@
                        [(trig/iri :rdf "type")
                         (trig/iri :ontology "Category")])}]))
 
-(defn read-categorical-measurement[] {})
+(defn read-categorical-measurement-values-for-group
+  [xml]
+  (let [countable-values         (vtd/search xml "./countableValues/countableValue")
+        measurements-by-category (into {}
+                                       (map #(vector (vtd/attr % "categoryId")
+                                                     (lib/parse-int (lib/text-at % "value")))
+                                            countable-values))]
+    (merge measurements-by-category {:group-id (vtd/attr xml "baselineReportingGroupId")})))
 
-(defn build-categorical-measurement-rdf[]{})
+(defn build-category-count
+  [category count]
+  [(trig/iri :ontology "category_count")
+   (-> (trig/_po
+        [(trig/iri :ontology "category")
+         (:uri category)])
+       (trig/spo
+        [(trig/iri :ontology "count") count]))])
+
+(defn build-categorical-measurement-rdf
+  [measurement outcome-uri mm-uri group-uris categories]
+  (println (map #(vector (:uri (categories (first %)))
+                                       (second %))
+                (remove #(= (first %) :group-id) measurement)))
+  (as-> measurement meas
+    (lib/measurement-meta-rdf (lib/gen-uri)
+                              outcome-uri
+                              (group-uris (:group-id measurement))
+                              mm-uri)
+    (trig/spo meas 
+              (map #(build-category-count (categories (first %))
+                                          (second %))
+                   (remove #(= (first %) :group-id) measurement)))))
 
 (defn read-baseline-measurements-categorical
   [xml outcome-uri mm-uri group-uris categories]
-  (let [measurements-xml (vtd/search xml "/reportingGroups/reportingGroup")
-        measurements     (map #(read-categorical-measurement % categories)
-                              measurements-xml)]
-    (map #(build-categorical-measurement-rdf % outcome-uri mm-uri group-uris
-                                             categories))))
+  (let [reporting-groups-xml (vtd/search xml "./reportingGroups/reportingGroup")
+        measurements         (map read-categorical-measurement-values-for-group
+                                  reporting-groups-xml)]
+    (println (count reporting-groups-xml))
+    (map #(build-categorical-measurement-rdf % outcome-uri mm-uri group-uris categories)
+         measurements)))
 
 (defn find-categories
   [xml]

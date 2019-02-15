@@ -61,6 +61,7 @@
      (set coll2)))
 
 (defn measurement-meta-rdf
+  "Generate RDF for a set of measurement coordinates"
   [subj outcome-uri group-uri mm-uri]
   (trig/spo subj
             [(trig/iri :ontology "of_outcome") outcome-uri]
@@ -109,4 +110,3 @@
   (trig/spo mm-uri
             [(trig/iri :rdfs "label") (trig/lit mm-title)]
             [(trig/iri :rdf "type") (trig/iri :ontology "MeasurementMoment")]))
-
