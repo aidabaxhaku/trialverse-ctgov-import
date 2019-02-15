@@ -1084,12 +1084,12 @@ sponsor="Novo Nordisk">
 			<reportingGroups>
 				<reportingGroup baselineReportingGroupId="baselineGroup1Id">
 					<countableValues>
-						<countableValue categoryId="_c07d8f4c-97b3-4c1e-8796-aca47f9e427a">
+						<countableValue categoryId="femaleCategoryId">
 							<value>
 								58
 							</value>
 						</countableValue>
-						<countableValue categoryId="_66982ae7-fefb-4b89-b3df-d73d9e94e8b0">
+						<countableValue categoryId="maleCategoryId">
 							<value>
 								74
 							</value>
@@ -1098,12 +1098,12 @@ sponsor="Novo Nordisk">
 				</reportingGroup>
 				<reportingGroup baselineReportingGroupId="baselineGroup2Id">
 					<countableValues>
-						<countableValue categoryId="_c07d8f4c-97b3-4c1e-8796-aca47f9e427a">
+						<countableValue categoryId="femaleCategoryId">
 							<value>
 								54
 							</value>
 						</countableValue>
-						<countableValue categoryId="_66982ae7-fefb-4b89-b3df-d73d9e94e8b0">
+						<countableValue categoryId="maleCategoryId">
 							<value>
 								77
 							</value>
@@ -1112,12 +1112,12 @@ sponsor="Novo Nordisk">
 				</reportingGroup>
 				<reportingGroup baselineReportingGroupId="baselineGroup3Id">
 					<countableValues>
-						<countableValue categoryId="_c07d8f4c-97b3-4c1e-8796-aca47f9e427a">
+						<countableValue categoryId="femaleCategoryId">
 							<value>
 								62
 							</value>
 						</countableValue>
-						<countableValue categoryId="_66982ae7-fefb-4b89-b3df-d73d9e94e8b0">
+						<countableValue categoryId="maleCategoryId">
 							<value>
 								71
 							</value>
@@ -1131,12 +1131,12 @@ sponsor="Novo Nordisk">
 					Total title
 				</title>
 				<countableValues>
-					<countableValue categoryId="_c07d8f4c-97b3-4c1e-8796-aca47f9e427a">
+					<countableValue categoryId="femaleCategoryId">
 						<value>
 							174
 						</value>
 					</countableValue>
-					<countableValue categoryId="_66982ae7-fefb-4b89-b3df-d73d9e94e8b0">
+					<countableValue categoryId="maleCategoryId">
 						<value>
 							222
 						</value>
@@ -1144,12 +1144,12 @@ sponsor="Novo Nordisk">
 				</countableValues>
 			</totalBaselineGroup>
 			<categories>
-				<category id="_c07d8f4c-97b3-4c1e-8796-aca47f9e427a">
+				<category id="femaleCategoryId">
 					<name>
 						Female
 					</name>
 				</category>
-				<category id="_66982ae7-fefb-4b89-b3df-d73d9e94e8b0">
+				<category id="maleCategoryId">
 					<name>
 						Male
 					</name>
@@ -1885,12 +1885,12 @@ sponsor="Novo Nordisk">
 				</value>
 			</dispersionType>
 			<categories>
-				<category id="_46e15560-11b6-4f07-8488-dd91060b4e86">
+				<category id="diastolicCategoryId">
 					<name>
 						Diastolic blood pressure
 					</name>
 				</category>
-				<category id="_45efb56d-b81a-43e0-a443-dea5c50df3c2">
+				<category id="systolicCategoryId">
 					<name>
 						Systolic blood pressure
 					</name>
@@ -1900,25 +1900,25 @@ sponsor="Novo Nordisk">
 				<armReportingGroup armId="arm1Id" id="_89ac6bd3-48fa-4b55-939d-acbaaab6db2f">
 					<countableValues />
 					<tendencyValues>
-						<tendencyValue categoryId="_46e15560-11b6-4f07-8488-dd91060b4e86">
+						<tendencyValue categoryId="diastolicCategoryId">
 							<value>
 								-1.84
 							</value>
 						</tendencyValue>
-						<tendencyValue categoryId="_45efb56d-b81a-43e0-a443-dea5c50df3c2">
+						<tendencyValue categoryId="systolicCategoryId">
 							<value>
 								-4.29
 							</value>
 						</tendencyValue>
 					</tendencyValues>
 					<dispersionValues>
-						<dispersionValue categoryId="_46e15560-11b6-4f07-8488-dd91060b4e86">
+						<dispersionValue categoryId="diastolicCategoryId">
 							<value>
 								0.73
 							</value>
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
-						<dispersionValue categoryId="_45efb56d-b81a-43e0-a443-dea5c50df3c2">
+						<dispersionValue categoryId="systolicCategoryId">
 							<value>
 								1.26
 							</value>
@@ -1932,25 +1932,25 @@ sponsor="Novo Nordisk">
 				<armReportingGroup armId="arm2Id" id="_3a75fa90-587b-4b80-9a4c-348177ce2825">
 					<countableValues />
 					<tendencyValues>
-						<tendencyValue categoryId="_46e15560-11b6-4f07-8488-dd91060b4e86">
+						<tendencyValue categoryId="diastolicCategoryId">
 							<value>
 								-1.50
 							</value>
 						</tendencyValue>
-						<tendencyValue categoryId="_45efb56d-b81a-43e0-a443-dea5c50df3c2">
+						<tendencyValue categoryId="systolicCategoryId">
 							<value>
 								-7.27
 							</value>
 						</tendencyValue>
 					</tendencyValues>
 					<dispersionValues>
-						<dispersionValue categoryId="_46e15560-11b6-4f07-8488-dd91060b4e86">
+						<dispersionValue categoryId="diastolicCategoryId">
 							<value>
 								0.74
 							</value>
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
-						<dispersionValue categoryId="_45efb56d-b81a-43e0-a443-dea5c50df3c2">
+						<dispersionValue categoryId="systolicCategoryId">
 							<value>
 								1.27
 							</value>
@@ -1964,25 +1964,25 @@ sponsor="Novo Nordisk">
 				<armReportingGroup armId="arm3Id" id="_c65c22d6-362d-47de-87d4-7c6ce3debf62">
 					<countableValues />
 					<tendencyValues>
-						<tendencyValue categoryId="_46e15560-11b6-4f07-8488-dd91060b4e86">
+						<tendencyValue categoryId="diastolicCategoryId">
 							<value>
 								-2.17
 							</value>
 						</tendencyValue>
-						<tendencyValue categoryId="_45efb56d-b81a-43e0-a443-dea5c50df3c2">
+						<tendencyValue categoryId="systolicCategoryId">
 							<value>
 								-0.99
 							</value>
 						</tendencyValue>
 					</tendencyValues>
 					<dispersionValues>
-						<dispersionValue categoryId="_46e15560-11b6-4f07-8488-dd91060b4e86">
+						<dispersionValue categoryId="diastolicCategoryId">
 							<value>
 								0.79
 							</value>
 							<highRangeValue xsi:nil="true" />
 						</dispersionValue>
-						<dispersionValue categoryId="_45efb56d-b81a-43e0-a443-dea5c50df3c2">
+						<dispersionValue categoryId="systolicCategoryId">
 							<value>
 								1.34
 							</value>

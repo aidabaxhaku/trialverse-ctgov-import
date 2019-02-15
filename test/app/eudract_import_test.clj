@@ -190,14 +190,22 @@
     (is (= expected-rdf-properties
            found-baseline-rdf))))
 
-(deftest test-get-categories-for-variable
-  (let [categories      (get-categories-for-variable age-categorical)
-        expected-ids    '("adultsCategoryId"
+(deftest test-find-categories
+  (let [categories      (find-categories xml)
+        expected-ids    '("femaleCategoryId"
+                          "maleCategoryId"
+                          "adultsCategoryId"
                           "pensionersCategoryId"
-                          "octogenarianCategoryId")
-        expected-titles '("Adults (18-64 years)"
+                          "octogenarianCategoryId"
+                          "diastolicCategoryId"
+                          "systolicCategoryId")
+        expected-titles '("Female"
+                          "Male"
+                          "Adults (18-64 years)"
                           "From 65-84 years"
-                          "85 years and over")]
+                          "85 years and over"
+                          "Diastolic blood pressure"
+                          "Systolic blood pressure")]
     (is (= expected-ids (keys categories)))
     (is (= expected-titles (map :title (vals categories))))))
 
