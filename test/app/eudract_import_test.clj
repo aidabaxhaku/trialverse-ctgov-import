@@ -14,13 +14,13 @@
                                 4))
 (def age-categorical (vtd/at xml "/result/baselineCharacteristics/ageCategoricalCharacteristic"))
 (def age-continuous (vtd/at xml "/result/baselineCharacteristics/ageContinuousCharacteristic"))
-(def decreased-appetite (first (find-adverse-events xml)))
+(def decreased-appetite (first (find-adverse-events-xml xml)))
 
 (def arm-ids '("arm1Id" "arm2Id" "arm3Id"))
 (def baseline-group-ids '("baselineGroup1Id" "baselineGroup2Id" "baselineGroup3Id"))
 (def adverse-event-group-ids '("ReportingGroup-1" "ReportingGroup-2" "ReportingGroup-3"))
 (def group-ids (concat arm-ids adverse-event-group-ids baseline-group-ids))
-(def age-categories (into {} (map #(vector % [:qname :instance %])
+(def age-categories (into {} (map #(vector % {:uri [:qname :instance %]})
                                   '("adultsCategoryId"
                                     "pensionersCategoryId"
                                     "octogenarianCategoryId"))))
@@ -128,9 +128,6 @@
                              [[:qname :ontology "has_result_property"] [:qname :ontology "percentage"]])]
     (is (every? true? (map = expected-properties (second generated-rdf))))))
 
-(deftest test-find-adverse-events
-  (is (= 45 (count (find-adverse-events xml)))))
-
 (deftest test-adverse-event-rdf-nonserious
   (let
    [outcome-uris            {[:event 1] outcome-uri}
@@ -155,11 +152,18 @@
                                outcome-uris
                                mm-uris))))))
 
+(deftest test-find-adverse-events-xml
+  (is (= 45 (count (find-adverse-events-xml xml)))))
+
 (deftest test-find-baseline-xml
   (let [ baseline-xml (find-baseline-xml xml)]
-    (is (= 10 (+ 
-               (count (:continuous baseline-xml))
-               (count (:categorical baseline-xml)))))))
+    (is (= 10 (count baseline-xml)))))
+
+(deftest test-find-endpoints-xml
+  (is (= 8 (count (find-endpoints-xml xml)))))
+
+(deftest test-find-variables-xml 
+  (is (= 63 (count (find-variables-xml xml)))))
 
 (deftest test-baseline-var-rdf-continuous
   (let [baseline-uris           {[:baseline 1] [:qname :instance "baseline-uri"]}
@@ -303,13 +307,13 @@
   (is (every? #(= 3 %) 
       (map count (vals (find-groups xml))))))
 
-(deftest test-group-uris
+(deftest test-build-group-uris
   (let [baseline-groups      (find-baseline-groups xml)
         adverse-event-groups (find-adverse-event-groups xml)
         arms                 (find-arms xml)
-        group-uris           (build-group-uris arms 
-                                               adverse-event-groups 
-                                               baseline-groups)
+        group-uris           (build-group-uris {:arms arms 
+                                               :adverse-event-groups adverse-event-groups 
+                                               :baseline-groups baseline-groups})
         expected-ids         group-ids]
     (is (= expected-ids
            (keys group-uris)))
@@ -317,7 +321,7 @@
                 (map #(= (group-uris %1) (group-uris %2))
                      arm-ids baseline-group-ids)))))
 
-(deftest test-group-rdf
+(deftest test-build-groups-rdf
   (let [baseline-groups      '({:id          "baselineGroup1Id"
                                 :arm-id       "arm1Id"
                                 :sampleSize  132
@@ -341,7 +345,7 @@
                                    (range 1 (+ 2 (count group-ids))))
         group-uris           (assoc (zipmap group-ids mock-uris)
                                     "nonArmBaseline" (last mock-uris))
-        found-groups-rdf     (groups-rdf groups group-uris)
+        found-groups-rdf     (build-groups-rdf groups group-uris)
         expected-groups-rdf  '([[:qname :instance "generatedUuid1"]
                                 ([[:qname :rdfs "label"] [:lit "Semaglutide 0.5 mg"]]
                                  [[:qname :rdfs "comment"] [:lit "arm group desc"]] 
@@ -435,11 +439,6 @@
                         mm-uri
                         group-uris))))))
 
-(deftest test-build-category-count
-  (let 
-   [expected-rdf (list
-                  (list))]))
-
 (deftest test-build-categorical-measurement-rdf
   (let
    [measurement    {"category1" 3
@@ -451,84 +450,95 @@
                     "category2" {:uri category-2-uri}}
     group-uri      [:qname :instance "groupId"]
     group-uris     {"groupId" group-uri}
-    expected-rdf   (list
-                    (list [[:qname :ontology "of_outcome"] outcome-uri]
-                          [[:qname :ontology "of_group"] group-uri]
-                          [[:qname :ontology "of_moment"] mm-uri]
-                          [[:qname :ontology "category_count"]
-                           [:blank (list
-                                    [:qname :ontology "category"  category-1-uri]
-                                    [:qname :ontology "count" 93])]]
-                          [[:qname :ontology "category_count"]
-                           [:blank (list
-                                    [:qname :ontology "category" category-2-uri]
-                                    [:qname :ontology "count" 39])]]))]
+    expected-rdf   (list [[:qname :ontology "of_outcome"] outcome-uri]
+                         [[:qname :ontology "of_group"] group-uri]
+                         [[:qname :ontology "of_moment"] mm-uri]
+                         [[:qname :ontology "category_count"]
+                          [:blank (list
+                                   [[:qname :ontology "category"] category-1-uri]
+                                   [[:qname :ontology "count"] [:lit 3]])]]
+                         [[:qname :ontology "category_count"]
+                          [:blank (list
+                                   [[:qname :ontology "category"] category-2-uri]
+                                   [[:qname :ontology "count"] [:lit 5]])]])]
     (is (= expected-rdf
            (second (build-categorical-measurement-rdf
-            measurement
-            outcome-uri mm-uri group-uris categories))))))
+                    measurement
+                    outcome-uri mm-uri group-uris categories))))))
 
-; (deftest test-read-baseline-measurements-categorical
-;   (let [group1-uri            [:qname :instance "baselineGroup1Id"]
-;         group2-uri            [:qname :instance "baselineGroup2Id"]
-;         group3-uri            [:qname :instance "baselineGroup3Id"]
-;         group-uris            {"baselineGroup1Id" group1-uri
-;                                "baselineGroup2Id" group2-uri
-;                                "baselineGroup3Id" group3-uri}
-;         adults-category       (:uri (age-categories "adultsCategoryId"))
-;         pensioners-category   (:uri (age-categories "pensionersCategoryId"))
-;         octogenarian-category (:uri (age-categories "octogenarianCategoryId"))
-;         expected-rdf          (list
-;                                (list [[:qname :ontology "of_outcome"] outcome-uri]
-;                                      [[:qname :ontology "of_group"] group1-uri]
-;                                      [[:qname :ontology "of_moment"] mm-uri]
-;                                      [[:qname :ontology "category_count"]
-;                                       [:blank (list
-;                                                [:qname :ontology "category" adults-category]
-;                                                [:qname :ontology "count" 93])]]
-;                                      [[:qname :ontology "category_count"]
-;                                       [:blank (list
-;                                                [:qname :ontology "category" pensioners-category]
-;                                                [:qname :ontology "count" 39])]]
-;                                      [[:qname :ontology "category_count"]
-;                                       [:blank (list
-;                                                [:qname :ontology "category" octogenarian-category]
-;                                                [:qname :ontology "count" 0])]])
-;                                (list [[:qname :ontology "of_outcome"] outcome-uri]
-;                                      [[:qname :ontology "of_group"] group2-uri]
-;                                      [[:qname :ontology "of_moment"] mm-uri]
-;                                      [[:qname :ontology "category_count"]
-;                                       [:blank (list
-;                                                [:qname :ontology "category" adults-category]
-;                                                [:qname :ontology "count" 93])]]
-;                                      [[:qname :ontology "category_count"]
-;                                       [:blank (list
-;                                                [:qname :ontology "category" pensioners-category]
-;                                                [:qname :ontology "count" 39])]]
-;                                      [[:qname :ontology "category_count"]
-;                                       [:blank (list
-;                                                [:qname :ontology "category" octogenarian-category]
-;                                                [:qname :ontology "count" 0])]])
+(deftest test-read-baseline-measurements-categorical
+  (let [group1-uri            [:qname :instance "baselineGroup1Id"]
+        group2-uri            [:qname :instance "baselineGroup2Id"]
+        group3-uri            [:qname :instance "baselineGroup3Id"]
+        group-uris            {"baselineGroup1Id" group1-uri
+                               "baselineGroup2Id" group2-uri
+                               "baselineGroup3Id" group3-uri}
+        adults-category       (:uri (age-categories "adultsCategoryId"))
+        pensioners-category   (:uri (age-categories "pensionersCategoryId"))
+        octogenarian-category (:uri (age-categories "octogenarianCategoryId"))
+        expected-rdf          (list
+                               (list [[:qname :ontology "of_outcome"] outcome-uri]
+                                     [[:qname :ontology "of_group"] group1-uri]
+                                     [[:qname :ontology "of_moment"] mm-uri]
+                                     [[:qname :ontology "category_count"]
+                                      [:blank (list
+                                               [[:qname :ontology "category"] adults-category]
+                                               [[:qname :ontology "count"] [:lit 93]])]]
+                                     [[:qname :ontology "category_count"]
+                                      [:blank (list
+                                               [[:qname :ontology "category"] pensioners-category]
+                                               [[:qname :ontology "count"] [:lit 39]])]]
+                                     [[:qname :ontology "category_count"]
+                                      [:blank (list
+                                               [[:qname :ontology "category"] octogenarian-category]
+                                               [[:qname :ontology "count"] [:lit 0]])]])
+                               (list [[:qname :ontology "of_outcome"] outcome-uri]
+                                     [[:qname :ontology "of_group"] group2-uri]
+                                     [[:qname :ontology "of_moment"] mm-uri]
+                                     [[:qname :ontology "category_count"]
+                                      [:blank (list
+                                               [[:qname :ontology "category"] adults-category]
+                                               [[:qname :ontology "count"] [:lit 102]])]]
+                                     [[:qname :ontology "category_count"]
+                                      [:blank (list
+                                               [[:qname :ontology "category"] pensioners-category]
+                                               [[:qname :ontology "count"] [:lit 29]])]]
+                                     [[:qname :ontology "category_count"]
+                                      [:blank (list
+                                               [[:qname :ontology "category"] octogenarian-category]
+                                               [[:qname :ontology "count"] [:lit 0]])]])
+                               (list [[:qname :ontology "of_outcome"] outcome-uri]
+                                     [[:qname :ontology "of_group"] group3-uri]
+                                     [[:qname :ontology "of_moment"] mm-uri]
+                                     [[:qname :ontology "category_count"]
+                                      [:blank (list
+                                               [[:qname :ontology "category"] adults-category]
+                                               [[:qname :ontology "count"] [:lit 86]])]]
+                                     [[:qname :ontology "category_count"]
+                                      [:blank (list
+                                               [[:qname :ontology "category"] pensioners-category]
+                                               [[:qname :ontology "count"] [:lit 46]])]]
+                                     [[:qname :ontology "category_count"]
+                                      [:blank (list
+                                               [[:qname :ontology "category"] octogenarian-category]
+                                               [[:qname :ontology "count"] [:lit 1]])]]))]
+    (is (= expected-rdf
+           (map second (read-baseline-measurements-categorical
+                        age-categorical
+                        outcome-uri
+                        mm-uri
+                        group-uris
+                        age-categories))))))
 
-;                                (list [[:qname :ontology "of_outcome"] outcome-uri]
-;                                      [[:qname :ontology "of_group"] group3-uri]
-;                                      [[:qname :ontology "of_moment"] mm-uri]
-;                                      [[:qname :ontology "category_count"]
-;                                       [:blank (list
-;                                                [:qname :ontology "category" adults-category]
-;                                                [:qname :ontology "count" 93])]]
-;                                      [[:qname :ontology "category_count"]
-;                                       [:blank (list
-;                                                [:qname :ontology "category" pensioners-category]
-;                                                [:qname :ontology "count" 39])]]
-;                                      [[:qname :ontology "category_count"]
-;                                       [:blank (list
-;                                                [:qname :ontology "category" octogenarian-category]
-;                                                [:qname :ontology "count" 0])]]))]
-;     (is (= expected-rdf
-;            (map second (read-baseline-measurements-categorical
-;                         age-categorical
-;                         outcome-uri
-;                         mm-uri
-;                         group-uris
-;                         age-categories))))))
+(deftest test-read-all-measurements
+  (let [[mm-uris mm-info]     (find-measurement-moments xml)
+        groups                (find-groups xml)
+        group-uris            (build-group-uris groups)
+        groups-rdf            (build-groups-rdf groups group-uris)
+        baseline-xml          (find-baseline-xml xml)
+        baseline-var-rdf-data (map #(baseline-var-rdf %1 %2 group-uris mm-uris)
+                                   baseline-xml
+                                   (iterate inc 1))]
+    (println group-uris)
+    (println baseline-var-rdf-data)
+    (is (= 1 1))))

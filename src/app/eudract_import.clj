@@ -43,6 +43,7 @@
                 (vtd/search xml "/result/endPoints/endPoint/timeFrame")
                 (iterate inc 1))))
 
+
 (defn find-measurement-moments
   [xml]
   (lib/sort-equivalent-values (merge (find-event-time-frame xml)
@@ -69,6 +70,33 @@
                (str "https://www.clinicaltrialsregister.eu/ctr-search/trial/" 
                     eudract-id 
                     "/results")]))
+
+(defn find-adverse-events-xml
+  [xml]
+  (concat (vtd/search xml "/result/adverseEvents/nonSeriousAdverseEvents/nonSeriousAdverseEvent")
+          (vtd/search xml "/result/adverseEvents/seriousAdverseEvents/seriousAdverseEvent")))
+
+(defn find-baseline-xml
+  [xml]
+  (let [base "/result/baselineCharacteristics/"]
+    (concat
+     (vtd/search xml (str base "studyContinuousCharacteristics/studyContinuousCharacteristic"))
+     (vtd/search xml (str base "ageContinuousCharacteristic"))
+     (vtd/search xml (str base "studyCategoricalCharacteristics/studyCategoricalCharacteristic"))
+     (vtd/search xml (str base "genderCategoricalCharacteristic"))
+     (vtd/search xml (str base "ageCategoricalCharacteristic")))))
+
+(defn find-endpoints-xml
+  [xml]
+  (vtd/search xml "/result/endPoints/endPoint"))
+
+
+(defn find-variables-xml
+  [xml]
+  (concat (find-baseline-xml xml)
+          (find-adverse-events-xml xml)
+          (find-endpoints-xml xml)))
+
 
 (defn outcome-properties
   [xml]
@@ -151,11 +179,6 @@
        (trig/iri :ontology "has_result_property")
        (map #(trig/iri :ontology %) (:properties properties)))))
 
-(defn find-adverse-events
-  [xml] 
-  (concat (vtd/search xml "/result/adverseEvents/nonSeriousAdverseEvents/nonSeriousAdverseEvent")
-          (vtd/search xml "/result/adverseEvents/seriousAdverseEvents/seriousAdverseEvent")))
-
 
 (defn adverse-event-rdf
   [xml idx event-uris mm-uris]
@@ -180,16 +203,6 @@
      (trig/iri :ontology "has_result_property")
      (map #(trig/iri :ontology %) ["sample_size" "count" "event_count"]))))
 
-(defn find-baseline-xml
-  [xml]
-  (let [base "/result/baselineCharacteristics/"]
-    {:continuous  (concat
-                   (vtd/search xml (str base "studyContinuousCharacteristics/studyContinuousCharacteristic"))
-                   (vtd/search xml (str base "ageContinuousCharacteristic")))
-     :categorical (concat
-                   (vtd/search xml (str base "studyCategoricalCharacteristics/studyCategoricalCharacteristic"))
-                   (vtd/search xml (str base "genderCategoricalCharacteristic"))
-                   (vtd/search xml (str base "ageCategoricalCharacteristic")))}))
 
 (defn measurement-type-for-baseline
   [tag]
@@ -265,7 +278,9 @@
          groups-xml)))
 
 (defn build-group-uris
-  [arms adverse-event-groups baseline-groups]
+  [{arms                 :arms
+    baseline-groups      :baseline-groups
+    adverse-event-groups :adverse-event-groups}]
   (let [uris-by-id
         (into {}
               (map #(vector (:id %) (lib/gen-uri))
@@ -283,7 +298,7 @@
    :baseline-groups      (find-baseline-groups xml)
    :adverse-event-groups (find-adverse-event-groups xml)})
 
-(defn groups-rdf
+(defn build-groups-rdf
   [{arms                 :arms
     baseline-groups      :baseline-groups
     adverse-event-groups :adverse-event-groups}
@@ -377,7 +392,7 @@
     (merge measurements-by-category {:group-id (vtd/attr xml "baselineReportingGroupId")})))
 
 (defn build-category-count
-  [category count]
+  [[category count]]
   [(trig/iri :ontology "category_count")
    (-> (trig/_po
         [(trig/iri :ontology "category")
@@ -391,21 +406,22 @@
    [instance-uri             (lib/gen-uri)
     category-uris-and-counts (map (fn [[category-id count]]
                                     [(categories category-id) count])
-                                  (remove #(= (first %) :group-id) measurement))
-    category-count-rdf       (map build-category-count category-uris-and-counts)]
-    (-> instance-uri
-        (lib/measurement-meta-rdf
-         outcome-uri
-         (group-uris (:group-id measurement))
-         mm-uri)
-        (trig/spo))))
+                                  (remove #(= :group-id (first %)) measurement))
+    category-count-rdf       (map build-category-count category-uris-and-counts)
+    base-rdf                 (lib/measurement-meta-rdf
+                              instance-uri
+                              outcome-uri
+                              (group-uris (:group-id measurement))
+                              mm-uri)]
+    (reduce #(trig/spo %1 %2)
+            base-rdf
+            category-count-rdf)))
 
 (defn read-baseline-measurements-categorical
   [xml outcome-uri mm-uri group-uris categories]
   (let [reporting-groups-xml (vtd/search xml "./reportingGroups/reportingGroup")
         measurements         (map read-categorical-measurement-values-for-group
                                   reporting-groups-xml)]
-    (println (count reporting-groups-xml))
     (map #(build-categorical-measurement-rdf % outcome-uri mm-uri group-uris categories)
          measurements)))
 
@@ -415,6 +431,7 @@
     (into {}
           (map #(make-category-vector % (lib/gen-uri))
                category-nodes))))
+
 
 ; (defn )          
 ; (defn import-xml

@@ -1,5 +1,5 @@
 (ns app.handler
-  (:require [app.core :refer [ctgov-import]]
+  (:require [app.ctgov-import :refer [ctgov-import]]
             [riveted.core :as vtd]
             [compojure.core :refer :all]
             [compojure.route :as route]
