@@ -102,17 +102,14 @@
   [xml]
   (let [categories-xml (vtd/search xml "./categories/category")
         category-count (count (vtd/children categories-xml))
-        category-info  (map (fn [category-xml]
-                              {:id   (vtd/attr category-xml "id")
-                               :name (lib/text-at category-xml "name")
-                               :uri  (lib/gen-uri)})
-                            categories-xml)
+        category-ids  (map #(vtd/attr % "id")
+                           categories-xml)
         param          (lib/text-at xml "centralTendencyType/value")
         dispersion     (lib/text-at xml "dispersionType/value")
         units          (lib/text-at xml "unit")]
     {:simple     (< category-count 2)
      :is-count?  (= "true" (lib/text-at xml "countable"))
-     :categories category-info
+     :category-ids category-ids
      :param      param
      :dispersion dispersion
      :units      units}))
@@ -155,7 +152,7 @@
      :measurement-type (outcome-measurement-type props)
      :dispersion       found-dispersion
      :tendency         found-tendency
-     :categories       (:categories props)}))
+     :category-ids     (:category-ids props)}))
 
   (defn outcome-rdf
     [xml idx outcome-uris mm-uris]
@@ -216,9 +213,9 @@
 (defn p* [x] (println x) x) ; FIXME: debug
 
 (defn get-of-variable-rdf
-  [measurement-type result-properties]
-  (let 
-   [category-uris (map :uri (:categories result-properties))
+  [measurement-type result-properties categories]
+  (let
+   [category-uris (map :uri (map categories (:category-ids result-properties)))
     category-rdf  (if (= measurement-type "categorical")
                     [(trig/iri :ontology "categoryList")
                      (trig/coll category-uris)])
@@ -231,14 +228,14 @@
      of-variable]))
 
 (defn baseline-var-rdf
-  [xml idx baseline-uris mm-uris]
+  [xml idx baseline-uris mm-uris categories]
   (let
    [uri               (baseline-uris [:baseline idx])
     mm-uri            (mm-uris [:baseline])
     name              (lib/text-at xml "./title")
     measurement-type  (measurement-type-for-baseline (vtd/tag xml))
     result-properties (outcome-results-properties xml)
-    variable-rdf      (get-of-variable-rdf measurement-type result-properties)]
+    variable-rdf      (get-of-variable-rdf measurement-type result-properties categories)]
     (lib/spo-each
      (trig/spo uri
                [(trig/iri :rdf "type")
@@ -281,15 +278,13 @@
   [{arms                 :arms
     baseline-groups      :baseline-groups
     adverse-event-groups :adverse-event-groups}]
-  (let [uris-by-id
-        (into {}
-              (map #(vector (:id %) (lib/gen-uri))
-                   (concat arms adverse-event-groups)))
-        baseline-uris-by-id
-        (into {}
-              (map #(vector (:id %) (uris-by-id (:arm-id %)))
-                   baseline-groups))]
-    (merge uris-by-id baseline-uris-by-id)))
+  (let [group-uris-by-id          (into {}
+                                        (map #(vector (:id %) (lib/gen-uri))
+                                             (concat arms adverse-event-groups)))
+        baseline-group-uris-by-id (into {}
+                                        (map #(vector (:id %) (group-uris-by-id (:arm-id %)))
+                                             baseline-groups))]
+    (merge group-uris-by-id baseline-group-uris-by-id)))
 
 (defn find-groups
  ; FIXME: consider <totalBaselineGroup> from categorical baselines? 
@@ -396,7 +391,7 @@
   [(trig/iri :ontology "category_count")
    (-> (trig/_po
         [(trig/iri :ontology "category")
-         (:uri category)])
+         category])
        (trig/spo
         [(trig/iri :ontology "count") count]))])
 
@@ -405,7 +400,7 @@
   (let
    [instance-uri             (lib/gen-uri)
     category-uris-and-counts (map (fn [[category-id count]]
-                                    [(categories category-id) count])
+                                    [(:uri (categories category-id)) count])
                                   (remove #(= :group-id (first %)) measurement))
     category-count-rdf       (map build-category-count category-uris-and-counts)
     base-rdf                 (lib/measurement-meta-rdf

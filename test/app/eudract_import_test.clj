@@ -20,10 +20,8 @@
 (def baseline-group-ids '("baselineGroup1Id" "baselineGroup2Id" "baselineGroup3Id"))
 (def adverse-event-group-ids '("ReportingGroup-1" "ReportingGroup-2" "ReportingGroup-3"))
 (def group-ids (concat arm-ids adverse-event-group-ids baseline-group-ids))
-(def age-categories (into {} (map #(vector % {:uri [:qname :instance %]})
-                                  '("adultsCategoryId"
-                                    "pensionersCategoryId"
-                                    "octogenarianCategoryId"))))
+          
+(def all-categories (find-categories  xml))          
 (def outcome-uri  [:qname :instance "outcome-uri"])
 (def mm-uri [:qname :instance "mm-uri"])
 (defn outcomes-one-through-x [x]
@@ -70,7 +68,7 @@
   (let [found-properties (outcome-properties hba1c-change-xml)
         expected-properties {:simple     true
                              :is-count?  false
-                             :categories ()
+                             :category-ids ()
                              :param      "MEASURE_TYPE.leastSquares"
                              :dispersion "ENDPOINT_DISPERSION.standardError"
                              :units      "percentage of glycosylated hemoglobin"}]
@@ -80,7 +78,7 @@
   (let [found-properties (outcome-properties hba1c-under-7-percent-xml)
         expected-properties  {:simple     true
                               :is-count?  false
-                              :categories ()
+                              :category-ids ()
                               :param      "MEASURE_TYPE.number"
                               :dispersion "ENDPOINT_DISPERSION.na"
                               :units      "percentage of subjects"}]
@@ -182,17 +180,14 @@
                                  [[:qname :ontology "has_result_property"]
                                   [:qname :ontology "standard_deviation"]])]
     (is (= expected-rdf-properties
-           (second (baseline-var-rdf age-continuous 1 baseline-uris mm-uris))))))
+           (second (baseline-var-rdf age-continuous 1 baseline-uris mm-uris all-categories))))))
 
 (deftest test-baseline-var-rdf-categorical
   (let [baseline-uris           {[:baseline 1] [:qname :instance "baseline-uri"]}
         mm-uris                 {[:baseline] mm-uri}
-        category-ids            '("adultsCategoryId"
-                                  "pensionersCategoryId"
-                                  "octogenarianCategoryId")
+        category-ids            '("adultsCategoryId" "pensionersCategoryId" "octogenarianCategoryId")
         category-uris           (map #(vector :qname :instance %) category-ids)
-        categories              (map #(hash-map :uri %) category-uris)
-        mock-result-properties  {:categories categories
+        mock-result-properties  {:category-ids category-ids
                                  :properties []}
         expected-rdf-properties (list [[:qname :rdf "type"]
                                        [:qname :ontology "PopulationCharacteristic"]]
@@ -209,7 +204,7 @@
                                                (fn [x] mock-result-properties)]
                                    (second
                                     (baseline-var-rdf
-                                     age-categorical 1 baseline-uris mm-uris)))]
+                                     age-categorical 1 baseline-uris mm-uris all-categories)))]
       (is (= expected-rdf-properties
              found-baseline-rdf))))
 
@@ -473,9 +468,9 @@
         group-uris            {"baselineGroup1Id" group1-uri
                                "baselineGroup2Id" group2-uri
                                "baselineGroup3Id" group3-uri}
-        adults-category       (:uri (age-categories "adultsCategoryId"))
-        pensioners-category   (:uri (age-categories "pensionersCategoryId"))
-        octogenarian-category (:uri (age-categories "octogenarianCategoryId"))
+        adults-category       (:uri (all-categories "adultsCategoryId"))
+        pensioners-category   (:uri (all-categories "pensionersCategoryId"))
+        octogenarian-category (:uri (all-categories "octogenarianCategoryId"))
         expected-rdf          (list
                                (list [[:qname :ontology "of_outcome"] outcome-uri]
                                      [[:qname :ontology "of_group"] group1-uri]
@@ -528,17 +523,21 @@
                         outcome-uri
                         mm-uri
                         group-uris
-                        age-categories))))))
+                        all-categories))))))
 
 (deftest test-read-all-measurements
   (let [[mm-uris mm-info]     (find-measurement-moments xml)
         groups                (find-groups xml)
         group-uris            (build-group-uris groups)
         groups-rdf            (build-groups-rdf groups group-uris)
+        categories            (find-categories xml)
         baseline-xml          (find-baseline-xml xml)
-        baseline-var-rdf-data (map #(baseline-var-rdf %1 %2 group-uris mm-uris)
+        baseline-uris         (into {}
+                                    (map #(vector [:baseline %2] (trig/iri :instance (lib/uuid)))
+                                         baseline-xml
+                                         (iterate inc 1)))
+        baseline-var-rdf-data (map #(baseline-var-rdf %1 %2 baseline-uris mm-uris categories)
                                    baseline-xml
                                    (iterate inc 1))]
-    (println group-uris)
-    (println baseline-var-rdf-data)
-    (is (= 1 1))))
+    (clojure.pprint/pprint baseline-var-rdf-data)
+    (is (= 1 0))))
