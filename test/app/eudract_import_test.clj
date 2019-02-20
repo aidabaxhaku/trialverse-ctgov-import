@@ -186,9 +186,7 @@
   (let [baseline-uris           {[:baseline 1] [:qname :instance "baseline-uri"]}
         mm-uris                 {[:baseline] mm-uri}
         category-ids            '("adultsCategoryId" "pensionersCategoryId" "octogenarianCategoryId")
-        category-uris           (map #(vector :qname :instance %) category-ids)
-        mock-result-properties  {:category-ids category-ids
-                                 :properties []}
+        category-uris           (map :uri (map all-categories category-ids))
         expected-rdf-properties (list [[:qname :rdf "type"]
                                        [:qname :ontology "PopulationCharacteristic"]]
                                       [[:qname :rdfs "label"] [:lit "Age Categorical"]]
@@ -200,13 +198,11 @@
                                                  [:qname :ontology "categorical"]]
                                                 [[:qname :ontology "categoryList"]
                                                  (trig/coll category-uris)])]])
-        found-baseline-rdf       (with-redefs [outcome-results-properties
-                                               (fn [x] mock-result-properties)]
-                                   (second
-                                    (baseline-var-rdf
-                                     age-categorical 1 baseline-uris mm-uris all-categories)))]
-      (is (= expected-rdf-properties
-             found-baseline-rdf))))
+        found-baseline-rdf      (second
+                                 (baseline-var-rdf
+                                  age-categorical 1 baseline-uris mm-uris all-categories))]
+    (is (= expected-rdf-properties
+           found-baseline-rdf))))
 
 (deftest test-find-categories
   (let [categories      (find-categories xml)
@@ -253,15 +249,15 @@
 (deftest test-find-baseline-groups
   (let [expected-groups '({:id          "baselineGroup1Id"
                            :arm-id       "arm1Id"
-                           :sampleSize  "132"
+                           :sample-size  132
                            :description "Subjects received semaglutide 0.25 mg subcutaneous (sc) injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30."}
                           {:id          "baselineGroup2Id"
                            :arm-id       "arm2Id"
-                           :sampleSize  "131"
+                           :sample-size  131
                            :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30."}
                           {:id          "baselineGroup3Id"
                            :arm-id       "arm3Id"
-                           :sampleSize  "133"
+                           :sample-size  133
                            :description "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks."})]
     (is (= expected-groups
            (find-baseline-groups xml)))))
@@ -269,15 +265,15 @@
 (deftest test-find-arms
   (let [expected-arms '({:id          "arm1Id"
                          :title       "Semaglutide 0.5 mg"
-                         :sampleSize  "132"
+                         :sample-size  132
                          :description "Subjects received semaglutide 0.25 mg subcutaneous (sc) injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30."}
                         {:id          "arm2Id"
                          :title       "Semaglutide 1.0 mg"
-                         :sampleSize  "131"
+                         :sample-size  131
                          :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30."}
                         {:id          "arm3Id"
                          :title       "Placebo"
-                         :sampleSize  "133"
+                         :sample-size  133
                          :description "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks."})]
     (is (= expected-arms
            (find-arms xml)))))
@@ -285,15 +281,15 @@
 (deftest test-find-adverse-event-groups
   (let [expected-groups '({:id          "ReportingGroup-1"
                            :title       "Semaglutide 0.5 mg"
-                           :sampleSize  "132"
+                           :sample-size  132
                            :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30."} 
                           {:id          "ReportingGroup-2"
                            :title       "Semaglutide 1.0 mg"
-                           :sampleSize  "131"
+                           :sample-size  131
                            :description "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30."}
                           {:id          "ReportingGroup-3"
                            :title       "Placebo"
-                           :sampleSize  "133"
+                           :sample-size  133
                            :description "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks."})]
        (is (= expected-groups
               (find-adverse-event-groups xml)))))
@@ -316,22 +312,28 @@
                 (map #(= (group-uris %1) (group-uris %2))
                      arm-ids baseline-group-ids)))))
 
+(deftest test-build-groups-with-uris 
+  (let [groups (find-groups xml)
+        group-uris (build-group-uris groups)]
+    (is (= {}
+           (build-groups-with-uris groups group-uris)))))
+
 (deftest test-build-groups-rdf
   (let [baseline-groups      '({:id          "baselineGroup1Id"
                                 :arm-id       "arm1Id"
-                                :sampleSize  132
+                                :sample-size  132
                                 :description "baseline descr"}
                                {:id          "nonArmBaseline"
                                 :arm-id       nil
-                                :sampleSize  131
+                                :sample-size  131
                                 :description "non-arm baseline group"})
         adverse-event-groups '({:id          "ReportingGroup-1"
                                 :title       "Semaglutide 0.5 mg"
-                                :sampleSize  132
+                                :sample-size  132
                                 :description "adverse event group  desc"})
         arms                 '({:id          "arm1Id"
                                 :title       "Semaglutide 0.5 mg"
-                                :sampleSize  132
+                                :sample-size  132
                                 :description "arm group desc"})
         groups               {:arms                 arms
                               :baseline-groups      baseline-groups
@@ -434,6 +436,13 @@
                         mm-uri
                         group-uris))))))
 
+(deftest test-read-continuous-baseline-measurement-values-for-group
+  (let [xml (first (vtd/search age-continuous "./reportingGroups/reportingGroup"))]
+    (is (= {:group-id         "baselineGroup1Id"
+            :tendency-value   59.1
+            :dispersion-value 10.3}
+           (read-continuous-baseline-measurement-values-for-group xml)))))
+
 (deftest test-build-categorical-measurement-rdf
   (let
    [measurement    {"category1" 3
@@ -525,19 +534,40 @@
                         group-uris
                         all-categories))))))
 
-(deftest test-read-all-measurements
-  (let [[mm-uris mm-info]     (find-measurement-moments xml)
-        groups                (find-groups xml)
-        group-uris            (build-group-uris groups)
-        groups-rdf            (build-groups-rdf groups group-uris)
-        categories            (find-categories xml)
-        baseline-xml          (find-baseline-xml xml)
-        baseline-uris         (into {}
-                                    (map #(vector [:baseline %2] (trig/iri :instance (lib/uuid)))
-                                         baseline-xml
-                                         (iterate inc 1)))
-        baseline-var-rdf-data (map #(baseline-var-rdf %1 %2 baseline-uris mm-uris categories)
-                                   baseline-xml
-                                   (iterate inc 1))]
-    (clojure.pprint/pprint baseline-var-rdf-data)
-    (is (= 1 0))))
+; (deftest read-baseline-measurements-continuous
+;   (let [group1-uri   [:qname :instance "baselineGroup1Id"]
+;         group2-uri   [:qname :instance "baselineGroup2Id"]
+;         group3-uri   [:qname :instance "baselineGroup3Id"]
+;         group-uris   {"baselineGroup1Id" group1-uri
+;                       "baselineGroup2Id" group2-uri
+;                       "baselineGroup3Id" group3-uri}
+;         expected-rdf ()]
+;     (is (= expected-rdf
+;            (read-baseline-measurements-continuous
+;             xml outcome-uri mm-uri group-uris)))))
+
+; (deftest test-read-all-measurements
+;   (let [[mm-uris mm-info]     (find-measurement-moments xml)
+;         groups                (find-groups xml)
+;         group-uris            (build-group-uris groups)
+;         groups-rdf            (build-groups-rdf groups group-uris)
+;         categories            (find-categories xml)
+;         baseline-xml          (find-baseline-xml xml)
+;         baseline-uris         (into {}
+;                                     (map #(vector [:baseline %2] (trig/iri :instance (lib/uuid)))
+;                                          baseline-xml
+;                                          (iterate inc 1)))
+;         baseline-var-rdf-data (map #(baseline-var-rdf %1 %2 baseline-uris mm-uris categories)
+;                                    baseline-xml
+;                                    (iterate inc 1))
+;         baseline-measurement-data (map #(read-baseline-measurements-categorical
+;                                          %1 
+;                                          (baseline-uris [:baseline %2])
+;                                          (mm-uris [:baseline])
+;                                          group-uris
+;                                          categories)
+;                                        baseline-xml
+;                                        (iterate inc 1))]
+;     (clojure.pprint/pprint 
+;      (concat baseline-var-rdf-data baseline-measurement-data))
+;     (is (= 1 0))))

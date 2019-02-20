@@ -251,8 +251,8 @@
   [xml]
   (let [groups-xml (vtd/search xml "/result/baselineCharacteristics/baselineReportingGroups/baselineReportingGroup")]
     (map (fn [%] {:id          (vtd/attr % "id")
-                  :arm-id       (vtd/attr % "armId")
-                  :sampleSize  (lib/text-at % "subjects")
+                  :arm-id      (vtd/attr % "armId")
+                  :sample-size (lib/parse-int (lib/text-at % "subjects"))
                   :description (lib/text-at % "description")})
          groups-xml)))
 
@@ -261,7 +261,7 @@
   (let [arms-xml (vtd/search xml "/result/subjectDisposition/postAssignmentPeriods/postAssignmentPeriod/arms/arm")]
     (map (fn [%] {:id          (vtd/attr % "id")
                   :title       (lib/text-at % "title")
-                  :sampleSize  (lib/text-at % "startedMilestoneAchievement/subjects")
+                  :sample-size (lib/parse-int (lib/text-at % "startedMilestoneAchievement/subjects"))
                   :description (lib/text-at % "description")})
          arms-xml)))
 
@@ -270,7 +270,7 @@
   (let [groups-xml (vtd/search xml "/result/adverseEvents/reportingGroups/reportingGroup")]
     (map (fn [%] {:id          (vtd/attr % "id")
                   :title       (lib/text-at % "title")
-                  :sampleSize  (lib/text-at % "subjectsExposed")
+                  :sample-size (lib/parse-int (lib/text-at % "subjectsExposed"))
                   :description (lib/text-at % "description")})
          groups-xml)))
 
@@ -292,6 +292,17 @@
   {:arms                 (find-arms xml)
    :baseline-groups      (find-baseline-groups xml)
    :adverse-event-groups (find-adverse-event-groups xml)})
+
+(defn build-groups-with-uris 
+  [{arms                 :arms
+    baseline-groups      :baseline-groups
+    adverse-event-groups :adverse-event-groups}
+   group-uris]
+  (into {} (map (fn [group]
+                  [(:id group)
+                   (merge {:uri (group-uris (:id group))}
+                          group)])
+                (concat arms baseline-groups adverse-event-groups))))
 
 (defn build-groups-rdf
   [{arms                 :arms
@@ -386,6 +397,14 @@
                                             countable-values))]
     (merge measurements-by-category {:group-id (vtd/attr xml "baselineReportingGroupId")})))
 
+(defn read-continuous-baseline-measurement-values-for-group
+  [xml]
+  {:group-id           (vtd/attr xml "baselineReportingGroupId")
+   :tendency-value   (lib/parse-double 
+                      (lib/text-at xml "./tendencyValue/value"))
+   :dispersion-value (lib/parse-double 
+                      (lib/text-at xml "./dispersionValue/value"))})
+
 (defn build-category-count
   [[category count]]
   [(trig/iri :ontology "category_count")
@@ -418,6 +437,14 @@
         measurements         (map read-categorical-measurement-values-for-group
                                   reporting-groups-xml)]
     (map #(build-categorical-measurement-rdf % outcome-uri mm-uri group-uris categories)
+         measurements)))
+
+(defn read-baseline-measurements-continuous
+  [xml outcome-uri mm-uri group-uris sample-sizes]
+  (let [reporting-groups-xml (vtd/search xml "./reportingGroups/reportingGroup")
+        measurements         (map read-continuous-baseline-measurement-values-for-group
+                                  reporting-groups-xml)]
+    (map #(build-continuous-measurement-rdf % outcome-uri mm-uri group-uris)
          measurements)))
 
 (defn find-categories
