@@ -301,17 +301,18 @@
                               (trig/spo subj [(trig/iri :ontology "count")
                                               (lib/parse-int value)])
                               subj))]
-    (reduce #(trig/spo %1
-                       [(trig/iri :ontology "category_count")
-                        (-> (trig/_po
-                             [(trig/iri :ontology "category")
-                              (category-uris (or
-                                              (lib/text-at %2 "./sub_title")
-                                              (lib/text-at %2 "./title")
-                                              (lib/text-at %2 "../../title")))])
-                            (cond-count (vtd/attr ; this is arg 2 (threading macro)
-                                         (vtd/at %2 measurement-query) 
-                                         "value")))])
+    (reduce #(trig/spo 
+              %1
+              [(trig/iri :ontology "category_count")
+               (-> (trig/_po
+                    [(trig/iri :ontology "category")
+                     (category-uris (or
+                                     (lib/text-at %2 "./sub_title")
+                                     (lib/text-at %2 "./title")
+                                     (lib/text-at %2 "../../title")))])
+                   (cond-count (vtd/attr ; this is arg 2 (threading macro)
+                                (vtd/at %2 measurement-query) 
+                                "value")))])
             subj
             categories-xml)))
 

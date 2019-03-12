@@ -13,10 +13,10 @@
                        "log"          "log_mean"
                        "median"       "median"})
 
-(def DISPERSION {"standardDeviation"             "standard_deviation"
-                 "standardError"                 "standard_error"
+(def DISPERSION {"standardDeviation"             '("standard_deviation")
+                 "standardError"                 '("standard_error")
                  "interQuartileRange"            '("first_quartile" "third_quartile")
-                 "geometricCoefficientVariation" "geometric_coefficient_of_variation"
+                 "geometricCoefficientVariation" '("geometric_coefficient_of_variation")
                  "fullRange"                     '("min" "max")})
 
 (defn prefix-types
@@ -145,9 +145,9 @@
                            (if (is-proportion? props) "proportion")))
         found-dispersion (filter
                           (comp not nil?)
-                          (list
-                          (ENDPOINT-DISPERSION-TYPES (:dispersion props))
-                          (DISPERSION-TYPES (:dispersion props))))]
+                          (concat
+                           (ENDPOINT-DISPERSION-TYPES (:dispersion props))
+                           (DISPERSION-TYPES (:dispersion props))))]
     {:properties       (concat found-tendency found-dispersion)
      :measurement-type (outcome-measurement-type props)
      :dispersion       found-dispersion
@@ -325,7 +325,7 @@
    :sample-size      (lib/parse-int (lib/text-at xml "subjects"))})
 
 (defn build-continuous-measurement-rdf
-  [measurement result-properties outcome-uri mm-uri group-uris]
+  [measurement result-properties outcome-uri mm-uri group-uris sample-size]
   (as-> measurement meas
     (lib/measurement-meta-rdf (lib/gen-uri)
                               outcome-uri
@@ -333,13 +333,18 @@
                               mm-uri)
     (trig/spo meas
               [(trig/iri :ontology "sample_size")
-               (trig/lit (:sample-size measurement))])
-       ; eudract does not currently sypport >1 central tendency and dispersion properties
+               (trig/lit sample-size)])
     (trig/spo meas
               [(trig/iri :ontology (:tendency result-properties))
-               (trig/lit (:tendency-value measurement))]
-              [(trig/iri :ontology (:dispersion result-properties))
-               (trig/lit (:dispersion-value measurement))])))
+               (trig/lit (:tendency-value measurement))])
+    (if (= 1 (count (:dispersion result-properties)))
+      (trig/spo meas [(trig/iri :ontology (first (:dispersion result-properties)))
+                      (trig/lit (:dispersion-value measurement))])
+      (trig/spo meas  ; there's only one or two dispersion properties supported
+                [(trig/iri :ontology (first (:dispersion result-properties)))
+                 (trig/lit (:dispersion-value measurement))]
+                [(trig/iri :ontology (second (:dispersion result-properties)))
+                 (trig/lit (:high-range-value measurement))]))))
 
 (defn read-endpoint-measurements
   [xml outcome-results-properties outcome-uri mm-uri group-uris]
@@ -347,7 +352,7 @@
         measurements     (map read-endpoint-measurement measurements-xml)]
     (map #(build-continuous-measurement-rdf
            % outcome-results-properties
-           outcome-uri mm-uri group-uris)
+           outcome-uri mm-uri group-uris (:sample-size %)) ;; FIXME: figure out uniformity baseline/endpoint
          measurements)))
 
 (defn read-adverse-event-measurement
@@ -388,7 +393,7 @@
                        [(trig/iri :rdf "type")
                         (trig/iri :ontology "Category")])}]))
 
-(defn read-categorical-measurement-values-for-group
+(defn read-group-categorical-measurement-values
   [xml]
   (let [countable-values         (vtd/search xml "./countableValues/countableValue")
         measurements-by-category (into {}
@@ -397,13 +402,15 @@
                                             countable-values))]
     (merge measurements-by-category {:group-id (vtd/attr xml "baselineReportingGroupId")})))
 
-(defn read-continuous-baseline-measurement-values-for-group
+(defn read-group-continuous-baseline-measurement-values
   [xml]
-  {:group-id           (vtd/attr xml "baselineReportingGroupId")
-   :tendency-value   (lib/parse-double 
+  {:group-id         (vtd/attr xml "baselineReportingGroupId")
+   :tendency-value   (lib/parse-double
                       (lib/text-at xml "./tendencyValue/value"))
-   :dispersion-value (lib/parse-double 
-                      (lib/text-at xml "./dispersionValue/value"))})
+   :dispersion-value (lib/parse-double
+                      (lib/text-at xml "./dispersionValue/value"))
+   :high-range-value (lib/parse-double
+                      (lib/text-at xml "./dispersionValue/highRangeValue"))})
 
 (defn build-category-count
   [[category count]]
@@ -434,7 +441,7 @@
 (defn read-baseline-measurements-categorical
   [xml outcome-uri mm-uri group-uris categories]
   (let [reporting-groups-xml (vtd/search xml "./reportingGroups/reportingGroup")
-        measurements         (map read-categorical-measurement-values-for-group
+        measurements         (map read-group-categorical-measurement-values
                                   reporting-groups-xml)]
     (map #(build-categorical-measurement-rdf % outcome-uri mm-uri group-uris categories)
          measurements)))
@@ -442,7 +449,7 @@
 (defn read-baseline-measurements-continuous
   [xml outcome-uri mm-uri group-uris sample-sizes]
   (let [reporting-groups-xml (vtd/search xml "./reportingGroups/reportingGroup")
-        measurements         (map read-continuous-baseline-measurement-values-for-group
+        measurements         (map read-group-continuous-baseline-measurement-values
                                   reporting-groups-xml)]
     (map #(build-continuous-measurement-rdf % outcome-uri mm-uri group-uris)
          measurements)))

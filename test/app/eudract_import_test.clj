@@ -14,6 +14,8 @@
                                 4))
 (def age-categorical (vtd/at xml "/result/baselineCharacteristics/ageCategoricalCharacteristic"))
 (def age-continuous (vtd/at xml "/result/baselineCharacteristics/ageContinuousCharacteristic"))
+(def insulin-dose-continuous (nth (vtd/search xml "/result/baselineCharacteristics/studyContinuousCharacteristics/studyContinuousCharacteristic")
+                                  3))
 (def decreased-appetite (first (find-adverse-events-xml xml)))
 
 (def arm-ids '("arm1Id" "arm2Id" "arm3Id"))
@@ -86,7 +88,11 @@
 
 (deftest test-outcome-results-properties-continuous
   (is (= '("least_squares_mean" "standard_error")
-         (:properties (outcome-results-properties hba1c-change-xml)))))
+         (:properties (outcome-results-properties hba1c-change-xml))))
+  (is (= '("median" "min" "max")
+         (:properties (outcome-results-properties insulin-dose-continuous)))))
+
+
 
 (deftest test-outcome-results-properties-dichotomous
   (is (= '("percentage")
@@ -237,14 +243,14 @@
     (is (= expected-result
            (make-category-vector category-xml uri)))))
 
-(deftest test-read-categorical-measurement-values-for-group
+(deftest test-read-group-categorical-measurement-values
   (let [measurement-xml (first (vtd/search age-categorical "./reportingGroups/reportingGroup"))
         expected-result {"adultsCategoryId"       93
                          "pensionersCategoryId"   39
                          "octogenarianCategoryId" 0
                          :group-id "baselineGroup1Id"}]
     (is (= expected-result
-           (read-categorical-measurement-values-for-group measurement-xml)))))
+           (read-group-categorical-measurement-values measurement-xml)))))
 
 (deftest test-find-baseline-groups
   (let [expected-groups '({:id          "baselineGroup1Id"
@@ -312,11 +318,15 @@
                 (map #(= (group-uris %1) (group-uris %2))
                      arm-ids baseline-group-ids)))))
 
-(deftest test-build-groups-with-uris 
-  (let [groups (find-groups xml)
-        group-uris (build-group-uris groups)]
-    (is (= {}
-           (build-groups-with-uris groups group-uris)))))
+(deftest test-build-groups-with-uris
+  (let [groups           (find-groups xml)
+        group-uris       (build-group-uris groups)
+        groups-with-uris (build-groups-with-uris groups group-uris)]
+    (is (= 9 (count groups-with-uris)))
+    (is (every? true?
+                (map (fn [[group-id group-with-uri]]
+                       (= (group-uris group-id) (group-with-uri :uri)))
+                     groups-with-uris)))))
 
 (deftest test-build-groups-rdf
   (let [baseline-groups      '({:id          "baselineGroup1Id"
@@ -375,7 +385,7 @@
   (let [arm1-uri [:qname :instance "arm1Uri"]
         arm2-uri [:qname :instance "arm2Uri"]
         arm3-uri [:qname :instance "arm3Uri"]
-        outcome-result-properties {:dispersion "standard_error"
+        outcome-result-properties {:dispersion '("standard_error")
                                    :tendency "least_squares_mean"}
         group-uris {"arm1Id" arm1-uri
                     "arm2Id" arm2-uri
@@ -436,12 +446,23 @@
                         mm-uri
                         group-uris))))))
 
-(deftest test-read-continuous-baseline-measurement-values-for-group
-  (let [xml (first (vtd/search age-continuous "./reportingGroups/reportingGroup"))]
+(deftest test-read-group-continuous-baseline-measurement-values
+  (let [get-first-group (fn [baseline-characteristic]
+                          (first (vtd/search baseline-characteristic
+                                             "./reportingGroups/reportingGroup")))]
     (is (= {:group-id         "baselineGroup1Id"
             :tendency-value   59.1
-            :dispersion-value 10.3}
-           (read-continuous-baseline-measurement-values-for-group xml)))))
+            :dispersion-value 10.3
+            :high-range-value nil}
+           (read-group-continuous-baseline-measurement-values
+            (get-first-group age-continuous))))
+    (is (= {:group-id         "baselineGroup1Id"
+            :tendency-value   35.0
+            :dispersion-value 15.0
+            :high-range-value 300.0}
+           (read-group-continuous-baseline-measurement-values
+            (get-first-group insulin-dose-continuous))))))
+
 
 (deftest test-build-categorical-measurement-rdf
   (let
@@ -469,6 +490,31 @@
            (second (build-categorical-measurement-rdf
                     measurement
                     outcome-uri mm-uri group-uris categories))))))
+
+(deftest test-build-continuous-measurement-rdf
+  (let [group-1-uri       [:qname :instance "baselineGroup1Id"]
+        measurement       {:arm-id           "baselineGroup1Id"
+                           :tendency-value   35.0
+                           :dispersion-value 15.0
+                           :high-range-value 300.0}
+        result-properties {:tendency   "mean"
+                           :dispersion '("min" "max")}
+        group-uris        {"baselineGroup1Id" group-1-uri}
+        sample-size       10
+        expected-rdf      (list [[:qname :ontology "of_outcome"]
+                                 [:qname :instance "outcome-uri"]]
+                                [[:qname :ontology "of_group"]
+                                 [:qname :instance "baselineGroup1Id"]]
+                                [[:qname :ontology "of_moment"]
+                                 [:qname :instance "mm-uri"]]
+                                [[:qname :ontology "sample_size"] [:lit sample-size]]
+                                [[:qname :ontology "mean"] [:lit 35.0]]
+                                [[:qname :ontology "min"] [:lit 15.0]]
+                                [[:qname :ontology "max"] [:lit 300.0]])
+        built-rdf         (second (build-continuous-measurement-rdf
+                                   measurement result-properties
+                                   outcome-uri mm-uri group-uris sample-size))]
+    (is (= expected-rdf built-rdf))))
 
 (deftest test-read-baseline-measurements-categorical
   (let [group1-uri            [:qname :instance "baselineGroup1Id"]
@@ -534,7 +580,7 @@
                         group-uris
                         all-categories))))))
 
-; (deftest read-baseline-measurements-continuous
+; (deftest test-read-baseline-measurements-continuous
 ;   (let [group1-uri   [:qname :instance "baselineGroup1Id"]
 ;         group2-uri   [:qname :instance "baselineGroup2Id"]
 ;         group3-uri   [:qname :instance "baselineGroup3Id"]
@@ -544,30 +590,35 @@
 ;         expected-rdf ()]
 ;     (is (= expected-rdf
 ;            (read-baseline-measurements-continuous
-;             xml outcome-uri mm-uri group-uris)))))
+;             xml outcome-uri mm-uri group-uris sample-sizes)))))
 
 ; (deftest test-read-all-measurements
-;   (let [[mm-uris mm-info]     (find-measurement-moments xml)
-;         groups                (find-groups xml)
-;         group-uris            (build-group-uris groups)
-;         groups-rdf            (build-groups-rdf groups group-uris)
-;         categories            (find-categories xml)
-;         baseline-xml          (find-baseline-xml xml)
-;         baseline-uris         (into {}
-;                                     (map #(vector [:baseline %2] (trig/iri :instance (lib/uuid)))
-;                                          baseline-xml
-;                                          (iterate inc 1)))
-;         baseline-var-rdf-data (map #(baseline-var-rdf %1 %2 baseline-uris mm-uris categories)
-;                                    baseline-xml
-;                                    (iterate inc 1))
+;   (let [[mm-uris mm-info]         (find-measurement-moments xml)
+;         groups                    (find-groups xml)
+;         group-uris                (build-group-uris groups)
+;         groups-rdf                (build-groups-rdf groups group-uris)
+;         categories                (find-categories xml)
+;         baseline-xml              (find-baseline-xml xml)
+;         baseline-uris             (into {}
+;                                         (map #(vector [:baseline %2] 
+;                                                       (trig/iri :instance (lib/uuid)))
+;                                              baseline-xml
+;                                              (iterate inc 1)))
+;         baseline-var-rdf-data     (map #(baseline-var-rdf %1 %2 
+;                                                           baseline-uris mm-uris 
+;                                                           categories)
+;                                        baseline-xml
+;                                        (iterate inc 1))
 ;         baseline-measurement-data (map #(read-baseline-measurements-categorical
-;                                          %1 
+;                                          %1
 ;                                          (baseline-uris [:baseline %2])
 ;                                          (mm-uris [:baseline])
 ;                                          group-uris
 ;                                          categories)
 ;                                        baseline-xml
 ;                                        (iterate inc 1))]
-;     (clojure.pprint/pprint 
-;      (concat baseline-var-rdf-data baseline-measurement-data))
+;     (clojure.pprint/pprint
+;      (concat baseline-var-rdf-data baseline-measurement-data)
+;      (clojure.java.io/writer "out.rdf"))
+    
 ;     (is (= 1 0))))
