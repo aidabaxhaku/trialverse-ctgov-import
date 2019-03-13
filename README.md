@@ -30,9 +30,13 @@ docker build -d ctgov-import .
 docker run -d -p 3000:3000 ctgov-import
 ```
 
+## Development
+
+To run all tests, ```lein kaocha```
+
 ## License
 
-Copyright (c) 2014-2016 Gert van Valkenhoef
+Copyright (c) 2014-2016 Gert van Valkenhoef, Daan Reid
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

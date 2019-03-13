@@ -234,7 +234,7 @@
         expected-result  {"adultsCategoryId"       93
                           "octogenarianCategoryId" 0
                           "pensionersCategoryId"   39
-                          :group-id              "baselineGroup1Id"}]
+                          :arm-id              "baselineGroup1Id"}]
     (is (= expected-result
            (read-group-categorical-measurement-values measurement-xml)))))
 
@@ -437,13 +437,13 @@
   (let [get-first-group (fn [baseline-characteristic]
                           (first (vtd/search baseline-characteristic
                                              "./reportingGroups/reportingGroup")))]
-    (is (= {:group-id         "baselineGroup1Id"
+    (is (= {:arm-id         "baselineGroup1Id"
             :tendency-value   59.1
             :dispersion-value 10.3
             :high-range-value nil}
            (read-group-continuous-baseline-measurement-values
             (get-first-group age-continuous))))
-    (is (= {:group-id         "baselineGroup1Id"
+    (is (= {:arm-id         "baselineGroup1Id"
             :tendency-value   35.0
             :dispersion-value 15.0
             :high-range-value 300.0}
@@ -455,7 +455,7 @@
   (let
    [measurement    {"category1" 3
                     "category2" 5
-                    :group-id "groupId"}
+                    :arm-id "groupId"}
     category-1-uri [:qname :instance "category1"]
     category-2-uri [:qname :instance "category2"]
     categories     {"category1" {:uri category-1-uri}
@@ -567,17 +567,42 @@
                         group-uris
                         all-categories))))))
 
-; (deftest test-read-baseline-measurements-continuous
-;   (let [group1-uri   [:qname :instance "baselineGroup1Id"]
-;         group2-uri   [:qname :instance "baselineGroup2Id"]
-;         group3-uri   [:qname :instance "baselineGroup3Id"]
-;         group-uris   {"baselineGroup1Id" group1-uri
-;                       "baselineGroup2Id" group2-uri
-;                       "baselineGroup3Id" group3-uri}
-;         expected-rdf ()]
-;     (is (= expected-rdf
-;            (read-baseline-measurements-continuous
-;             xml outcome-uri mm-uri group-uris sample-sizes)))))
+(deftest test-read-baseline-measurements-continuous-fullrange
+  (let [group1-uri   [:qname :instance "baselineGroup1Id"]
+        group2-uri   [:qname :instance "baselineGroup2Id"]
+        group3-uri   [:qname :instance "baselineGroup3Id"]
+        group-uris   {"baselineGroup1Id" group1-uri
+                      "baselineGroup2Id" group2-uri
+                      "baselineGroup3Id" group3-uri}
+        sample-sizes {"baselineGroup1Id" 1
+                      "baselineGroup2Id" 2
+                      "baselineGroup3Id" 3}
+        expected-rdf  (list
+                       (list [[:qname :ontology "of_outcome"] [:qname :instance "outcome-uri"]]
+                             [[:qname :ontology "of_group"] [:qname :instance "baselineGroup1Id"]]
+                             [[:qname :ontology "of_moment"] [:qname :instance "mm-uri"]]
+                             [[:qname :ontology "sample_size"] [:lit 1]]
+                             [[:qname :ontology "median"] [:lit 35.0]]
+                             [[:qname :ontology "min"] [:lit 15.0]]
+                             [[:qname :ontology "max"] [:lit 300.0]])
+                       (list [[:qname :ontology "of_outcome"] [:qname :instance "outcome-uri"]]
+                             [[:qname :ontology "of_group"] [:qname :instance "baselineGroup2Id"]]
+                             [[:qname :ontology "of_moment"] [:qname :instance "mm-uri"]]
+                             [[:qname :ontology "sample_size"] [:lit 2]]
+                             [[:qname :ontology "median"] [:lit 36.0]]
+                             [[:qname :ontology "min"] [:lit 14.0]]
+                             [[:qname :ontology "max"] [:lit 320.0]])
+                       (list [[:qname :ontology "of_outcome"] [:qname :instance "outcome-uri"]]
+                             [[:qname :ontology "of_group"] [:qname :instance "baselineGroup3Id"]]
+                             [[:qname :ontology "of_moment"] [:qname :instance "mm-uri"]]
+                             [[:qname :ontology "sample_size"] [:lit 3]]
+                             [[:qname :ontology "median"] [:lit 36.0]]
+                             [[:qname :ontology "min"] [:lit 12.0]]
+                             [[:qname :ontology "max"] [:lit 124.0]]))
+        found-rdf    (map second (read-baseline-measurements-continuous
+                                  insulin-dose-continuous outcome-uri mm-uri
+                                  group-uris sample-sizes))]
+    (is (= expected-rdf found-rdf))))
 
 ; (deftest test-read-all-measurements
 ;   (let [[mm-uris mm-info]         (find-measurement-moments xml)

@@ -43,7 +43,6 @@
                 (vtd/search xml "/result/endPoints/endPoint/timeFrame")
                 (iterate inc 1))))
 
-
 (defn find-measurement-moments
   [xml]
   (lib/sort-equivalent-values (merge (find-event-time-frame xml)
@@ -90,13 +89,11 @@
   [xml]
   (vtd/search xml "/result/endPoints/endPoint"))
 
-
 (defn find-variables-xml
   [xml]
   (concat (find-baseline-xml xml)
           (find-adverse-events-xml xml)
           (find-endpoints-xml xml)))
-
 
 (defn outcome-properties
   [xml]
@@ -151,7 +148,7 @@
     {:properties       (concat found-tendency found-dispersion)
      :measurement-type (outcome-measurement-type props)
      :dispersion       found-dispersion
-     :tendency         found-tendency
+     :tendency         (first found-tendency)
      :category-ids     (:category-ids props)}))
 
   (defn outcome-rdf
@@ -357,7 +354,7 @@
 
 (defn read-adverse-event-measurement
   [xml]
-  {:group-id    (vtd/attr  xml "reportingGroupId")
+  {:arm-id    (vtd/attr  xml "reportingGroupId")
    :count       (lib/parse-int (lib/text-at xml "./occurrences"))
    :sample-size (lib/parse-int (lib/text-at xml "subjectsExposed"))})
 
@@ -366,7 +363,7 @@
   (as-> measurement meas
     (lib/measurement-meta-rdf (lib/gen-uri)
                               outcome-uri
-                              (group-uris (:group-id meas))
+                              (group-uris (:arm-id meas))
                               mm-uri)
     (trig/spo meas 
               [(trig/iri :ontology "sample_size")
@@ -400,11 +397,11 @@
                                        (map #(vector (vtd/attr % "categoryId")
                                                      (lib/parse-int (lib/text-at % "value")))
                                             countable-values))]
-    (merge measurements-by-category {:group-id (vtd/attr xml "baselineReportingGroupId")})))
+    (merge measurements-by-category {:arm-id (vtd/attr xml "baselineReportingGroupId")})))
 
 (defn read-group-continuous-baseline-measurement-values
   [xml]
-  {:group-id         (vtd/attr xml "baselineReportingGroupId")
+  {:arm-id         (vtd/attr xml "baselineReportingGroupId")
    :tendency-value   (lib/parse-double
                       (lib/text-at xml "./tendencyValue/value"))
    :dispersion-value (lib/parse-double
@@ -427,12 +424,12 @@
    [instance-uri             (lib/gen-uri)
     category-uris-and-counts (map (fn [[category-id count]]
                                     [(:uri (categories category-id)) count])
-                                  (remove #(= :group-id (first %)) measurement))
+                                  (remove #(= :arm-id (first %)) measurement))
     category-count-rdf       (map build-category-count category-uris-and-counts)
     base-rdf                 (lib/measurement-meta-rdf
                               instance-uri
                               outcome-uri
-                              (group-uris (:group-id measurement))
+                              (group-uris (:arm-id measurement))
                               mm-uri)]
     (reduce #(trig/spo %1 %2)
             base-rdf
@@ -449,9 +446,12 @@
 (defn read-baseline-measurements-continuous
   [xml outcome-uri mm-uri group-uris sample-sizes]
   (let [reporting-groups-xml (vtd/search xml "./reportingGroups/reportingGroup")
+        result-properties (outcome-results-properties xml)
         measurements         (map read-group-continuous-baseline-measurement-values
                                   reporting-groups-xml)]
-    (map #(build-continuous-measurement-rdf % outcome-uri mm-uri group-uris)
+    (map #(build-continuous-measurement-rdf % result-properties
+                                            outcome-uri mm-uri group-uris
+                                            (sample-sizes (:arm-id %)))
          measurements)))
 
 (defn find-categories
