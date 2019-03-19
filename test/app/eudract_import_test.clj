@@ -25,6 +25,9 @@
                 
 (def outcome-uri  [:qname :instance "outcome-uri"])
 (def mm-uri [:qname :instance "mm-uri"])
+(def age-category-ids '("adultsCategoryId" "pensionersCategoryId" "octogenarianCategoryId"))
+(def mock-age-categories (into {} (map #(vector % {:uri [:qname :instance %]})
+                                       age-category-ids)))
 (def all-categories (find-categories xml))
 
 (defn outcomes-one-through-x [x]
@@ -156,6 +159,28 @@
   (let [ baseline-xml (find-baseline-xml xml)]
     (is (= 10 (count baseline-xml)))))
 
+(deftest test-get-of-variable-rdf-non-categorical
+  (let [measurement-type  "continuous"
+        result-properties {:category-ids age-category-ids}
+        expected-rdf      [[:qname :ontology "of_variable"]
+                           [:blank (list [[:qname :ontology "measurementType"]
+                                          [:qname :ontology "continuous"]])]]
+        built-rdf         (get-of-variable-rdf measurement-type result-properties mock-age-categories)]
+    (is (= expected-rdf built-rdf))))
+
+(deftest test-get-of-variable-rdf-categorical
+  (let [measurement-type "categorical"
+        result-properties {:category-ids age-category-ids}
+        expected-rdf [[:qname :ontology "of_variable"]
+                      [:blank (list [[:qname :ontology "measurementType"]
+                                     [:qname :ontology "categorical"]]
+                                    [[:qname :ontology "categoryList"]
+                                     [:coll (list [:qname :instance "adultsCategoryId"]
+                                                  [:qname :instance "pensionersCategoryId"]
+                                                  [:qname :instance "octogenarianCategoryId"])]])]]
+        built-rdf (get-of-variable-rdf measurement-type result-properties mock-age-categories)]
+    (is (= expected-rdf built-rdf))))
+
 (deftest test-baseline-var-rdf-continuous
   (let [baseline-uris           {[:baseline 1] [:qname :instance "baseline-uri"]}
         mm-uris                 {[:baseline] [:qname :instance "mm-uri"]}
@@ -177,8 +202,7 @@
 (deftest test-baseline-var-rdf-categorical
   (let [baseline-uris           {[:baseline 1] [:qname :instance "baseline-uri"]}
         mm-uris                 {[:baseline] mm-uri}
-        category-ids            '("adultsCategoryId" "pensionersCategoryId" "octogenarianCategoryId")
-        category-uris           (map :uri (map all-categories category-ids))
+        category-uris           (map :uri (map all-categories age-category-ids))
         expected-rdf-properties (list [[:qname :rdf "type"]
                                        [:qname :ontology "PopulationCharacteristic"]]
                                       [[:qname :rdfs "label"] [:lit "Age Categorical"]]
@@ -365,73 +389,7 @@
     (is (= expected-result
            (read-endpoint-measurement measurement-xml)))))
           
-(deftest test-read-endpoint-measurements-continuous
-  (let [arm1-uri [:qname :instance "arm1Uri"]
-        arm2-uri [:qname :instance "arm2Uri"]
-        arm3-uri [:qname :instance "arm3Uri"]
-        outcome-result-properties {:dispersion '("standard_error")
-                                   :tendency "least_squares_mean"}
-        group-uris {"arm1Id" arm1-uri
-                    "arm2Id" arm2-uri
-                    "arm3Id" arm3-uri}
-        outcome-uri  [:qname :instance "outcome-uri"]
-        mm-uri       [:qname :instance "mm-uri"]
-        expected-rdf (list
-                      (list [[:qname :ontology "of_outcome"] outcome-uri]
-                            [[:qname :ontology "of_group"] arm1-uri]
-                            [[:qname :ontology "of_moment"] mm-uri]
-                            [[:qname :ontology "sample_size"] [:lit 132]]
-                            [[:qname :ontology "least_squares_mean"] [:lit -1.45]]
-                            [[:qname :ontology "standard_error"] [:lit 0.09]])
-                      (list [[:qname :ontology "of_outcome"] outcome-uri]
-                            [[:qname :ontology "of_group"] arm2-uri]
-                            [[:qname :ontology "of_moment"] mm-uri]
-                            [[:qname :ontology "sample_size"] [:lit 131]]
-                            [[:qname :ontology "least_squares_mean"] [:lit -1.85]]
-                            [[:qname :ontology "standard_error"] [:lit 0.09]])
-                      (list [[:qname :ontology "of_outcome"] outcome-uri]
-                            [[:qname :ontology "of_group"] arm3-uri]
-                            [[:qname :ontology "of_moment"] mm-uri]
-                            [[:qname :ontology "sample_size"] [:lit 133]]
-                            [[:qname :ontology "least_squares_mean"] [:lit -0.09]]
-                            [[:qname :ontology "standard_error"] [:lit 0.09]]))]
-    (is (= expected-rdf
-           (map second (read-endpoint-measurements hba1c-change-xml
-                                                   outcome-result-properties
-                                                   outcome-uri
-                                                   mm-uri
-                                                   group-uris))))))
 
-(deftest test-read-adverse-event-measurements
-  (let [group1-uri   [:qname :instance "ReportingGroup-1"]
-        group2-uri   [:qname :instance "ReportingGroup-2"]
-        group3-uri   [:qname :instance "ReportingGroup-3"]
-        group-uris   {"ReportingGroup-1" group1-uri
-                      "ReportingGroup-2" group2-uri
-                      "ReportingGroup-3" group3-uri}
-        mm-uri       [:qname :instance "mm-uri"]
-        expected-rdf (list
-                      (list [[:qname :ontology "of_outcome"] outcome-uri]
-                            [[:qname :ontology "of_group"] group1-uri]
-                            [[:qname :ontology "of_moment"] mm-uri]
-                            [[:qname :ontology "sample_size"] [:lit 132]]
-                            [[:qname :ontology "count"] [:lit 5]])
-                      (list [[:qname :ontology "of_outcome"] outcome-uri]
-                            [[:qname :ontology "of_group"] group2-uri]
-                            [[:qname :ontology "of_moment"] mm-uri]
-                            [[:qname :ontology "sample_size"] [:lit 131]]
-                            [[:qname :ontology "count"] [:lit 7]])
-                      (list [[:qname :ontology "of_outcome"] outcome-uri]
-                            [[:qname :ontology "of_group"] group3-uri]
-                            [[:qname :ontology "of_moment"] mm-uri]
-                            [[:qname :ontology "sample_size"] [:lit 133]]
-                            [[:qname :ontology "count"] [:lit 1]]))]
-    (is (= expected-rdf
-           (map second (read-adverse-event-measurements
-                        decreased-appetite
-                        outcome-uri
-                        mm-uri
-                        group-uris))))))
 
 (deftest test-read-group-continuous-baseline-measurement-values
   (let [get-first-group (fn [baseline-characteristic]
@@ -603,6 +561,74 @@
                                   insulin-dose-continuous outcome-uri mm-uri
                                   group-uris sample-sizes))]
     (is (= expected-rdf found-rdf))))
+
+(deftest test-read-endpoint-measurements-continuous
+  (let [arm1-uri                  [:qname :instance "arm1Uri"]
+        arm2-uri                  [:qname :instance "arm2Uri"]
+        arm3-uri                  [:qname :instance "arm3Uri"]
+        outcome-result-properties {:dispersion '("standard_error")
+                                   :tendency   "least_squares_mean"}
+        group-uris                {"arm1Id" arm1-uri
+                                   "arm2Id" arm2-uri
+                                   "arm3Id" arm3-uri}
+        outcome-uri               [:qname :instance "outcome-uri"]
+        mm-uri                    [:qname :instance "mm-uri"]
+        expected-rdf              (list
+                                   (list [[:qname :ontology "of_outcome"] outcome-uri]
+                                         [[:qname :ontology "of_group"] arm1-uri]
+                                         [[:qname :ontology "of_moment"] mm-uri]
+                                         [[:qname :ontology "sample_size"] [:lit 132]]
+                                         [[:qname :ontology "least_squares_mean"] [:lit -1.45]]
+                                         [[:qname :ontology "standard_error"] [:lit 0.09]])
+                                   (list [[:qname :ontology "of_outcome"] outcome-uri]
+                                         [[:qname :ontology "of_group"] arm2-uri]
+                                         [[:qname :ontology "of_moment"] mm-uri]
+                                         [[:qname :ontology "sample_size"] [:lit 131]]
+                                         [[:qname :ontology "least_squares_mean"] [:lit -1.85]]
+                                         [[:qname :ontology "standard_error"] [:lit 0.09]])
+                                   (list [[:qname :ontology "of_outcome"] outcome-uri]
+                                         [[:qname :ontology "of_group"] arm3-uri]
+                                         [[:qname :ontology "of_moment"] mm-uri]
+                                         [[:qname :ontology "sample_size"] [:lit 133]]
+                                         [[:qname :ontology "least_squares_mean"] [:lit -0.09]]
+                                         [[:qname :ontology "standard_error"] [:lit 0.09]]))]
+    (is (= expected-rdf
+           (map second (read-endpoint-measurements hba1c-change-xml
+                                                   outcome-result-properties
+                                                   outcome-uri
+                                                   mm-uri
+                                                   group-uris))))))
+
+(deftest test-read-adverse-event-measurements
+  (let [group1-uri   [:qname :instance "ReportingGroup-1"]
+        group2-uri   [:qname :instance "ReportingGroup-2"]
+        group3-uri   [:qname :instance "ReportingGroup-3"]
+        group-uris   {"ReportingGroup-1" group1-uri
+                      "ReportingGroup-2" group2-uri
+                      "ReportingGroup-3" group3-uri}
+        mm-uri       [:qname :instance "mm-uri"]
+        expected-rdf (list
+                      (list [[:qname :ontology "of_outcome"] outcome-uri]
+                            [[:qname :ontology "of_group"] group1-uri]
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 132]]
+                            [[:qname :ontology "count"] [:lit 5]])
+                      (list [[:qname :ontology "of_outcome"] outcome-uri]
+                            [[:qname :ontology "of_group"] group2-uri]
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 131]]
+                            [[:qname :ontology "count"] [:lit 7]])
+                      (list [[:qname :ontology "of_outcome"] outcome-uri]
+                            [[:qname :ontology "of_group"] group3-uri]
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 133]]
+                            [[:qname :ontology "count"] [:lit 1]]))]
+    (is (= expected-rdf
+           (map second (read-adverse-event-measurements
+                        decreased-appetite
+                        outcome-uri
+                        mm-uri
+                        group-uris))))))
 
 ; (deftest test-read-all-measurements
 ;   (let [[mm-uris mm-info]         (find-measurement-moments xml)

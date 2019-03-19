@@ -32,7 +32,7 @@ docker run -d -p 3000:3000 ctgov-import
 
 ## Development
 
-To run all tests, ```lein kaocha```
+To run all tests, ```lein kaocha --watch```
 
 ## License
 
