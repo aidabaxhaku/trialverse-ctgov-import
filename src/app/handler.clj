@@ -1,5 +1,6 @@
 (ns app.handler
-  (:require [app.ctgov-import :refer [ctgov-import]]
+  (:require [app.ctgov-import :refer [import-xml]]
+            [app.eudract-import :refer [import-eudract]]
             [riveted.core :as vtd]
             [compojure.core :refer :all]
             [compojure.route :as route]
@@ -7,7 +8,9 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.util.codec :refer [url-encode]]
             [clj-http.client :as client]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json])
+  (:use [clojusc.ring.xml :only [wrap-xml-request]]
+        [clojure.data.xml :only [emit-str]]))
 
 (defn get-info
   [id]
@@ -23,7 +26,11 @@
 
 (defn do-import
   [id]
-  (ctgov-import (vtd/navigator (get-record id))))
+  (import-xml (vtd/navigator (get-record id))))
+
+(defn do-eudract-import
+  [xml]
+  (import-eudract (vtd/navigator (emit-str xml))))
 
 (defn normalize-date
   [date-str]
@@ -58,16 +65,20 @@
           (throw e))))))
 
 (defroutes app-routes
-  (GET "/" [id] { :status 200
-                  :body "Go to /NCTXXXXXXXX." })
-  (GET "/:id{NCT[0-9]+}" [id] { :status 200
-                     :headers { "Content-Type" "application/json" }
-                     :body (json/write-str (basic-info id))})
-  (GET "/:id{NCT[0-9]+}/rdf" [id] { :status 200
-                         :headers { "Content-Type" "text/turtle" }
-                         :body (do-import id) })
-    (route/not-found "Not Found"))
+  (GET "/" [id] {:status 200
+                 :body   "Go to /NCTXXXXXXXX."})
+  (GET "/:id{NCT[0-9]+}" [id] {:status  200
+                               :headers {"Content-Type" "application/json"}
+                               :body    (json/write-str (basic-info id))})
+  (GET "/:id{NCT[0-9]+}/rdf" [id] {:status  200
+                                   :headers {"Content-Type" "text/turtle"}
+                                   :body    (do-import id)})
+  (wrap-xml-request (POST "/eudract"
+                      params
+                      {:status  200
+                       :headers {"Content-Type" "text/turtle"}
+                       :body    (do-eudract-import (:body params))}))
+  (route/not-found "Not Found"))
 
-(use 'ring.middleware.file)
 (def app
   (wrap-404 (handler/site app-routes)))

@@ -4,8 +4,15 @@
    [riveted.core :as vtd]
    [clojure.string :refer [lower-case]]
    [clojure.set :refer [difference]]
-   [app.design-parse :refer [parse-masking]]
    [org.drugis.addis.rdf.trig :as trig]))
+
+(def ALLOCATION {"ALLOCATION.randControlled"    "AllocationRandomized"
+                 "ALLOCATION.nonRandControlled" "AllocationNonRandomized"
+                 "ALLOCATION.na"                "Unknown"})
+
+(def BLINDING_TYPE {"BLINDING.single" "SingleBlind"
+                    "BLINDING.double" "DoubleBlind"
+                    "BLINDING.not" "OpenLabel"})
 
 (def CENTRAL-TENDENCY {"leastSquares" "least_squares_mean"
                        "arithmetic"   "mean"
@@ -39,7 +46,7 @@
 
 (defn find-endpoint-time-frames
   [xml]
-  (into {} (map #(vector [:outcome %2] (vtd/text %1))
+  (into {} (map #(vector [:endpoint %2] (vtd/text %1))
                 (vtd/search xml "/result/endPoints/endPoint/timeFrame")
                 (iterate inc 1))))
 
@@ -95,7 +102,7 @@
           (find-adverse-events-xml xml)
           (find-endpoints-xml xml)))
 
-(defn outcome-properties
+(defn variable-properties
   [xml]
   (let [categories-xml (vtd/search xml "./categories/category")
         category-ids   (map #(vtd/attr % "id") categories-xml)
@@ -120,14 +127,14 @@
   (and (= "MEASURE_TYPE.number" (:param props))
        (lib/string-starts-with-any? (lower-case (:units props)) ["proportion"])))
 
-(defn outcome-measurement-type
+(defn measurement-type
   [props]
   (if (= "MEASURE_TYPE.number" (:param props)) "dichotomous" "continuous"))
 
 ; determine results properties from the measurement properties
-(defn outcome-results-properties
+(defn variable-results-properties
   [xml]
-  (let [props            (outcome-properties xml)
+  (let [props            (variable-properties xml)
         category-ids     (:category-ids props)
         found-tendency   (filter
                           (comp not nil?)
@@ -145,15 +152,15 @@
     {:properties       (concat found-tendency found-dispersion)
      :measurement-type (if (> (count category-ids) 1)
                          "categorical"
-                         (outcome-measurement-type props))
+                         (measurement-type props))
      :dispersion       found-dispersion
      :tendency         (first found-tendency) ; FIXME iffy first here but not dispersion
      :category-ids     category-ids}))
 
-  (defn outcome-rdf
-    [xml idx outcome-uris mm-uris]
-    (let [uri        (outcome-uris [:outcome idx])          
-          properties (outcome-results-properties xml)]
+  (defn endpoint-rdf
+    [xml idx variable-uris mm-uris]
+    (let [uri        (variable-uris [:endpoint idx])          
+          properties (variable-results-properties xml)]
       (lib/spo-each
        (trig/spo uri
                  [(trig/iri :rdf "type") 
@@ -163,7 +170,7 @@
                  [(trig/iri :rdfs "comment") 
                   (trig/lit (or (lib/text-at xml "./description") ""))]
                  [(trig/iri :ontology "is_measured_at") 
-                  (mm-uris [:outcome idx])]
+                  (mm-uris [:endpoint idx])]
                  [(trig/iri :ontology "has_result_property") 
                   (trig/iri :ontology "sample_size")]
                  [(trig/iri :ontology "of_variable")
@@ -230,7 +237,7 @@
     mm-uri            (mm-uris [:baseline])
     name              (lib/text-at xml "./title")
     measurement-type  (measurement-type-for-baseline (vtd/tag xml))
-    result-properties (outcome-results-properties xml)
+    result-properties (variable-results-properties xml)
     variable-rdf      (get-of-variable-rdf measurement-type result-properties categories)]
     (lib/spo-each
      (trig/spo uri
@@ -278,7 +285,8 @@
                                         (map #(vector (:id %) (lib/gen-uri))
                                              (concat arms adverse-event-groups)))
         baseline-group-uris-by-id (into {}
-                                        (map #(vector (:id %) (group-uris-by-id (:arm-id %)))
+                                        (map #(vector (:id %) 
+                                                      (group-uris-by-id (:arm-id %)))
                                              baseline-groups))]
     (merge group-uris-by-id baseline-group-uris-by-id)))
 
@@ -289,28 +297,28 @@
    :baseline-groups      (find-baseline-groups xml)
    :adverse-event-groups (find-adverse-event-groups xml)})
 
-(defn build-groups-with-uris 
+(defn build-groups-with-uris
   [{arms                 :arms
     baseline-groups      :baseline-groups
     adverse-event-groups :adverse-event-groups}
    group-uris]
-  (into {} (map (fn [group]
-                  [(:id group)
-                   (merge {:uri (group-uris (:id group))}
-                          group)])
-                (concat arms baseline-groups adverse-event-groups))))
+  (let [add-uri (fn [group]
+                  (merge {:uri (group-uris (:id group))}
+                         group))]
+    {:arms                 (map add-uri arms)
+     :baseline-groups      (map add-uri baseline-groups)
+     :adverse-event-groups (map add-uri adverse-event-groups)}))
 
 (defn build-groups-rdf
   [{arms                 :arms
     baseline-groups      :baseline-groups
-    adverse-event-groups :adverse-event-groups}
-   group-uris]
+    adverse-event-groups :adverse-event-groups}]
   (let [non-arm-baseline-groups (difference (set baseline-groups)
                                             (set arms))]
     (concat
-     (map #(lib/arm-rdf (group-uris (:id %)) %)
+     (map #(lib/arm-rdf (:uri %) %)
           arms)
-     (map #(lib/group-rdf (group-uris (:id %)) %)
+     (map #(lib/group-rdf (:uri %) %)
           (concat non-arm-baseline-groups adverse-event-groups)))))
 
 ; FIXME: countable values?
@@ -323,10 +331,10 @@
    :sample-size      (lib/parse-int (lib/text-at xml "subjects"))})
 
 (defn build-continuous-measurement-rdf
-  [measurement result-properties outcome-uri mm-uri group-uris sample-size]
+  [measurement result-properties variable-uri mm-uri group-uris sample-size]
   (as-> measurement meas
     (lib/measurement-meta-rdf (lib/gen-uri)
-                              outcome-uri
+                              variable-uri
                               (group-uris (:arm-id meas))
                               mm-uri)
     (trig/spo meas
@@ -345,13 +353,13 @@
                  (trig/lit (:high-range-value measurement))]))))
 
 (defn read-endpoint-measurements
-  [xml outcome-uri mm-uri group-uris]
-  (let [results-properties (outcome-results-properties xml)
+  [xml endpoint-uri mm-uri group-uris]
+  (let [results-properties (variable-results-properties xml)
         measurements-xml (vtd/search xml "./armReportingGroups/armReportingGroup")
         measurements     (map read-endpoint-measurement measurements-xml)]
     (map #(build-continuous-measurement-rdf  ; FIXME: categorical endpoints
            % results-properties
-           outcome-uri mm-uri group-uris (:sample-size %)) 
+           endpoint-uri mm-uri group-uris (:sample-size %)) 
 ;; FIXME: figure out uniformity baseline/endpoint
          measurements)))
 
@@ -362,10 +370,10 @@
    :sample-size (lib/parse-int (lib/text-at xml "subjectsExposed"))})
 
 (defn build-dichotomous-measurement-rdf
-  [measurement outcome-uri mm-uri group-uris]
+  [measurement variable-uri mm-uri group-uris]
   (as-> measurement meas
     (lib/measurement-meta-rdf (lib/gen-uri)
-                              outcome-uri
+                              variable-uri
                               (group-uris (:arm-id meas))
                               mm-uri)
     (trig/spo meas 
@@ -375,23 +383,12 @@
                (trig/lit (:count measurement))])))
 
 (defn read-adverse-event-measurements
-  [xml outcome-uri mm-uri group-uris]
+  [xml variable-uri mm-uri group-uris]
   (let [measurements-xml (vtd/search xml "./values/value")
         measurements     (map read-adverse-event-measurement measurements-xml)]
-    (map #(build-dichotomous-measurement-rdf % outcome-uri mm-uri group-uris)
+    (map #(build-dichotomous-measurement-rdf % variable-uri mm-uri group-uris)
          measurements)))
 
-(defn make-category-vector
-  [category-xml uri]
-  (let [title (lib/text-at category-xml "name")]
-    [(vtd/attr category-xml "id")
-     {:uri   uri
-      :title title
-      :rdf   (trig/spo uri
-                       [(trig/iri :rdfs "label")
-                        (trig/lit title)]
-                       [(trig/iri :rdf "type")
-                        (trig/iri :ontology "Category")])}]))
 
 (defn read-group-categorical-measurement-values
   [xml group-id-tag]
@@ -433,7 +430,7 @@
         [(trig/iri :ontology "count") count]))])
 
 (defn build-categorical-measurement-rdf
-  [measurement outcome-uri mm-uri group-uris categories]
+  [measurement variable-uri mm-uri group-uris categories]
   (let
    [instance-uri             (lib/gen-uri)
     category-uris-and-counts (map (fn [[category-id count]]
@@ -442,7 +439,7 @@
     category-count-rdf       (map build-category-count category-uris-and-counts)
     base-rdf                 (lib/measurement-meta-rdf
                               instance-uri
-                              outcome-uri
+                              variable-uri
                               (group-uris (:arm-id measurement))
                               mm-uri)]
     (reduce #(trig/spo %1 %2)
@@ -450,23 +447,35 @@
             category-count-rdf)))
 
 (defn read-baseline-measurements-categorical
-  [xml outcome-uri mm-uri group-uris categories]
+  [xml baseline-uri mm-uri group-uris categories]
   (let [reporting-groups-xml (vtd/search xml "./reportingGroups/reportingGroup")
         measurements         (map #(read-group-categorical-measurement-values % "baselineReportingGroupId")
                                   reporting-groups-xml)]
-    (map #(build-categorical-measurement-rdf % outcome-uri mm-uri group-uris categories)
+    (map #(build-categorical-measurement-rdf % baseline-uri mm-uri group-uris categories)
          measurements)))
 
 (defn read-baseline-measurements-continuous
-  [xml outcome-uri mm-uri group-uris sample-sizes]
+  [xml baseline-uri mm-uri group-uris sample-sizes]
   (let [reporting-groups-xml (vtd/search xml "./reportingGroups/reportingGroup")
-        result-properties (outcome-results-properties xml)
+        result-properties (variable-results-properties xml)
         measurements         (map read-group-continuous-baseline-measurement-values
                                   reporting-groups-xml)]
     (map #(build-continuous-measurement-rdf % result-properties
-                                            outcome-uri mm-uri group-uris
+                                            baseline-uri mm-uri group-uris
                                             (sample-sizes (:arm-id %)))
          measurements)))
+
+(defn make-category-vector
+  [category-xml uri]
+  (let [title (lib/text-at category-xml "name")]
+    [(vtd/attr category-xml "id")
+     {:uri   uri
+      :title title
+      :rdf   (trig/spo uri
+                       [(trig/iri :rdfs "label")
+                        (trig/lit title)]
+                       [(trig/iri :rdf "type")
+                        (trig/iri :ontology "Category")])}]))
 
 (defn find-categories
   [xml]
@@ -483,53 +492,40 @@
              (groups :arms))))
 
 (defn read-all-baseline-measurements
-  [xml baseline-mm-uri outcome-uris group-uris categories sample-sizes]
-  (let [baselines (find-baseline-xml xml)]
-    (mapcat
-     (fn [baseline-xml idx]
-       (if (= "categorical" (measurement-type-for-baseline (vtd/tag baseline-xml)))
-         (read-baseline-measurements-categorical baseline-xml
-                                                 (outcome-uris [:baseline idx])
-                                                 baseline-mm-uri
-                                                 group-uris
-                                                 categories)
-         (read-baseline-measurements-continuous baseline-xml
-                                                (outcome-uris [:baseline idx])
-                                                baseline-mm-uri
-                                                group-uris
-                                                sample-sizes)))
-     baselines
-     (iterate inc 1))))
+  [baselines-xml baseline-mm-uri variable-uris group-uris categories sample-sizes]
+  (mapcat
+   (fn [baseline-xml idx]
+     (if (= "categorical" (measurement-type-for-baseline (vtd/tag baseline-xml)))
+       (read-baseline-measurements-categorical baseline-xml
+                                               (variable-uris [:baseline idx])
+                                               baseline-mm-uri
+                                               group-uris
+                                               categories)
+       (read-baseline-measurements-continuous baseline-xml
+                                              (variable-uris [:baseline idx])
+                                              baseline-mm-uri
+                                              group-uris
+                                              sample-sizes)))
+   baselines-xml
+   (iterate inc 1)))
 
 (defn read-endpoint-measurements-categorical
-  [xml outcome-uri mm-uri group-uris categories]
+  [xml endpoint-uri mm-uri group-uris categories]
   (let [reporting-groups-xml (vtd/search xml "./armReportingGroups/armReportingGroup")
-        result-properties    (p* (outcome-results-properties xml))
-        measurements         (if (:dispersion result-properties)
-                               (map read-endpoint-measurement reporting-groups-xml)
-                               (map #(read-group-categorical-measurement-values % "armId")
-                                    reporting-groups-xml))]
-    (clojure.pprint/pprint measurements)
-    (if (:dispersion result-properties)
+        result-properties    (variable-results-properties xml)
+        is-not-categorical? (> (count (:dispersion result-properties))
+                               0)
+        measurements         (if is-not-categorical?
+                              (p* (map read-endpoint-measurement reporting-groups-xml))
+                               (p* (map #(read-group-categorical-measurement-values % "armId")
+                                        reporting-groups-xml)))]
+    (if is-not-categorical?
       (map #(build-continuous-measurement-rdf % result-properties
-                                              outcome-uri mm-uri group-uris
+                                              endpoint-uri mm-uri group-uris
                                               (:sample-size %))
            measurements)
-      (map #(build-categorical-measurement-rdf % outcome-uri mm-uri group-uris categories)
+      (map #(build-categorical-measurement-rdf % endpoint-uri mm-uri group-uris categories)
            measurements))))
-
-; (defn read-endpoint-measurements-continuous
-;   [xml outcome-uri mm-uri group-uris sample-sizes]
-;   (let [reporting-groups-xml (vtd/search xml "./armReportingGroups/armReportingGroup")
-;         result-properties    (outcome-results-properties xml)
-;         _ (println result-properties)
-;         measurements         (map read-group-continuous-endpoint-measurement-values
-;                                   reporting-groups-xml)]
-;     (println measurements)
-;     (map #(build-continuous-measurement-rdf % result-properties
-;                                             outcome-uri mm-uri group-uris
-;                                             (sample-sizes (:arm-id %)))
-        ;  measurements)))
 
 (defn measurement-type-for-endpoint ; FIXME: But what apout dichotomous
   [xml]
@@ -538,69 +534,131 @@
     "categorical"))
 
 (defn read-all-endpoint-measurements
-  [xml endpoint-mm-uri outcome-uris group-uris categories sample-sizes]
-  (let [endpoints (find-endpoints-xml xml)]
-    (mapcat
-     (fn [endpoint-xml idx]
-       (if (= "categorical" (measurement-type-for-endpoint endpoint-xml))
-         (read-endpoint-measurements-categorical endpoint-xml
-                                                 (outcome-uris [:endpoint idx])
-                                                 endpoint-mm-uri
-                                                 group-uris
-                                                 categories)
-         (read-endpoint-measurements endpoint-xml
-                                     (outcome-uris [:endpoint idx])
-                                     endpoint-mm-uri
-                                     group-uris
-                                     )))
-     endpoints
-     (iterate inc 1))))
-; (defn )          
+  [endpoints-xml mm-uris variable-uris group-uris categories]
+  (mapcat
+   (fn [endpoint-xml idx]
+     (if (= "categorical" (measurement-type-for-endpoint endpoint-xml))
+       (read-endpoint-measurements-categorical endpoint-xml
+                                               (variable-uris [:endpoint idx])
+                                               (mm-uris [:endpoint idx])
+                                               group-uris
+                                               categories)
+       (read-endpoint-measurements endpoint-xml
+                                   (variable-uris [:endpoint idx])
+                                   (mm-uris [:endpoint idx])
+                                   group-uris)))
+   endpoints-xml
+   (iterate inc 1)))
+
+(defn read-all-event-measurements
+  [events-xml mm-uri variable-uris group-uris]
+  (mapcat #(read-adverse-event-measurements %1
+                                            (variable-uris [:event %2])
+                                            mm-uri group-uris)
+          events-xml
+          (iterate inc 1)))
+
+(defn allocation-rdf
+ [subj allocation-value]
+ (trig/spo subj [(trig/iri :ontology "has_allocation")
+                 (trig/iri :ontology (ALLOCATION allocation-value))]))
+
+(defn blinding-rdf
+ [subj blinding-value]
+ (trig/spo subj [(trig/iri :ontology "has_blinding")
+                    (trig/iri :ontology (BLINDING_TYPE blinding-value))]))
+
+(defn create-study-node
+  [xml reg-uri baseline-uris endpoint-uris event-uris groups-with-uris]
+  (-> (lib/gen-uri)
+      (trig/spo [(trig/iri :ontology "has_publication") reg-uri]
+                [(trig/iri :rdf "type") (trig/iri :ontology "Study")]
+                [(trig/iri :rdfs "label")
+                 (trig/lit (lib/text-at xml "/result/trialInformation/fullTitle"))]
+                [(trig/iri :rdfs "comment")
+                 (trig/lit (lib/text-at xml "/result/trialInformation/fullTitle"))]
+                [(trig/iri :ontology "has_objective")
+                 (trig/_po [(trig/iri :rdfs "comment")
+                            (trig/lit (lib/text-at xml "/result/trialInformation/mainObjective"))])]
+                [(trig/iri :ontology "has_eligibility_criteria")
+                 (trig/_po [(trig/iri :rdfs "comment")
+                            (trig/lit
+                             (lib/text-at xml
+                                          "/result/subjectDisposition/screeningInformation"))])])
+
+      (allocation-rdf (lib/text-at xml "/result/subjectDisposition/postAssignmentPeriods/postAssignmentPeriod/allocation/value"))
+      (blinding-rdf (lib/text-at xml "/result/subjectDisposition/postAssignmentPeriods/postAssignmentPeriod/blindingType/value"))
+      (lib/spo-each (trig/iri :ontology "has_outcome") (vals baseline-uris))
+      (lib/spo-each (trig/iri :ontology "has_outcome") (vals endpoint-uris))
+      (lib/spo-each (trig/iri :ontology "has_outcome") (vals event-uris))
+      (lib/spo-each (trig/iri :ontology "has_arm") 
+                    (map :uri (:arms groups-with-uris)))
+      (lib/spo-each (trig/iri :ontology "has_group") 
+                    (map :uri (:baseline-groups groups-with-uris)))
+      (lib/spo-each (trig/iri :ontology "has_group") 
+                    (map :uri (:adverse-event-groups groups-with-uris)))))
+
+(defn build-variable-uris
+  [xmls key]
+  (into {}
+        (map #(vector [key %2] (trig/iri :instance (lib/uuid)))
+             xmls
+             (iterate inc 1))))
+
+(defn import-eudract
+  [xml]
+  (let [eudract-id        (get-eudract-number xml)
+        nct-id            (get-nct-id xml)
+        uri               (trig/iri :study eudract-id)
+        reg-uri           (trig/iri :ictrp eudract-id)
+        registration      (build-registration reg-uri eudract-id)
+        [mm-uris mm-info] (find-measurement-moments xml)
+        groups            (find-groups xml)
+        group-uris        (build-group-uris groups)
+        groups-with-uris  (build-groups-with-uris groups group-uris)
+        categories        (find-categories xml)
+        category-rdf      (map :rdf (vals categories))
+        endpoints-xml     (find-endpoints-xml xml)
+        endpoint-uris     (build-variable-uris endpoints-xml :endpoint)
+        endpoints-rdf     (map #(endpoint-rdf %1 %2 endpoint-uris mm-uris)
+                               endpoints-xml
+                               (iterate inc 1))
+        events-xml        (find-adverse-events-xml xml)
+        event-uris        (build-variable-uris events-xml :event)
+        events-rdf        (map #(adverse-event-rdf %1 %2 event-uris mm-uris)
+                               events-xml
+                               (iterate inc 1))
+        baselines-xml     (find-baseline-xml xml)
+        baseline-uris     (build-variable-uris baselines-xml :baseline)
+        baseline-rdf      (map #(baseline-var-rdf %1 %2 baseline-uris mm-uris categories)
+                               baselines-xml
+                               (iterate inc 1))
+        groups-rdf        (build-groups-rdf groups-with-uris)
+        mms-rdf           (map #(lib/mm-rdf (first %) (second %)) mm-info)
+        sample-sizes      (find-sample-sizes groups)
+        measurements-rdf  (concat
+                           (read-all-endpoint-measurements
+                            endpoints-xml mm-uris endpoint-uris group-uris categories)
+                           (read-all-baseline-measurements
+                            baselines-xml
+                            (mm-uris [:baseline])
+                            baseline-uris group-uris categories sample-sizes)
+                           (read-all-event-measurements
+                            events-xml
+                            (mm-uris [:events])
+                            event-uris group-uris))
+        study-rdf         (create-study-node xml reg-uri baseline-uris
+                                             endpoint-uris event-uris groups-with-uris)
+        triples           (concat [study-rdf registration] mms-rdf baseline-rdf
+                                  category-rdf endpoints-rdf events-rdf groups-rdf
+                                  measurements-rdf)]
+    (trig/write-ttl lib/prefixes triples)))
+
 ; (defn import-xml
 ;   [xml]
 ;   (let [
-;   ✓      eudract-id (get-eudract-number xml)
-;   ✓      nct-id (get-nct-id xml)
-;   ✓      uri (trig/iri :study eudract-id)
-;   ✓     reg-uri (trig/iri :ictrp eudract-id)
-;   ✓     registration (build-registration reg-uri eudract-id)
-;   ✓     [mm-uris mm-info] (find-measurement-moments xml)
-;   ✓     outcome-xml (vtd/search xml "/clinical_study/clinical_result/outcome_list/outcome")
-;   ✓     outcome-uris (build-outome-uris outcome-xml)
-;   ✓     outcomes-rdf (map #(outcome-rdf %1 %2 outcome-uris mm-uris) 
-;                           outcome-xml 
-;                           (iterate inc 1))
-;   ✓    event-xml (vtd/search xml "/clinical_study/clinical_results/reported_events/*//category_list/category/event_list/event")
-    ; ✓  ; event-uris (build-event-uris)
-;   ✓     events-rdf (map #(adverse-event-rdf %1 %2 event-uris mm-uris) event-xml (iterate inc 1))
-;  ✓      baseline-xml (vtd/search xml "/clinical_study/clinical_results/baseline/measure_list/measure")
-;   ✓     baseline-sample-size-xml (vtd/at xml "/clinical_study/clinical_results/baseline/analyzed_list/analyzed")
-;   ✓     baseline-var-xml (rest baseline-xml)
-;   ✓     baseline-uris (into {} (map #(vector %2 (trig/iri :instance (lib/uuid))) baseline-var-xml (iterate inc 1)))
-;    ✓     baseline-rdf 
-;   ✓    category-uris (reduce #(merge %1 (:uris %2)) {} baseline-categories-data)
-;   ✓     category-rdf (reduce #(concat %1 (:rdfs %2)) [] baseline-categories-data)
-;   ✓     [group-uris group-info] (find-groups xml)
-;   ✓     groups-rdf (map #(group-rdf (first %) (second %)) group-info)
-;   ✓     mms-rdf (map #(mm-rdf (first %) (second %)) mm-info)
-; measurements-rdf (concat
-;                   (apply concat
-;   ✓                      (map #(baseline-measurements
-;                                 %1 %2
-;                                 baseline-sample-size-xml
-;                                 baseline-uris group-uris
-;                                 mm-uris category-uris)
-;                               baseline-var-xml (iterate inc 1)))
-;                   (apply concat
-;                          (map #(outcome-measurements
-;                                 %1 %2 outcome-uris group-uris
-;                                 mm-uris)
-;                               outcome-xml (iterate inc 1)))
-;                   (apply concat
-;                          (map #(event-measurements
-;                                 %1 %2 event-uris group-uris mm-uris)
-;                               event-xml (iterate inc 1))))
-;         study-rdf (-> uri
+;        mms-rdf (map #(mm-rdf (first %) (second %)) mm-info)
+;    ✓     study-rdf (-> uri
 ;                      (trig/spo [(trig/iri :ontology "has_publication") reg-uri]
 ;                                [(trig/iri :rdf "type") (trig/iri :ontology "Study")]
 ;                                [(trig/iri :rdfs "label") (trig/lit (lib/text-at xml "/clinical_study/brief_title")))]
@@ -613,7 +671,7 @@
 ;                      (allocation-rdf (lib/text-at xml "/clinical_study/study_design_info/allocation")))
 ;                      (blinding-rdf (parse-masking (lib/text-at xml "/clinical_study/study_design_info/masking"))))
 ;                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals baseline-uris))
-;                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals outcome-uris))
+;                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals variable-uris))
 ;                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals event-uris))
 ;                      (lib/spo-each (trig/iri :ontology "has_group") (keys group-info)))
 ;         triples (concat [study-rdf registration] mms-rdf baseline-rdf category-rdf outcomes-rdf events-rdf groups-rdf measurements-rdf)]
