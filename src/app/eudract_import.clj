@@ -308,19 +308,22 @@
                          group))]
     {:arms                 (map add-uri arms)
      :baseline-groups      (map add-uri baseline-groups)
-     :adverse-event-groups (map add-uri adverse-event-groups)}))
+     :adverse-event-groups (map add-uri adverse-event-groups)
+     :overall {:title "Overall population"
+               :uri (lib/gen-uri)}}))
 
 (defn build-groups-rdf
   [{arms                 :arms
     baseline-groups      :baseline-groups
-    adverse-event-groups :adverse-event-groups}]
-  (let [non-arm-baseline-groups (difference (set baseline-groups)
-                                            (set arms))]
+    adverse-event-groups :adverse-event-groups
+    overall :overall}]
+  (let [non-arm-baseline-groups (filter #(not (:arm-id %)) baseline-groups)]
     (concat
      (map #(lib/arm-rdf (:uri %) %)
           arms)
      (map #(lib/group-rdf (:uri %) %)
-          (concat non-arm-baseline-groups adverse-event-groups)))))
+          (concat non-arm-baseline-groups adverse-event-groups))
+     [(lib/group-rdf (:uri overall) overall)])))
 
 ; FIXME: countable values?
 (defn read-endpoint-measurement ; assumes xml is at .../endpoint/armReportingGroups/armReportingGroup
@@ -594,9 +597,11 @@
       (lib/spo-each (trig/iri :ontology "has_arm") 
                     (map :uri (:arms groups-with-uris)))
       (lib/spo-each (trig/iri :ontology "has_group") 
-                    (map :uri (:baseline-groups groups-with-uris)))
+                    (map :uri (filter #(not (:arm-id %))
+                                      (:baseline-groups groups-with-uris))))
       (lib/spo-each (trig/iri :ontology "has_group") 
-                    (map :uri (:adverse-event-groups groups-with-uris)))))
+                    (map :uri (:adverse-event-groups groups-with-uris)))
+      (trig/spo [(trig/iri :ontology "has_group") (:uri (:overall groups-with-uris))])))
 
 (defn build-variable-uris
   [xmls key]

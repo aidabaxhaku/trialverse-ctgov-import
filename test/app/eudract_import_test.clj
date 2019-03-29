@@ -385,7 +385,7 @@
   (let [groups           (find-groups xml)
         group-uris       (build-group-uris groups)
         groups-with-uris (build-groups-with-uris groups group-uris)]
-    (is (= 9 (count (apply concat (vals groups-with-uris)))))
+    (is (= 11 (count (apply concat (vals groups-with-uris)))))
     (is (every? true?
                 (map (fn [group]
                        (= (:uri group)
@@ -397,11 +397,13 @@
         non-arm-baseline-uri [:qname :instance "nonArmBaseline"]
         adverse-event-1-uri  [:qname :instance "adverseEvent1"]
         baseline-groups      (list {:id          "baselineGroup1Id"
+                                    :title       "baseline arm"
                                     :arm-id      "arm1Id"
                                     :description "baseline descr"
                                     :uri         arm-1-uri}
                                    {:id          "nonArmBaseline"
                                     :arm-id      nil
+                                    :title       "non arm baseline"
                                     :description "non-arm baseline group"
                                     :uri         non-arm-baseline-uri})
         adverse-event-groups (list {:id          "ReportingGroup-1"
@@ -414,26 +416,39 @@
                                     :uri         arm-1-uri})
         groups               {:arms                 arms
                               :baseline-groups      baseline-groups
-                              :adverse-event-groups adverse-event-groups}
+                              :adverse-event-groups adverse-event-groups
+                              :overall              {:title "Overall population"
+                                                     :uri   (lib/gen-uri)}}
         found-groups-rdf     (build-groups-rdf groups)
         expected-groups-rdf  '([[:qname :instance "arm1"]
                                 ([[:qname :rdfs "label"] [:lit "Semaglutide 0.5 mg"]]
                                  [[:qname :rdfs "comment"] [:lit "arm group desc"]]
                                  [[:qname :rdf "type"] [:qname :ontology "Arm"]])]
-                               [[:qname :instance "arm1"]
-                                ([[:qname :rdfs "label"] [:lit ""]]
-                                 [[:qname :rdfs "comment"] [:lit "baseline descr"]]
-                                 [[:qname :rdf "type"] [:qname :ontology "Group"]])]
                                [[:qname :instance "nonArmBaseline"]
-                                ([[:qname :rdfs "label"] [:lit ""]]
+                                ([[:qname :rdfs "label"] [:lit "non arm baseline"]]
                                  [[:qname :rdfs "comment"] [:lit "non-arm baseline group"]]
                                  [[:qname :rdf "type"] [:qname :ontology "Group"]])]
                                [[:qname :instance "adverseEvent1"]
                                 ([[:qname :rdfs "label"] [:lit "Semaglutide 0.5 mg"]]
                                  [[:qname :rdfs "comment"] [:lit "adverse event group  desc"]]
-                                 [[:qname :rdf "type"] [:qname :ontology "Group"]])])]
+                                 [[:qname :rdf "type"] [:qname :ontology "Group"]])])
+        overall-group        '([[:qname :rdfs "label"] [:lit "Overall population"]]
+                               [[:qname :rdfs "comment"] [:lit ""]]
+                               [[:qname :rdf "type"] [:qname :ontology "Group"]])]
+    (is (= 4 (count found-groups-rdf)))
+    (is (= overall-group (-> found-groups-rdf
+                             (nth 3)
+                             (second))))
     (is (= expected-groups-rdf
-           found-groups-rdf))))
+           (take 3 found-groups-rdf)))))
+
+(deftest test-build-all-groups-rdf
+  (let [groups           (find-groups xml)
+        group-uris       (build-group-uris groups)
+        groups-with-uris (build-groups-with-uris groups group-uris)
+        found-groups-rdf (build-groups-rdf groups-with-uris)
+        expected         {}]
+    (is (= 7 (count found-groups-rdf)))))
 
 (deftest test-read-endpoint-measurement
   (let [measurement-xml (first (vtd/search hba1c-change-xml "./armReportingGroups/armReportingGroup"))
@@ -741,27 +756,30 @@
     (is (= (count found) (* 3 (count baseline-xml))))))
 
 (deftest test-read-all-endpoint-measurements
-  (let [endpoints-xml (find-endpoints-xml xml)
-        variable-uris  (into {}
-                             (map #(vector [:endpoint %2]
-                                           (lib/gen-uri))
-                                  endpoints-xml
-                                  (iterate inc 1)))
-        mm-uris      (zipmap (endpoints-one-through-x 8)
-                             (repeat 8 (lib/gen-uri)))
-        groups        (find-groups xml)
-        group-uris    (build-group-uris groups)
-        categories    (find-categories xml)
-        sample-sizes  (find-sample-sizes groups)
-        found         (read-all-endpoint-measurements endpoints-xml mm-uris
-                                                      variable-uris group-uris categories)
-        has-nil-ontology? (fn [[pred obj]] (println pred) (println obj)
+  (let [endpoints-xml     (find-endpoints-xml xml)
+        n-endpoints       (count endpoints-xml)
+        variable-uris     (into {}
+                                (map #(vector [:endpoint %2]
+                                              (lib/gen-uri))
+                                     endpoints-xml
+                                     (iterate inc 1)))
+        mm-uris           (zipmap (endpoints-one-through-x n-endpoints)
+                                  (repeat n-endpoints (lib/gen-uri)))
+        groups            (find-groups xml)
+        group-uris        (build-group-uris groups)
+        categories        (find-categories xml)
+        sample-sizes      (find-sample-sizes groups)
+        found             (read-all-endpoint-measurements endpoints-xml mm-uris
+                                                          variable-uris group-uris categories)
+        has-nil-ontology? (fn [[pred obj]]
                             (nil? (nth pred 2)))
         malformed-entries (filter (fn [pred-objs]
                                     (not (empty? (filter has-nil-ontology? pred-objs))))
                                   (map second found))]
-    (is (= 0 (count malformed-entries)))
-    (is (= (count found) (* 3 (count endpoints-xml))))))
+    (is (= '() malformed-entries))
+    (println (:arms groups))
+    (is (= (* (count (:arms groups)) (count endpoints-xml))
+           (count found)))))
 
 (deftest test-read-all-event-measurements
   (let [event-xml         (find-adverse-events-xml xml)
@@ -779,33 +797,35 @@
     (is (= (count found) (* 3 (count event-xml))))))
 
 (deftest test-create-study-node
-  (let [reg-uri    [:qname :instance "reg-uri"]
-        expected   (list [[:qname :ontology "has_publication"] reg-uri]
-                         [[:qname :rdf "type"] [:qname :ontology "Study"]]
-                         [[:qname :rdfs "label"] [:lit "The full title"]]
-                         [[:qname :rdfs "comment"] [:lit "The full title"]]
-                         [[:qname :ontology "has_objective"]
-                          [:blank '([[:qname :rdfs "comment"]
-                                     [:lit "The primary objective"]])]]
-                         [[:qname :ontology "has_eligibility_criteria"]
-                          [:blank '([[:qname :rdfs "comment"]
-                                     [:lit "Not applicable"]])]]
-                         [[:qname :ontology "has_allocation"]
-                          [:qname :ontology "AllocationRandomized"]]
-                         [[:qname :ontology "has_blinding"]
-                          [:qname :ontology "DoubleBlind"]])
-        reg-uri    [:qname :instance "reg-uri"]
-        some-uris  {:key1 variable-uri
-                    :key2 mm-uri}
+  (let [reg-uri          [:qname :instance "reg-uri"]
+        expected         (list [[:qname :ontology "has_publication"] reg-uri]
+                               [[:qname :rdf "type"] [:qname :ontology "Study"]]
+                               [[:qname :rdfs "label"] [:lit "The full title"]]
+                               [[:qname :rdfs "comment"] [:lit "The full title"]]
+                               [[:qname :ontology "has_objective"]
+                                [:blank '([[:qname :rdfs "comment"]
+                                           [:lit "The primary objective"]])]]
+                               [[:qname :ontology "has_eligibility_criteria"]
+                                [:blank '([[:qname :rdfs "comment"]
+                                           [:lit "Not applicable"]])]]
+                               [[:qname :ontology "has_allocation"]
+                                [:qname :ontology "AllocationRandomized"]]
+                               [[:qname :ontology "has_blinding"]
+                                [:qname :ontology "DoubleBlind"]])
+        reg-uri          [:qname :instance "reg-uri"]
+        some-uris        {:key1 variable-uri}
         groups           (find-groups xml)
         group-uris       (build-group-uris groups)
         groups-with-uris (build-groups-with-uris groups group-uris)
-        found      (create-study-node xml reg-uri some-uris some-uris
-                                      some-uris groups-with-uris)]
-    (is (= (+ 8 (* 3 (count some-uris)) (count group-uris))
+        found            (create-study-node xml reg-uri some-uris some-uris
+                                            some-uris groups-with-uris)]
+    (is (= 18 ; 8 normal; 1 endpoint; 1 baseline var; 1 adverse event
+              ; 3 arms; 3 groups; 1 overall population
            (count (second found))))
+    (clojure.pprint/pprint (second found))
     (is (= expected (take 8 (second found))))))
 
 (deftest test-import-eudract
   (let [found    (import-eudract xml)]
-    (is (= 106833 (count found)))))
+    (spit "out.rdf" found)
+    (is (= 106062 (count found)))))
