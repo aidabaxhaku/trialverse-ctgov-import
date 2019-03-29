@@ -6,7 +6,7 @@ RUN apt-get update
 RUN apt-get upgrade -y
 
 # Install JRE
-RUN apt-get install -y -q openjdk-7-jre-headless
+RUN apt-get install -y -q openjdk-8-jdk
 
 # create user
 RUN useradd --create-home --home /var/lib/webapp webapp
