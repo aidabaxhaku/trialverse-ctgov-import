@@ -4,6 +4,7 @@
    [riveted.core :as vtd]
    [clojure.string :refer [lower-case]]
    [clojure.set :refer [difference]]
+   [clojure.pprint :refer [pprint]]
    [org.drugis.addis.rdf.trig :as trig]))
 
 (def ALLOCATION {"ALLOCATION.randControlled"    "AllocationRandomized"
@@ -343,15 +344,14 @@
     (trig/spo meas
               [(trig/iri :ontology (:tendency result-properties))
                (trig/lit (:tendency-value measurement))])
-    (if (= 1 (count (:dispersion result-properties)))
-      (trig/spo meas [(trig/iri :ontology (first (:dispersion result-properties)))
-                      (trig/lit (:dispersion-value measurement))])
-      (trig/spo meas  ; there's only one or two dispersion properties supported
-                [(trig/iri :ontology (first (:dispersion result-properties)))
-                 (trig/lit (:dispersion-value measurement))]
-                [(trig/iri :ontology (second (:dispersion result-properties)))
-                 (trig/lit (:high-range-value measurement))]))))
-
+    (reduce (fn [subj [property value]]
+              (trig/spo subj [(trig/iri :ontology property)
+                              (trig/lit value)]))
+            meas
+            (map vector
+                 (:dispersion result-properties)
+                 (list (:dispersion-value measurement)
+                       (:high-range-value measurement))))))
 (defn read-endpoint-measurements
   [xml endpoint-uri mm-uri group-uris]
   (let [results-properties (variable-results-properties xml)

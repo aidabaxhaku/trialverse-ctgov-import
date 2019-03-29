@@ -656,6 +656,36 @@
                                                    mm-uri
                                                    group-uris))))))
 
+(deftest test-read-endpoint-measurements-dichotomous
+  (let [arm1-uri     [:qname :instance "arm1Uri"]
+        arm2-uri     [:qname :instance "arm2Uri"]
+        arm3-uri     [:qname :instance "arm3Uri"]
+        group-uris   {"arm1Id" arm1-uri
+                      "arm2Id" arm2-uri
+                      "arm3Id" arm3-uri}
+        expected-rdf (list
+                      (list [[:qname :ontology "of_outcome"] variable-uri]
+                            [[:qname :ontology "of_group"] arm1-uri]
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 132]]
+                            [[:qname :ontology "percentage"] [:lit 60.6]])
+                      (list [[:qname :ontology "of_outcome"] variable-uri]
+                            [[:qname :ontology "of_group"] arm2-uri]
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 131]]
+                            [[:qname :ontology "percentage"] [:lit 78.6]])
+                      (list [[:qname :ontology "of_outcome"] variable-uri]
+                            [[:qname :ontology "of_group"] arm3-uri]
+                            [[:qname :ontology "of_moment"] mm-uri]
+                            [[:qname :ontology "sample_size"] [:lit 133]]
+                            [[:qname :ontology "percentage"] [:lit 10.5]]))]
+    (is (= expected-rdf
+           (map second (read-endpoint-measurements hba1c-under-7-percent-xml
+                                                   variable-uri
+                                                   mm-uri
+                                                   group-uris))))))
+
+
 (deftest test-read-adverse-event-measurements
   (let [group1-uri   [:qname :instance "ReportingGroup-1"]
         group2-uri   [:qname :instance "ReportingGroup-2"]
@@ -723,26 +753,29 @@
         group-uris    (build-group-uris groups)
         categories    (find-categories xml)
         sample-sizes  (find-sample-sizes groups)
-        expected      {}
         found         (read-all-endpoint-measurements endpoints-xml mm-uris
-                                                      variable-uris group-uris categories
-                                                      )]
+                                                      variable-uris group-uris categories)
+        has-nil-ontology? (fn [[pred obj]] (println pred) (println obj)
+                            (nil? (nth pred 2)))
+        malformed-entries (filter (fn [pred-objs]
+                                    (not (empty? (filter has-nil-ontology? pred-objs))))
+                                  (map second found))]
+    (is (= 0 (count malformed-entries)))
     (is (= (count found) (* 3 (count endpoints-xml))))))
 
 (deftest test-read-all-event-measurements
-  (let [event-xml    (find-adverse-events-xml xml)
-        variable-uris (into {}
-                            (map #(vector [:event %2] (lib/gen-uri))
-                                 event-xml
-                                 (iterate inc 1)))
-        groups       (find-groups xml)
-        group-uris   (build-group-uris groups)
-        categories   (find-categories xml)
-        sample-sizes (find-sample-sizes groups)
-        expected     {}
-        found        (read-all-event-measurements event-xml mm-uri
-                                                  variable-uris group-uris)]
-    
+  (let [event-xml         (find-adverse-events-xml xml)
+        variable-uris     (into {}
+                                (map #(vector [:event %2] (lib/gen-uri))
+                                     event-xml
+                                     (iterate inc 1)))
+        groups            (find-groups xml)
+        group-uris        (build-group-uris groups)
+        categories        (find-categories xml)
+        sample-sizes      (find-sample-sizes groups)
+        found             (read-all-event-measurements event-xml mm-uri
+                                                       variable-uris group-uris)]
+
     (is (= (count found) (* 3 (count event-xml))))))
 
 (deftest test-create-study-node
@@ -773,55 +806,6 @@
            (count (second found))))
     (is (= expected (take 8 (second found))))))
 
-; (deftest test-import-eudract
-;   (let [expected {}
-;         found    (import-eudract xml)]
-;     (spit "out.trig" found)
-;     (is (= expected found))))
-
-(deftest test-weird-import
-  (let [xml          (vtd/navigator (slurp "test/app/eudract4.xml"))
-        categories   (find-categories xml)
-        endpoint-xml (first (find-endpoints-xml xml))
-        groups       (find-groups xml)
-        group-uris   (build-group-uris groups)
-        _ (println (measurement-type-for-endpoint endpoint-xml))
-        expected     {}
-        found        (read-endpoint-measurements-categorical endpoint-xml
-                                                             [:qname :instance "whatever"]
-                                                             [:qname :instance "whatever2"]
-                                                             group-uris
-                                                             categories)]
-    (is (= expected found))))
-  
-
-; (deftest test-read-all-measurements
-;   (let [[mm-uris mm-info]         (find-measurement-moments xml)
-;         groups                    (find-groups xml)
-;         group-uris                (build-group-uris groups)
-;         groups-rdf                (build-groups-rdf groups group-uris)
-;         categories                (find-categories xml)
-;         baseline-xml              (find-baseline-xml xml)
-        ; baseline-uris             (into {}
-        ;                                 (map #(vector [:baseline %2] 
-        ;                                               (lib/gen-uri))
-        ;                                      baseline-xml
-        ;                                      (iterate inc 1)))
-;         baseline-var-rdf-data     (map #(baseline-var-rdf %1 %2 
-;                                                           baseline-uris mm-uris 
-;                                                           categories)
-;                                        baseline-xml
-;                                        (iterate inc 1))
-;         baseline-measurement-data (map #(read-baseline-measurements-categorical
-;                                          %1
-;                                          (baseline-uris [:baseline %2])
-;                                          (mm-uris [:baseline])
-;                                          group-uris
-;                                          categories)
-;                                        baseline-xml
-;                                        (iterate inc 1))]
-;     (clojure.pprint/pprint
-;      (concat baseline-var-rdf-data baseline-measurement-data)
-;      (clojure.java.io/writer "out.rdf"))
-    
-;     (is (= 1 0))))
+(deftest test-import-eudract
+  (let [found    (import-eudract xml)]
+    (is (= 106833 (count found)))))
