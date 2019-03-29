@@ -213,7 +213,7 @@
     ("studyContinuousCharacteristic"
      "ageContinuousCharacteristic") "continuous"))
 
-(defn p* [x] (clojure.pprint/pprint x) x) ; FIXME: debug
+; (defn p* [x] (clojure.pprint/pprint x) x) ; FIXME: debug
 
 (defn get-of-variable-rdf
   [measurement-type result-properties categories]
@@ -516,9 +516,9 @@
         is-not-categorical? (> (count (:dispersion result-properties))
                                0)
         measurements         (if is-not-categorical?
-                              (p* (map read-endpoint-measurement reporting-groups-xml))
-                               (p* (map #(read-group-categorical-measurement-values % "armId")
-                                        reporting-groups-xml)))]
+                              (map read-endpoint-measurement reporting-groups-xml)
+                              (map #(read-group-categorical-measurement-values % "armId")
+                                        reporting-groups-xml))]
     (if is-not-categorical?
       (map #(build-continuous-measurement-rdf % result-properties
                                               endpoint-uri mm-uri group-uris

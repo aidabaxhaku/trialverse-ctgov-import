@@ -1,4 +1,4 @@
-(defproject ctgov-import "0.1.5"
+(defproject ctgov-import "0.2.0"
   :description "Converter from ClinicalTrials.gov XML and EudraCT XML to ADDIS-compatible RDF (text/turtle)"
   :url "https://github.com/drugis/trialverse-ctgov-import"
   :license {:name "GNU GPL-3"
