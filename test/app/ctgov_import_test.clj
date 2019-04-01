@@ -102,30 +102,3 @@
 (deftest testxml-3
   (let [imported-rdf (import-xml testxml)]
     (is (= 363582 (count imported-rdf)))))
-
-; (deftest outcome-measurement-properties-test
-;   (is (= (outcome-measurement-properties outcome-xml)
-;          {
-;           :simple false
-;           :categories '()
-;           :param nil
-;           :dispersion nil
-;           :units nil
-;           :unit-of-analysis false })))
-
-; (deftest baseline-measurement-data-rdf-test
-;   (is (= (baseline-measurement-data-rdf subj baseline-xml baseline-xml "group-uri" category-uris)
-;          ())))
-
-; (deftest baseline-measurements-test
-;   (is
-;     (= (let
-;          [idx 1
-;           sample-size-xml '()
-;           baseline-uris (list "baseline-uri")
-;           group-uris (list "group-uri")
-;           mm-uris (list "mm-uri")
-;           result (baseline-measurements baseline-xml idx baseline-xml baseline-uris group-uris mm-uris category-uris)]
-;          result)
-
-;                                       false)))

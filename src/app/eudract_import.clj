@@ -4,7 +4,6 @@
    [riveted.core :as vtd]
    [clojure.string :refer [lower-case]]
    [clojure.set :refer [difference]]
-   [clojure.pprint :refer [pprint]]
    [org.drugis.addis.rdf.trig :as trig]))
 
 (def ALLOCATION {"ALLOCATION.randControlled"    "AllocationRandomized"
@@ -169,7 +168,7 @@
                          "categorical"
                          (measurement-type props))
      :dispersion       found-dispersion
-     :tendency         (first found-tendency) ; FIXME iffy first here but not dispersion
+     :tendency         (first found-tendency)
      :category-ids     category-ids}))
 
   (defn endpoint-rdf
@@ -306,7 +305,6 @@
     (merge group-uris-by-id baseline-group-uris-by-id)))
 
 (defn find-groups
- ; FIXME: consider <totalBaselineGroup> from categorical baselines? 
   [xml]
   {:arms                 (find-arms xml)
    :baseline-groups      (find-baseline-groups xml)
@@ -340,10 +338,10 @@
      [(lib/overall-population-rdf (:uri overall) overall)])))
 
 ; FIXME: countable values?
-(defn read-endpoint-measurement ; assumes xml is at .../endpoint/armReportingGroups/armReportingGroup
+(defn read-endpoint-measurement 
+; assumes xml is at .../endpoint/armReportingGroups/armReportingGroup
   [xml]
   {:arm-id           (vtd/attr xml "armId")
-  ;  :category-id      (vtd/attr xml "tendencyValues/tendencyValue/categoryId")
    :tendency-value   (lib/parse-double (lib/text-at xml "tendencyValues/tendencyValue/value"))
    :dispersion-value (lib/parse-double (lib/text-at xml "dispersionValues/dispersionValue/value"))
    :high-range-value (lib/parse-double (lib/text-at xml "./dispersionValues/dispersionValue/highRangeValue"))
@@ -671,26 +669,3 @@
                                   category-rdf endpoints-rdf events-rdf groups-rdf
                                   measurements-rdf)]
     (trig/write-ttl lib/prefixes triples)))
-
-; (defn import-xml
-;   [xml]
-;   (let [
-;        mms-rdf (map #(mm-rdf (first %) (second %)) mm-info)
-;    ✓     study-rdf (-> uri
-;                      (trig/spo [(trig/iri :ontology "has_publication") reg-uri]
-;                                [(trig/iri :rdf "type") (trig/iri :ontology "Study")]
-;                                [(trig/iri :rdfs "label") (trig/lit (lib/text-at xml "/clinical_study/brief_title")))]
-;                                [(trig/iri :rdfs "comment") (trig/lit (lib/text-at xml "/clinical_study/official_title")))]
-;                                [(trig/iri :ontology "has_objective")
-;                                 (trig/_po [(trig/iri :rdfs "comment") (trig/lit (lib/text-at xml "/clinical_study/brief_summary/textblock")))])]
-;                                [(trig/iri :ontology "has_eligibility_criteria")
-;                                 (trig/_po [(trig/iri :rdfs "comment") (trig/lit (lib/text-at xml "/clinical_study/eligibility/criteria/textblock")))])])
-
-;                      (allocation-rdf (lib/text-at xml "/clinical_study/study_design_info/allocation")))
-;                      (blinding-rdf (parse-masking (lib/text-at xml "/clinical_study/study_design_info/masking"))))
-;                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals baseline-uris))
-;                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals variable-uris))
-;                      (lib/spo-each (trig/iri :ontology "has_outcome") (vals event-uris))
-;                      (lib/spo-each (trig/iri :ontology "has_group") (keys group-info)))
-;         triples (concat [study-rdf registration] mms-rdf baseline-rdf category-rdf outcomes-rdf events-rdf groups-rdf measurements-rdf)]
-;     (trig/write-ttl lib/prefixes triples)))
