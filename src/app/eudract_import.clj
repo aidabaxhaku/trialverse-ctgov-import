@@ -128,9 +128,20 @@
   (and (= "MEASURE_TYPE.number" (:param props))
        (lib/string-starts-with-any? (lower-case (:units props)) ["proportion"])))
 
+(defn is-confidence-interval?
+  [props]
+  (= "ENDPOINT_DISPERSION.confidenceInterval" (:dispersion props)))
+
 (defn measurement-type
   [props]
   (if (= "MEASURE_TYPE.number" (:param props)) "dichotomous" "continuous"))
+
+(defn get-quantiles
+  [xml]
+  (case (lib/parse-int (lib/text-at xml "./percentage"))
+    90 '("quantile_0.05" "quantile_0.95")
+    95 '("quantile_0.025" "quantile_0.975")
+    default (throw "unsupported confidence interval width")))
 
 ; determine results properties from the measurement properties
 (defn variable-results-properties
@@ -149,9 +160,12 @@
                           (comp not nil?)
                           (concat
                            (ENDPOINT-DISPERSION-TYPES (:dispersion props))
-                           (DISPERSION-TYPES (:dispersion props))))]
+                           (DISPERSION-TYPES (:dispersion props))
+                           (if (is-confidence-interval? props) (get-quantiles xml))))]
     {:properties       (concat found-tendency found-dispersion)
-     :measurement-type (if (> (count category-ids) 1)
+     :measurement-type (if (or (.endsWith (vtd/tag xml) "CategoricalCharacteristic")
+                               (and (:is-count? props)
+                                    (> (count category-ids) 1)))
                          "categorical"
                          (measurement-type props))
      :dispersion       found-dispersion
@@ -323,12 +337,13 @@
           arms)
      (map #(lib/group-rdf (:uri %) %)
           (concat non-arm-baseline-groups adverse-event-groups))
-     [(lib/group-rdf (:uri overall) overall)])))
+     [(lib/overall-population-rdf (:uri overall) overall)])))
 
 ; FIXME: countable values?
 (defn read-endpoint-measurement ; assumes xml is at .../endpoint/armReportingGroups/armReportingGroup
   [xml]
   {:arm-id           (vtd/attr xml "armId")
+  ;  :category-id      (vtd/attr xml "tendencyValues/tendencyValue/categoryId")
    :tendency-value   (lib/parse-double (lib/text-at xml "tendencyValues/tendencyValue/value"))
    :dispersion-value (lib/parse-double (lib/text-at xml "dispersionValues/dispersionValue/value"))
    :high-range-value (lib/parse-double (lib/text-at xml "./dispersionValues/dispersionValue/highRangeValue"))
@@ -344,9 +359,11 @@
     (trig/spo meas
               [(trig/iri :ontology "sample_size")
                (trig/lit sample-size)])
-    (trig/spo meas
-              [(trig/iri :ontology (:tendency result-properties))
-               (trig/lit (:tendency-value measurement))])
+    (if (not (nil? (:tendency result-properties)))
+      (trig/spo meas
+                [(trig/iri :ontology (:tendency result-properties))
+                 (trig/lit (:tendency-value measurement))])
+      meas)
     (reduce (fn [subj [property value]]
               (trig/spo subj [(trig/iri :ontology property)
                               (trig/lit value)]))
@@ -355,21 +372,24 @@
                  (:dispersion result-properties)
                  (list (:dispersion-value measurement)
                        (:high-range-value measurement))))))
+
 (defn read-endpoint-measurements
   [xml endpoint-uri mm-uri group-uris]
   (let [results-properties (variable-results-properties xml)
-        measurements-xml (vtd/search xml "./armReportingGroups/armReportingGroup")
-        measurements     (map read-endpoint-measurement measurements-xml)]
-    (map #(build-continuous-measurement-rdf  ; FIXME: categorical endpoints
+        measurements-xml   (vtd/search xml "./armReportingGroups/armReportingGroup")
+        has-categories?    (> 0 (count (:category-ids results-properties)))
+        measurements       (map read-endpoint-measurement measurements-xml)]
+    (map #(build-continuous-measurement-rdf 
            % results-properties
-           endpoint-uri mm-uri group-uris (:sample-size %)) 
+           endpoint-uri mm-uri group-uris (:sample-size %))
 ;; FIXME: figure out uniformity baseline/endpoint
          measurements)))
 
 (defn read-adverse-event-measurement
   [xml]
-  {:arm-id    (vtd/attr  xml "reportingGroupId")
-   :count       (lib/parse-int (lib/text-at xml "./occurrences"))
+  {:arm-id      (vtd/attr  xml "reportingGroupId")
+   :count       (lib/parse-int (lib/text-at xml "./subjectsAffected"))
+   :event-count (lib/parse-int (lib/text-at xml "./occurrences"))
    :sample-size (lib/parse-int (lib/text-at xml "subjectsExposed"))})
 
 (defn build-dichotomous-measurement-rdf
@@ -383,7 +403,9 @@
               [(trig/iri :ontology "sample_size")
                (trig/lit (:sample-size measurement))]
               [(trig/iri :ontology "count")
-               (trig/lit (:count measurement))])))
+               (trig/lit (:count measurement))]
+              [(trig/iri :ontology "event_count")
+               (trig/lit (:event-count measurement))])))
 
 (defn read-adverse-event-measurements
   [xml variable-uri mm-uri group-uris]
@@ -420,8 +442,6 @@
 (defn read-group-continuous-endpoint-measurement-values
   [xml]
   (read-group-continuous-measurement-values xml "armId"))
-
-
 
 (defn build-category-count
   [[category count]]
@@ -516,23 +536,15 @@
   [xml endpoint-uri mm-uri group-uris categories]
   (let [reporting-groups-xml (vtd/search xml "./armReportingGroups/armReportingGroup")
         result-properties    (variable-results-properties xml)
-        is-not-categorical? (> (count (:dispersion result-properties))
-                               0)
-        measurements         (if is-not-categorical?
-                              (map read-endpoint-measurement reporting-groups-xml)
-                              (map #(read-group-categorical-measurement-values % "armId")
-                                        reporting-groups-xml))]
-    (if is-not-categorical?
-      (map #(build-continuous-measurement-rdf % result-properties
-                                              endpoint-uri mm-uri group-uris
-                                              (:sample-size %))
-           measurements)
-      (map #(build-categorical-measurement-rdf % endpoint-uri mm-uri group-uris categories)
-           measurements))))
-
+        measurements         (map #(read-group-categorical-measurement-values % "armId")
+                                  reporting-groups-xml)]
+    (map #(build-categorical-measurement-rdf % endpoint-uri mm-uri group-uris
+                                             categories)
+         measurements)))
+    
 (defn measurement-type-for-endpoint ; FIXME: But what apout dichotomous
   [xml]
-  (if (= 0 (count (vtd/search xml "./categories/category")))
+  (if (= "false" (lib/text-at xml "countable"))
     "continuous"
     "categorical"))
 
@@ -601,7 +613,8 @@
                                       (:baseline-groups groups-with-uris))))
       (lib/spo-each (trig/iri :ontology "has_group") 
                     (map :uri (:adverse-event-groups groups-with-uris)))
-      (trig/spo [(trig/iri :ontology "has_group") (:uri (:overall groups-with-uris))])))
+      (trig/spo [(trig/iri :ontology "has_included_population") 
+                 (:uri (:overall groups-with-uris))])))
 
 (defn build-variable-uris
   [xmls key]

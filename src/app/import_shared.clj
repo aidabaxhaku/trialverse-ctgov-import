@@ -104,7 +104,7 @@
 
 (def group-rdf #(group-rdf-flex-type %1 %2 "Group"))
 (def arm-rdf #(group-rdf-flex-type %1 %2 "Arm"))
- 
+(def overall-population-rdf #(group-rdf-flex-type %1 %2 "StudyPopulation"))
 (defn mm-rdf
   [mm-uri mm-title]
   (trig/spo mm-uri

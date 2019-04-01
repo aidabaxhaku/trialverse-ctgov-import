@@ -434,7 +434,7 @@
                                  [[:qname :rdf "type"] [:qname :ontology "Group"]])])
         overall-group        '([[:qname :rdfs "label"] [:lit "Overall population"]]
                                [[:qname :rdfs "comment"] [:lit ""]]
-                               [[:qname :rdf "type"] [:qname :ontology "Group"]])]
+                               [[:qname :rdf "type"] [:qname :ontology "StudyPopulation"]])]
     (is (= 4 (count found-groups-rdf)))
     (is (= overall-group (-> found-groups-rdf
                              (nth 3)
@@ -713,17 +713,20 @@
                             [[:qname :ontology "of_group"] group1-uri]
                             [[:qname :ontology "of_moment"] mm-uri]
                             [[:qname :ontology "sample_size"] [:lit 132]]
-                            [[:qname :ontology "count"] [:lit 5]])
+                            [[:qname :ontology "count"] [:lit 5]]
+                            [[:qname :ontology "event_count"] [:lit 5]])
                       (list [[:qname :ontology "of_outcome"] variable-uri]
                             [[:qname :ontology "of_group"] group2-uri]
                             [[:qname :ontology "of_moment"] mm-uri]
                             [[:qname :ontology "sample_size"] [:lit 131]]
-                            [[:qname :ontology "count"] [:lit 7]])
+                            [[:qname :ontology "count"] [:lit 7]]
+                            [[:qname :ontology "event_count"] [:lit 7]])
                       (list [[:qname :ontology "of_outcome"] variable-uri]
                             [[:qname :ontology "of_group"] group3-uri]
                             [[:qname :ontology "of_moment"] mm-uri]
                             [[:qname :ontology "sample_size"] [:lit 133]]
-                            [[:qname :ontology "count"] [:lit 1]]))]
+                            [[:qname :ontology "count"] [:lit 1]]
+                            [[:qname :ontology "event_count"] [:lit 1]]))]
     (is (= expected-rdf
            (map second (read-adverse-event-measurements
                         decreased-appetite
@@ -777,7 +780,6 @@
                                     (not (empty? (filter has-nil-ontology? pred-objs))))
                                   (map second found))]
     (is (= '() malformed-entries))
-    (println (:arms groups))
     (is (= (* (count (:arms groups)) (count endpoints-xml))
            (count found)))))
 
@@ -822,10 +824,28 @@
     (is (= 18 ; 8 normal; 1 endpoint; 1 baseline var; 1 adverse event
               ; 3 arms; 3 groups; 1 overall population
            (count (second found))))
-    (clojure.pprint/pprint (second found))
     (is (= expected (take 8 (second found))))))
 
 (deftest test-import-eudract
   (let [found    (import-eudract xml)]
-    (spit "out.rdf" found)
-    (is (= 106062 (count found)))))
+    ; (spit "out.rdf" found)
+    (is (= 109736 (count found)))))
+; (defn p* [x] (clojure.pprint/pprint x) x)
+
+; (deftest test-import-eudract2
+;   (let [xml2  (vtd/navigator (slurp "test/app/eudract2.xml"))
+;         found (import-eudract xml2)]
+
+;     (spit "out.rdf" found)
+;     (is (= 109737 (count found)))))
+
+; ; ; (is (= 109737 (count found)))))
+; ;         endpoints    (find-endpoints-xml xml2)
+; ;         groups       (find-groups xml2)
+; ;         group-uris   (build-group-uris groups)
+; ;         categories   (find-categories xml2)
+; ;         measurements (read-endpoint-measurements
+; ;                       (nth endpoints 2)
+; ;                       (lib/gen-uri)
+; ;                       mm-uri group-uris)]
+; ;     (is (= {} measurements))))
