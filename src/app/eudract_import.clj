@@ -540,11 +540,13 @@
                                              categories)
          measurements)))
     
-(defn measurement-type-for-endpoint ; FIXME: But what apout dichotomous
+(defn measurement-type-for-endpoint
   [xml]
   (if (= "false" (lib/text-at xml "countable"))
     "continuous"
-    "categorical"))
+    (if (= 0 (count (vtd/search xml "./categories/category")))
+      "dichotomous"
+      "categorical")))
 
 (defn read-all-endpoint-measurements
   [endpoints-xml mm-uris variable-uris group-uris categories]
