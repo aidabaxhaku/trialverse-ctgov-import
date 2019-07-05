@@ -124,7 +124,9 @@
                [(trig/iri :ontology "is_measured_at") (mm-uris [:outcome idx])]
                [(trig/iri :ontology "has_result_property") (trig/iri :ontology "sample_size")]
                [(trig/iri :ontology "of_variable")
-                (trig/_po [(trig/iri :ontology "measurementType")
+                (trig/_po [(trig/iri :rdf "type")
+                           (trig/iri :ontology "Variable")]
+                          [(trig/iri :ontology "measurementType")
                            (trig/iri :ontology (outcome-measurement-type (:param props)))])])
      (trig/iri :ontology "has_result_property")
      (map #(trig/iri :ontology %) (keys properties)))))

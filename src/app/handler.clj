@@ -12,19 +12,21 @@
   (:use [clojusc.ring.xml :only [wrap-xml-request]]
         [clojure.data.xml :only [emit-str]]))
 
-(defn get-info
-  [id]
+(defn get-from-ctgov
+  [id xml-type]
   (:body
     (client/get
-      (str "https://clinicaltrials.gov/show/" (url-encode id) "?displayXml=TRUE"))))
+      (str "https://clinicaltrials.gov/show/" (url-encode id)  xml-type "?=TRUE"))))
+
+(defn get-info
+  [id]
+  (get-from-ctgov id "displayXml"))
 
 (defn get-record
   [id]
-  (:body
-    (client/get
-      (str "https://clinicaltrials.gov/show/" (url-encode id) "?resultsXml=TRUE"))))
+  (get-from-ctgov id "resultsXml"))
 
-(defn do-import
+(defn do-ctgov-import
   [id]
   (import-xml (vtd/navigator (get-record id))))
 
@@ -65,14 +67,14 @@
           (throw e))))))
 
 (defroutes app-routes
-  (GET "/" [id] {:status 200
+  (GET "/" [] {:status 200
                  :body   "Go to /NCTXXXXXXXX."})
   (GET "/:id{NCT[0-9]+}" [id] {:status  200
                                :headers {"Content-Type" "application/json"}
                                :body    (json/write-str (basic-info id))})
   (GET "/:id{NCT[0-9]+}/rdf" [id] {:status  200
                                    :headers {"Content-Type" "text/turtle"}
-                                   :body    (do-import id)})
+                                   :body    (do-ctgov-import id)})
   (wrap-xml-request (POST "/eudract"
                       params
                       {:status  200

@@ -101,4 +101,4 @@
 
 (deftest testxml-3
   (let [imported-rdf (import-xml testxml)]
-    (is (= 363582 (count imported-rdf)))))
+    (is (= 363846 (count imported-rdf)))))

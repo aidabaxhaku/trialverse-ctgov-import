@@ -188,7 +188,9 @@
                  [(trig/iri :ontology "has_result_property") 
                   (trig/iri :ontology "sample_size")]
                  [(trig/iri :ontology "of_variable")
-                  (trig/_po [(trig/iri :ontology "measurementType") 
+                  (trig/_po [(trig/iri :rdf "type")
+                             (trig/iri :ontology "Variable")]
+                            [(trig/iri :ontology "measurementType")
                              (trig/iri :ontology (:measurement-type properties))])])
        (trig/iri :ontology "has_result_property")
        (map #(trig/iri :ontology %) (:properties properties)))))
@@ -212,7 +214,9 @@
       [(trig/iri :ontology "is_measured_at")
        (mm-uris [:events])]
       [(trig/iri :ontology "of_variable")
-       (trig/_po [(trig/iri :ontology "measurementType")
+       (trig/_po [(trig/iri :rdf "type")
+                  (trig/iri :ontology "Variable")]
+                 [(trig/iri :ontology "measurementType")
                   (trig/iri :ontology "dichotomous")])])
      (trig/iri :ontology "has_result_property")
      (map #(trig/iri :ontology %) ["sample_size" "count" "event_count"]))))
@@ -236,13 +240,14 @@
     category-rdf  (if (= measurement-type "categorical")
                     [(trig/iri :ontology "categoryList")
                      (trig/coll category-uris)])
-    variable-base [(trig/iri :ontology "measurementType")
+    variable-type [(trig/iri :rdf "type")
+                   (trig/iri :ontology "Variable")]
+    measurement-type-rdf [(trig/iri :ontology "measurementType")
                    (trig/iri :ontology measurement-type)]
     of-variable   (if category-rdf
-                    (trig/_po variable-base category-rdf)
-                    (trig/_po variable-base))]
-    [(trig/iri :ontology "of_variable")
-     of-variable]))
+                    (trig/_po variable-type measurement-type-rdf category-rdf)
+                    (trig/_po variable-type measurement-type-rdf))]
+    [(trig/iri :ontology "of_variable") of-variable]))
 
 (defn baseline-var-rdf
   [xml idx baseline-uris mm-uris categories]
