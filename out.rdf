@@ -1,0 +1,2601 @@
+@prefix study: <http://trials.drugis.org/studies/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix qudt: <http://qudt.org/schema/qudt#> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix ontology: <http://trials.drugis.org/ontology#> .
+@prefix instance: <http://trials.drugis.org/instances/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ictrp: <http://trials.drugis.org/ictrp-id/> .
+@prefix entity: <http://trials.drugis.org/entities/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+instance:268bea48-6230-49eb-8830-3370e75c5375
+  ontology:has_publication ictrp:2013-004502-26 ;
+  rdf:type ontology:Study ;
+  rdfs:label "The full title" ;
+  rdfs:comment "The full title" ;
+  ontology:has_objective [
+    rdfs:comment "The primary objective"
+  ] ;
+  ontology:has_eligibility_criteria [
+    rdfs:comment "Not applicable"
+  ] ;
+  ontology:has_allocation ontology:AllocationRandomized ;
+  ontology:has_blinding ontology:DoubleBlind ;
+  ontology:has_outcome instance:8b38d318-d161-41a0-aa18-706ccce99b98 ;
+  ontology:has_outcome instance:8cbdcbd2-1adb-47c1-a594-1c1a5d54af7c ;
+  ontology:has_outcome instance:223cf3be-2684-4055-a5a3-a8834bc1984d ;
+  ontology:has_outcome instance:54c55af0-70a4-41c4-9948-cb85965d4acd ;
+  ontology:has_outcome instance:b47747f0-a130-449b-8263-291f504497a8 ;
+  ontology:has_outcome instance:5f3f9645-e743-4881-b75e-eb8853dae3dd ;
+  ontology:has_outcome instance:c15fc4d2-d500-4f87-9f1a-13212087c65a ;
+  ontology:has_outcome instance:66880c05-d4bb-4a3e-8f35-0a138d96262b ;
+  ontology:has_outcome instance:88733015-e53f-4743-af6a-1c1e7c40b50c ;
+  ontology:has_outcome instance:9c2d1920-025f-4271-8668-a5eefcaeb9a8 ;
+  ontology:has_outcome instance:166e1695-0f1a-4823-a8e7-6399b7f3ac92 ;
+  ontology:has_outcome instance:7d656a3a-79b1-476f-a648-8ae3b8c5ccb2 ;
+  ontology:has_outcome instance:082d7b30-b622-442a-bdeb-78973ecb1f7d ;
+  ontology:has_outcome instance:135d1220-d881-4986-a841-c36065b675e6 ;
+  ontology:has_outcome instance:bf2e66c0-656a-4920-aa26-0c5dddc7b38f ;
+  ontology:has_outcome instance:f0fd374c-0a6a-4280-a00e-d2cedc97af10 ;
+  ontology:has_outcome instance:c522fc93-ddfd-454d-8e4d-c77320fabfd3 ;
+  ontology:has_outcome instance:1e052da4-311d-444e-9536-d3c57c06d263 ;
+  ontology:has_outcome instance:5913b7e5-c79d-4163-a35d-291ce78b0b5b ;
+  ontology:has_outcome instance:80305074-9bd8-4bed-807e-c9c49445109f ;
+  ontology:has_outcome instance:e9f5f715-2bad-4a26-8820-4d7e5607b178 ;
+  ontology:has_outcome instance:eca6efd6-689f-4e34-93aa-c7ca85b22445 ;
+  ontology:has_outcome instance:c6ff7054-322a-4b3a-a9f6-5fbfc04b71ef ;
+  ontology:has_outcome instance:013c4dc3-e90f-41ef-9354-b33ae787c181 ;
+  ontology:has_outcome instance:bed4070b-2cc7-453c-a708-e26bfc2dcb1a ;
+  ontology:has_outcome instance:82849e1d-45a2-45d4-bb2e-64f91df725d2 ;
+  ontology:has_outcome instance:0618ac86-68ec-4f52-8bcb-3894598b01ed ;
+  ontology:has_outcome instance:fb0dce6c-4feb-4403-8b5e-2c34069b53c9 ;
+  ontology:has_outcome instance:066c5e87-7569-48a1-b058-e3c81e7c85a2 ;
+  ontology:has_outcome instance:a4733233-2afa-43b3-ab4f-651a7192b7c7 ;
+  ontology:has_outcome instance:bf333717-bec2-4c2e-b6ba-cbdaa54cf92e ;
+  ontology:has_outcome instance:2b1d745d-efef-4295-a71e-0aff597a3b01 ;
+  ontology:has_outcome instance:b2a8d53e-d992-4344-9ff9-7b3a0b99252a ;
+  ontology:has_outcome instance:b6b95260-1dbf-44b5-905a-2be65c695d8e ;
+  ontology:has_outcome instance:301da726-5972-4701-9618-0a57d7f47fdb ;
+  ontology:has_outcome instance:b5cb1f02-c3d0-4dc2-8151-c2d7dc81d1a3 ;
+  ontology:has_outcome instance:4712f80e-0175-49ea-9e5b-adaea089e74a ;
+  ontology:has_outcome instance:7e4bf6a9-c474-44d4-b2ac-c6b703575ce4 ;
+  ontology:has_outcome instance:8f120b7a-7c9a-49b0-9473-fab35ee5aff5 ;
+  ontology:has_outcome instance:60376d9d-764c-483c-9bda-1f9db5134765 ;
+  ontology:has_outcome instance:a4b9fbcf-101f-45f8-8f6b-2a29c04f81df ;
+  ontology:has_outcome instance:07c1f002-fc4d-4a13-9357-1ee7831327f8 ;
+  ontology:has_outcome instance:b518d93c-c572-450f-89ee-b7e50de42e3a ;
+  ontology:has_outcome instance:e7a3a127-7377-4da8-97b9-887250f710eb ;
+  ontology:has_outcome instance:388b2ab8-c8d1-4d7c-9e1b-cb27ea1d51f4 ;
+  ontology:has_outcome instance:64d608d7-f275-43f0-85a7-dd1b04d97922 ;
+  ontology:has_outcome instance:949226bc-890c-4c27-9cd0-5d1143944b3f ;
+  ontology:has_outcome instance:0c046806-1dab-4627-a333-810d664a48a1 ;
+  ontology:has_outcome instance:ba38284b-d954-4abe-9b87-a6f85f117a9a ;
+  ontology:has_outcome instance:a8b881bb-e38a-4edb-a43e-9bd0505c52ab ;
+  ontology:has_outcome instance:ba3555d6-ae18-449b-9d2c-7f2b18d0869b ;
+  ontology:has_outcome instance:e8e0cb7d-eca0-4cfc-b7c3-e1ddf17772ab ;
+  ontology:has_outcome instance:7be93663-01bb-4238-9192-5eb81cfcddf1 ;
+  ontology:has_outcome instance:5d874341-13dd-48c8-96bf-193144bec051 ;
+  ontology:has_outcome instance:0819ecfa-d087-46d2-9014-995a85c0ccdc ;
+  ontology:has_outcome instance:3d70b71a-2d5f-4951-8162-302384588c45 ;
+  ontology:has_outcome instance:6001de9c-a2c0-4d1c-b298-a451491224c9 ;
+  ontology:has_outcome instance:9e731668-94e9-452b-88af-4342b04be015 ;
+  ontology:has_outcome instance:cc40efba-69d4-4307-9540-a3df39286474 ;
+  ontology:has_outcome instance:b241a372-6f82-4010-80d2-a510d98b9e5b ;
+  ontology:has_outcome instance:bf30b8d1-af2d-43c7-85d6-bfd8975c2d1a ;
+  ontology:has_outcome instance:74ba0cae-d1fa-49bb-86c4-74ea5965ffa8 ;
+  ontology:has_outcome instance:52298a63-fce2-40eb-bafc-12388d92b735 ;
+  ontology:has_arm instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:has_arm instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:has_arm instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:has_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:has_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:has_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:has_included_population instance:5cb238f8-e19e-447a-bdaf-de2d52f12348 .
+
+ictrp:2013-004502-26
+  ontology:registry <http://trials.drugis.org/registries#EudraCT> ;
+  ontology:registration_id "2013-004502-26" ;
+  bibo:uri "https://www.clinicaltrialsregister.eu/ctr-search/trial/2013-004502-26/results" .
+
+instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7
+  rdfs:label "Baseline" ;
+  rdf:type ontology:MeasurementMoment .
+
+instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311
+  rdfs:label "From baseline to week 30" ;
+  rdf:type ontology:MeasurementMoment .
+
+instance:81f050d0-50d1-429a-8eda-68eb61c90455
+  rdfs:label "From the first dose of trial product until the end of the post-treatment follow-up period.The follow-up visit was scheduled to take place 5 weeks after the date of last dose of trial product with a visit window of +7 days (maximum 36 weeks)." ;
+  rdf:type ontology:MeasurementMoment .
+
+instance:0f64b81e-a57f-4726-8b41-77cfe7126ae0
+  rdfs:label "After 30 weeks treatment" ;
+  rdf:type ontology:MeasurementMoment .
+
+instance:ede585b3-c676-4db0-8c60-b7c2358805d3
+  rdfs:label "After 30 weeks of treatment" ;
+  rdf:type ontology:MeasurementMoment .
+
+instance:8b38d318-d161-41a0-aa18-706ccce99b98
+  rdf:type ontology:PopulationCharacteristic ;
+  rdfs:label "Glycosylated haemoglobin" ;
+  ontology:is_measured_at instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:of_variable [
+    ontology:of_variable [
+      rdf:type ontology:Variable ;
+      ontology:measurementType ontology:measurement-type
+    ]
+  ] ;
+  ontology:has_result_property ontology:mean ;
+  ontology:has_result_property ontology:standard_deviation .
+
+instance:88733015-e53f-4743-af6a-1c1e7c40b50c
+  rdf:type ontology:PopulationCharacteristic ;
+  rdfs:label "Body weight" ;
+  ontology:is_measured_at instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:of_variable [
+    ontology:of_variable [
+      rdf:type ontology:Variable ;
+      ontology:measurementType ontology:measurement-type
+    ]
+  ] ;
+  ontology:has_result_property ontology:mean ;
+  ontology:has_result_property ontology:standard_deviation .
+
+instance:66880c05-d4bb-4a3e-8f35-0a138d96262b
+  rdf:type ontology:PopulationCharacteristic ;
+  rdfs:label "Fasting plasma glucose" ;
+  ontology:is_measured_at instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:of_variable [
+    ontology:of_variable [
+      rdf:type ontology:Variable ;
+      ontology:measurementType ontology:measurement-type
+    ]
+  ] ;
+  ontology:has_result_property ontology:mean ;
+  ontology:has_result_property ontology:standard_deviation .
+
+instance:8cbdcbd2-1adb-47c1-a594-1c1a5d54af7c
+  rdf:type ontology:PopulationCharacteristic ;
+  rdfs:label "Insulin Dose" ;
+  ontology:is_measured_at instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:of_variable [
+    ontology:of_variable [
+      rdf:type ontology:Variable ;
+      ontology:measurementType ontology:measurement-type
+    ]
+  ] ;
+  ontology:has_result_property ontology:median ;
+  ontology:has_result_property ontology:min ;
+  ontology:has_result_property ontology:max .
+
+instance:9c2d1920-025f-4271-8668-a5eefcaeb9a8
+  rdf:type ontology:PopulationCharacteristic ;
+  rdfs:label "Diastolic Blood Pressure" ;
+  ontology:is_measured_at instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:of_variable [
+    ontology:of_variable [
+      rdf:type ontology:Variable ;
+      ontology:measurementType ontology:measurement-type
+    ]
+  ] ;
+  ontology:has_result_property ontology:mean ;
+  ontology:has_result_property ontology:standard_deviation .
+
+instance:54c55af0-70a4-41c4-9948-cb85965d4acd
+  rdf:type ontology:PopulationCharacteristic ;
+  rdfs:label "Systolic Blood Pressure" ;
+  ontology:is_measured_at instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:of_variable [
+    ontology:of_variable [
+      rdf:type ontology:Variable ;
+      ontology:measurementType ontology:measurement-type
+    ]
+  ] ;
+  ontology:has_result_property ontology:mean ;
+  ontology:has_result_property ontology:standard_deviation .
+
+instance:b47747f0-a130-449b-8263-291f504497a8
+  rdf:type ontology:PopulationCharacteristic ;
+  rdfs:label "Diabetes Treatment Satisfaction Questionnaire" ;
+  ontology:is_measured_at instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:of_variable [
+    ontology:of_variable [
+      rdf:type ontology:Variable ;
+      ontology:measurementType ontology:measurement-type
+    ]
+  ] ;
+  ontology:has_result_property ontology:mean ;
+  ontology:has_result_property ontology:standard_deviation .
+
+instance:5f3f9645-e743-4881-b75e-eb8853dae3dd
+  rdf:type ontology:PopulationCharacteristic ;
+  rdfs:label "Age Continuous" ;
+  ontology:is_measured_at instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:of_variable [
+    ontology:of_variable [
+      rdf:type ontology:Variable ;
+      ontology:measurementType ontology:measurement-type
+    ]
+  ] ;
+  ontology:has_result_property ontology:mean ;
+  ontology:has_result_property ontology:standard_deviation .
+
+instance:c15fc4d2-d500-4f87-9f1a-13212087c65a
+  rdf:type ontology:PopulationCharacteristic ;
+  rdfs:label "Gender Categorical" ;
+  ontology:is_measured_at instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:categorical ;
+    ontology:categoryList (
+      instance:03c799f5-97b9-4dc8-a2b3-2ec3e4bdd62e
+      instance:c9b27e5c-8864-4d0b-a115-1a22dabf21cb
+    )
+  ] .
+
+instance:223cf3be-2684-4055-a5a3-a8834bc1984d
+  rdf:type ontology:PopulationCharacteristic ;
+  rdfs:label "Age Categorical" ;
+  ontology:is_measured_at instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:of_variable [
+    ontology:of_variable [
+      rdf:type ontology:Variable ;
+      ontology:measurementType ontology:measurement-type
+    ] ;
+    ontology:categoryList (
+      instance:e4814f62-b2e4-4765-abf0-da47d40e65d5
+      instance:5c31961f-bd4f-4543-9679-d95a7a59063f
+      instance:2317a9bc-0cd1-4273-9f32-399c21cfdb5d
+    )
+  ] .
+
+instance:03c799f5-97b9-4dc8-a2b3-2ec3e4bdd62e
+  rdfs:label "Female" ;
+  rdf:type ontology:Category .
+
+instance:c9b27e5c-8864-4d0b-a115-1a22dabf21cb
+  rdfs:label "Male" ;
+  rdf:type ontology:Category .
+
+instance:e4814f62-b2e4-4765-abf0-da47d40e65d5
+  rdfs:label "Adults (18-64 years)" ;
+  rdf:type ontology:Category .
+
+instance:5c31961f-bd4f-4543-9679-d95a7a59063f
+  rdfs:label "From 65-84 years" ;
+  rdf:type ontology:Category .
+
+instance:2317a9bc-0cd1-4273-9f32-399c21cfdb5d
+  rdfs:label "85 years and over" ;
+  rdf:type ontology:Category .
+
+instance:02961ab3-3bec-4bdc-934a-7ff92f8e5caa
+  rdfs:label "Diastolic blood pressure" ;
+  rdf:type ontology:Category .
+
+instance:abdc8c53-7b93-4a8a-8303-c9ed60a2e544
+  rdfs:label "Systolic blood pressure" ;
+  rdf:type ontology:Category .
+
+instance:166e1695-0f1a-4823-a8e7-6399b7f3ac92
+  rdf:type ontology:Endpoint ;
+  rdfs:label "Change in HbA1c" ;
+  rdfs:comment "Estimated mean change from baseline in HbA1c at week 30. The post-baseline responses are analysed using a mixed model for repeated measurements with treatment, country and stratification variable (HbA1c level at screening [<= 8.0% or > 8.0%] crossed with use of metformin [yes or no]; 2 by 2 levels) as fixed factors and baseline value as covariate, all nested within visit. Mean estimates are adjusted according to observed baseline distribution. Missing data was imputed using mixed model for repeated measurements. Analysis was performed on full analysis set which included all randomised subjects who had received at least 1 dose of randomised semaglutide or placebo." ;
+  ontology:is_measured_at instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:continuous
+  ] ;
+  ontology:has_result_property ontology:least_squares_mean ;
+  ontology:has_result_property ontology:standard_error .
+
+instance:7d656a3a-79b1-476f-a648-8ae3b8c5ccb2
+  rdf:type ontology:Endpoint ;
+  rdfs:label "Change in body weight" ;
+  rdfs:comment "Estimated mean change from baseline in HbA1c at week 30. The post-baseline responses are analysed using a mixed model for repeated measurements with treatment, country and stratification variable (HbA1c level at screening [<= 8.0% or > 8.0%] crossed with use of metformin [yes or no]; 2 by 2 levels) as fixed factors and baseline value as covariate, all nested within visit. Mean estimates are adjusted according to observed baseline distribution. Missing data was imputed using mixed model for repeated measurements. Analysis was performed on full analysis set." ;
+  ontology:is_measured_at instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:continuous
+  ] ;
+  ontology:has_result_property ontology:least_squares_mean ;
+  ontology:has_result_property ontology:standard_error .
+
+instance:082d7b30-b622-442a-bdeb-78973ecb1f7d
+  rdf:type ontology:Endpoint ;
+  rdfs:label "Change in fasting plasma glucose (FPG)" ;
+  rdfs:comment "Estimated mean change from baseline in FPG at week 30. The post-baseline responses are analysed using a mixed model for repeated measurements with treatment, country and stratification variable (HbA1c level at screening [<= 8.0% or > 8.0%] crossed with use of metformin [yes or no]; 2 by 2 levels) as fixed factors and baseline value as covariate, all nested within visit. Mean estimates are adjusted according to observed baseline distribution. Missing data was imputed using mixed model for repeated measurements. Estimated mean change from baseline in FPG at week 30. Analysis was performed on full analysis set." ;
+  ontology:is_measured_at instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:continuous
+  ] ;
+  ontology:has_result_property ontology:least_squares_mean ;
+  ontology:has_result_property ontology:standard_error .
+
+instance:135d1220-d881-4986-a841-c36065b675e6
+  rdf:type ontology:Endpoint ;
+  rdfs:label "Change in insulin dose" ;
+  rdfs:comment "Estimated mean change from baseline in insulin dose at week 30 was measured in terms of ratio to baseline. Responses at week 30 are analysed using an Analysis of covariance model with treatment, country and stratification variable (HbA1c level at screening [<= 8.0% or > 8.0%] crossed with use of metformin [yes or no]; 2 by 2 levels) as fixed factors and baseline value as covariate. Mean estimates are adjusted according to observed baseline distribution. Missing data was imputed using last observation carried forward. Analysis was performed on full analysis set." ;
+  ontology:is_measured_at instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:continuous
+  ] ;
+  ontology:has_result_property ontology:least_squares_mean ;
+  ontology:has_result_property ontology:standard_error .
+
+instance:bf2e66c0-656a-4920-aa26-0c5dddc7b38f
+  rdf:type ontology:Endpoint ;
+  rdfs:label "Change in systolic and diastolic blood pressure" ;
+  rdfs:comment "Estimated mean change from baseline in systolic and diastolic blood pressure at week 30. The post-baseline responses are analysed using a mixed model for repeated measurements with treatment, country and stratification variable (HbA1c level at screening [<= 8.0% or > 8.0%] crossed with use of metformin [yes or no]; 2 by 2 levels) as fixed factors and baseline value as covariate, all nested within visit. Mean estimates are adjusted according to observed baseline distribution. Missing data was imputed using mixed model for repeated measurements. Analysis was performed on full analysis set." ;
+  ontology:is_measured_at instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:continuous
+  ] ;
+  ontology:has_result_property ontology:least_squares_mean ;
+  ontology:has_result_property ontology:standard_error .
+
+instance:f0fd374c-0a6a-4280-a00e-d2cedc97af10
+  rdf:type ontology:Endpoint ;
+  rdfs:label "Change in patient reported outcomes, Diabetes Treatment Satisfaction Questionnaire (DTSQ)" ;
+  rdfs:comment "The DTSQs questionnaire was used to assess subjects\U00002019 treatment satisfaction and contained 8 components and evaluates the diabetes treatment (including insulin, tablets and/or diet) in terms of convenience, flexibility and general feelings towards the treatment. The result presented is the \'Treatment Satisfaction\' summary score, which is the sum of 6 of the 8 items of the DTSQs questionnaire. Response options range from 6 (best case) to 0 (worst case). Total scores for treatment satisfaction range from 0-36. Higher scores indicate higher satisfaction. The post-baseline responses are analysed using an ANCOVA model with treatment, country and stratification variables (HbA1c level at screening [<= 8.0% or > 8.0%] and use of metformin [yes or no]) as fixed factors and baseline value as covariate. Mean estimates are adjusted according to observed baseline distribution. Missing data was imputed using last observation carried forward. Analysis was performed on full analysis set." ;
+  ontology:is_measured_at instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:continuous
+  ] ;
+  ontology:has_result_property ontology:least_squares_mean ;
+  ontology:has_result_property ontology:standard_error .
+
+instance:c522fc93-ddfd-454d-8e4d-c77320fabfd3
+  rdf:type ontology:Endpoint ;
+  rdfs:label "HbA1c below 7.0%" ;
+  rdfs:comment "Percentage of subjects with HbA1C below 7.0%" ;
+  ontology:is_measured_at instance:0f64b81e-a57f-4726-8b41-77cfe7126ae0 ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:percentage .
+
+instance:1e052da4-311d-444e-9536-d3c57c06d263
+  rdf:type ontology:Endpoint ;
+  rdfs:label "HbA1c below or equal to 6.5% (48 mmol/mol) American Association of Clinical Endocrinologists (AACE) target" ;
+  rdfs:comment "Percentage of subjects with HbA1C below 7.0% after 30 weeks treatment. Missing data imputed from a mixed model for repeated measurements with treatment, country and stratification variable (HbA1c level at screening [<= 8.0% or > 8.0%] crossed with use of metformin [yes or no]; 2 by 2 levels) as fixed factors and baseline value as covariate, all nested within visit. Analysis was performed on full analysis set." ;
+  ontology:is_measured_at instance:ede585b3-c676-4db0-8c60-b7c2358805d3 ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:percentage .
+
+instance:8f120b7a-7c9a-49b0-9473-fab35ee5aff5
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Decreased appetite" ;
+  ontology:is_serious false ;
+  rdfs:comment "Decreased appetite" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:a4733233-2afa-43b3-ab4f-651a7192b7c7
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Diarrhoea" ;
+  ontology:is_serious false ;
+  rdfs:comment "Diarrhoea" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:ba3555d6-ae18-449b-9d2c-7f2b18d0869b
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Lipase increased" ;
+  ontology:is_serious false ;
+  rdfs:comment "Lipase increased" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:52298a63-fce2-40eb-bafc-12388d92b735
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Nasopharyngitis" ;
+  ontology:is_serious false ;
+  rdfs:comment "Nasopharyngitis" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:6001de9c-a2c0-4d1c-b298-a451491224c9
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Nausea" ;
+  ontology:is_serious false ;
+  rdfs:comment "Nausea" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:b241a372-6f82-4010-80d2-a510d98b9e5b
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Upper respiratory tract infection" ;
+  ontology:is_serious false ;
+  rdfs:comment "Upper respiratory tract infection" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:2b1d745d-efef-4295-a71e-0aff597a3b01
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Urinary tract infection" ;
+  ontology:is_serious false ;
+  rdfs:comment "Urinary tract infection" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:388b2ab8-c8d1-4d7c-9e1b-cb27ea1d51f4
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Vomiting" ;
+  ontology:is_serious false ;
+  rdfs:comment "Vomiting" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:0819ecfa-d087-46d2-9014-995a85c0ccdc
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Acute coronary syndrome" ;
+  ontology:is_serious false ;
+  rdfs:comment "Acute coronary syndrome" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:066c5e87-7569-48a1-b058-e3c81e7c85a2
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Anaemia" ;
+  ontology:is_serious false ;
+  rdfs:comment "Anaemia" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:a4b9fbcf-101f-45f8-8f6b-2a29c04f81df
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Back pain" ;
+  ontology:is_serious false ;
+  rdfs:comment "Back pain" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:e9f5f715-2bad-4a26-8820-4d7e5607b178
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Blood pressure increased" ;
+  ontology:is_serious false ;
+  rdfs:comment "Blood pressure increased" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:b5cb1f02-c3d0-4dc2-8151-c2d7dc81d1a3
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Bronchitis" ;
+  ontology:is_serious false ;
+  rdfs:comment "Bronchitis" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:c6ff7054-322a-4b3a-a9f6-5fbfc04b71ef
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Cardiac failure" ;
+  ontology:is_serious false ;
+  rdfs:comment "Cardiac failure" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:bf333717-bec2-4c2e-b6ba-cbdaa54cf92e
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Carotid artery stenosis" ;
+  ontology:is_serious false ;
+  rdfs:comment "Carotid artery stenosis" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:80305074-9bd8-4bed-807e-c9c49445109f
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Carotid endarterectomy" ;
+  ontology:is_serious false ;
+  rdfs:comment "Carotid endarterectomy" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:82849e1d-45a2-45d4-bb2e-64f91df725d2
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Cataract" ;
+  ontology:is_serious false ;
+  rdfs:comment "Cataract" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:a8b881bb-e38a-4edb-a43e-9bd0505c52ab
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Cholecystitis acute" ;
+  ontology:is_serious false ;
+  rdfs:comment "Cholecystitis acute" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:3d70b71a-2d5f-4951-8162-302384588c45
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Clostridium difficile colitis" ;
+  ontology:is_serious false ;
+  rdfs:comment "Clostridium difficile colitis" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:b6b95260-1dbf-44b5-905a-2be65c695d8e
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Coronary arterial stent insertion" ;
+  ontology:is_serious false ;
+  rdfs:comment "Coronary arterial stent insertion" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:e8e0cb7d-eca0-4cfc-b7c3-e1ddf17772ab
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Coronary artery bypass" ;
+  ontology:is_serious false ;
+  rdfs:comment "Coronary artery bypass" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:7e4bf6a9-c474-44d4-b2ac-c6b703575ce4
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Coronary artery disease" ;
+  ontology:is_serious false ;
+  rdfs:comment "Coronary artery disease" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:bf30b8d1-af2d-43c7-85d6-bfd8975c2d1a
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Depression" ;
+  ontology:is_serious false ;
+  rdfs:comment "Depression" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:b2a8d53e-d992-4344-9ff9-7b3a0b99252a
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Diabetes mellitus inadequate control" ;
+  ontology:is_serious false ;
+  rdfs:comment "Diabetes mellitus inadequate control" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:5913b7e5-c79d-4163-a35d-291ce78b0b5b
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Diverticulitis" ;
+  ontology:is_serious false ;
+  rdfs:comment "Diverticulitis" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:74ba0cae-d1fa-49bb-86c4-74ea5965ffa8
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Drug hypersensitivity" ;
+  ontology:is_serious false ;
+  rdfs:comment "Drug hypersensitivity" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:fb0dce6c-4feb-4403-8b5e-2c34069b53c9
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Femoral artery occlusion" ;
+  ontology:is_serious false ;
+  rdfs:comment "Femoral artery occlusion" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:4712f80e-0175-49ea-9e5b-adaea089e74a
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Gastrooesophageal reflux disease" ;
+  ontology:is_serious false ;
+  rdfs:comment "Gastrooesophageal reflux disease" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:e7a3a127-7377-4da8-97b9-887250f710eb
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Hypoglycaemia" ;
+  ontology:is_serious false ;
+  rdfs:comment "Hypoglycaemia" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:60376d9d-764c-483c-9bda-1f9db5134765
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Hypoglycaemic unconsciousness" ;
+  ontology:is_serious false ;
+  rdfs:comment "Hypoglycaemic unconsciousness" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:5d874341-13dd-48c8-96bf-193144bec051
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Ischaemic stroke" ;
+  ontology:is_serious false ;
+  rdfs:comment "Ischaemic stroke" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:cc40efba-69d4-4307-9540-a3df39286474
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Lumbar spinal stenosis" ;
+  ontology:is_serious false ;
+  rdfs:comment "Lumbar spinal stenosis" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:ba38284b-d954-4abe-9b87-a6f85f117a9a
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Meningitis aseptic" ;
+  ontology:is_serious false ;
+  rdfs:comment "Meningitis aseptic" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:7be93663-01bb-4238-9192-5eb81cfcddf1
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Peripheral arterial occlusive disease" ;
+  ontology:is_serious false ;
+  rdfs:comment "Peripheral arterial occlusive disease" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:07c1f002-fc4d-4a13-9357-1ee7831327f8
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Peripheral artery angioplasty" ;
+  ontology:is_serious false ;
+  rdfs:comment "Peripheral artery angioplasty" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:0c046806-1dab-4627-a333-810d664a48a1
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Peripheral artery stent insertion" ;
+  ontology:is_serious false ;
+  rdfs:comment "Peripheral artery stent insertion" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:bed4070b-2cc7-453c-a708-e26bfc2dcb1a
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Pneumonia" ;
+  ontology:is_serious false ;
+  rdfs:comment "Pneumonia" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:64d608d7-f275-43f0-85a7-dd1b04d97922
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Procedural pain" ;
+  ontology:is_serious false ;
+  rdfs:comment "Procedural pain" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:949226bc-890c-4c27-9cd0-5d1143944b3f
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Pyelonephritis" ;
+  ontology:is_serious false ;
+  rdfs:comment "Pyelonephritis" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:eca6efd6-689f-4e34-93aa-c7ca85b22445
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Pyelonephritis acute" ;
+  ontology:is_serious false ;
+  rdfs:comment "Pyelonephritis acute" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:301da726-5972-4701-9618-0a57d7f47fdb
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Pyrexia" ;
+  ontology:is_serious false ;
+  rdfs:comment "Pyrexia" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:b518d93c-c572-450f-89ee-b7e50de42e3a
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Schizophrenia" ;
+  ontology:is_serious false ;
+  rdfs:comment "Schizophrenia" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:0618ac86-68ec-4f52-8bcb-3894598b01ed
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Sinusitis" ;
+  ontology:is_serious false ;
+  rdfs:comment "Sinusitis" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:9e731668-94e9-452b-88af-4342b04be015
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Spondylolisthesis" ;
+  ontology:is_serious false ;
+  rdfs:comment "Spondylolisthesis" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:013c4dc3-e90f-41ef-9354-b33ae787c181
+  rdf:type ontology:AdverseEvent ;
+  rdfs:label "Weight decreased" ;
+  ontology:is_serious false ;
+  rdfs:comment "Weight decreased" ;
+  ontology:is_measured_at instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:of_variable [
+    rdf:type ontology:Variable ;
+    ontology:measurementType ontology:dichotomous
+  ] ;
+  ontology:has_result_property ontology:sample_size ;
+  ontology:has_result_property ontology:count ;
+  ontology:has_result_property ontology:event_count .
+
+instance:26ceffe6-25fd-4e3b-b16b-211029415c1a
+  rdfs:label "Semaglutide 0.5 mg" ;
+  rdfs:comment "Subjects received semaglutide 0.25 mg subcutaneous (sc) injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30." ;
+  rdf:type ontology:Arm .
+
+instance:70fe6256-7936-4a0c-8c12-60681900af3c
+  rdfs:label "Semaglutide 1.0 mg" ;
+  rdfs:comment "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30." ;
+  rdf:type ontology:Arm .
+
+instance:fe706682-7b93-45bc-be84-e20c071f0e46
+  rdfs:label "Placebo" ;
+  rdfs:comment "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks." ;
+  rdf:type ontology:Arm .
+
+instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad
+  rdfs:label "Semaglutide 0.5 mg" ;
+  rdfs:comment "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly up to Week 30." ;
+  rdf:type ontology:Group .
+
+instance:92c8950f-822d-42bd-8667-d19cafa3f4fc
+  rdfs:label "Semaglutide 1.0 mg" ;
+  rdfs:comment "Subjects received semaglutide 0.25 mg sc injection once weekly for 4 weeks followed by semaglutide 0.5 mg once weekly for next 4 weeks and then semaglutide 1.0 mg once weekly up to week 30." ;
+  rdf:type ontology:Group .
+
+instance:d886373c-504d-4002-855f-fae79bbfbbc8
+  rdfs:label "Placebo" ;
+  rdfs:comment "Subjects received placebo (matched to semaglutide) sc injection once weekly for 30 weeks." ;
+  rdf:type ontology:Group .
+
+instance:5cb238f8-e19e-447a-bdaf-de2d52f12348
+  rdfs:label "Overall population" ;
+  rdfs:comment "" ;
+  rdf:type ontology:StudyPopulation .
+
+instance:af40a124-0b67-4a00-8de6-89ff02e386db
+  ontology:of_outcome instance:166e1695-0f1a-4823-a8e7-6399b7f3ac92 ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 132 ;
+  ontology:least_squares_mean -1.450000e+00 ;
+  ontology:standard_error 9.000000e-02 .
+
+instance:a6b2ffe8-0912-4b79-9c5f-a686b5fb3329
+  ontology:of_outcome instance:166e1695-0f1a-4823-a8e7-6399b7f3ac92 ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 131 ;
+  ontology:least_squares_mean -1.850000e+00 ;
+  ontology:standard_error 9.000000e-02 .
+
+instance:892fd9b8-d7b9-480c-abf9-347b231b6c30
+  ontology:of_outcome instance:166e1695-0f1a-4823-a8e7-6399b7f3ac92 ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 133 ;
+  ontology:least_squares_mean -9.000000e-02 ;
+  ontology:standard_error 9.000000e-02 .
+
+instance:f419002a-4ec1-4298-aebc-71d779005a90
+  ontology:of_outcome instance:7d656a3a-79b1-476f-a648-8ae3b8c5ccb2 ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 132 ;
+  ontology:least_squares_mean -3.670000e+00 ;
+  ontology:standard_error 3.600000e-01 .
+
+instance:e5475a97-cd79-47f1-8d3a-84211febc334
+  ontology:of_outcome instance:7d656a3a-79b1-476f-a648-8ae3b8c5ccb2 ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 131 ;
+  ontology:least_squares_mean -6.420000e+00 ;
+  ontology:standard_error 3.600000e-01 .
+
+instance:49aee500-b90f-4c85-93b7-fd5713302f0f
+  ontology:of_outcome instance:7d656a3a-79b1-476f-a648-8ae3b8c5ccb2 ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 133 ;
+  ontology:least_squares_mean -1.360000e+00 ;
+  ontology:standard_error 3.700000e-01 .
+
+instance:94c3d762-dd5e-4d6c-99d3-94cb495eb53d
+  ontology:of_outcome instance:082d7b30-b622-442a-bdeb-78973ecb1f7d ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 132 ;
+  ontology:least_squares_mean -2.914000e+01 ;
+  ontology:standard_error 3.740000e+00 .
+
+instance:aa661054-850e-4517-b86c-78af44774c77
+  ontology:of_outcome instance:082d7b30-b622-442a-bdeb-78973ecb1f7d ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 131 ;
+  ontology:least_squares_mean -4.238000e+01 ;
+  ontology:standard_error 3.760000e+00 .
+
+instance:a491db78-8ddd-4416-9bf7-ecf5cc28fbf9
+  ontology:of_outcome instance:082d7b30-b622-442a-bdeb-78973ecb1f7d ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 133 ;
+  ontology:least_squares_mean -8.510000e+00 ;
+  ontology:standard_error 4.020000e+00 .
+
+instance:f37112ad-8f0e-466b-9f15-d6641d20fcd0
+  ontology:of_outcome instance:135d1220-d881-4986-a841-c36065b675e6 ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 132 ;
+  ontology:least_squares_mean 9.000000e-01 ;
+  ontology:standard_error 1.000000e-02 .
+
+instance:a02d9c0a-63a2-4f00-a6e4-2244b9fb1ff8
+  ontology:of_outcome instance:135d1220-d881-4986-a841-c36065b675e6 ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 131 ;
+  ontology:least_squares_mean 8.500000e-01 ;
+  ontology:standard_error 1.000000e-02 .
+
+instance:c8f3c8c9-a6ec-40c0-903c-3d387d13f7b0
+  ontology:of_outcome instance:135d1220-d881-4986-a841-c36065b675e6 ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 133 ;
+  ontology:least_squares_mean 9.600000e-01 ;
+  ontology:standard_error 1.000000e-02 .
+
+instance:3a505ebf-3221-495a-b41b-26532879035a
+  ontology:of_outcome instance:bf2e66c0-656a-4920-aa26-0c5dddc7b38f ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 132 ;
+  ontology:least_squares_mean -1.840000e+00 ;
+  ontology:standard_error 7.300000e-01 .
+
+instance:2a0b2879-ac9e-48ca-a2d9-b4acb539ad77
+  ontology:of_outcome instance:bf2e66c0-656a-4920-aa26-0c5dddc7b38f ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 131 ;
+  ontology:least_squares_mean -1.500000e+00 ;
+  ontology:standard_error 7.400000e-01 .
+
+instance:f1c646f5-1c40-4eb7-be4e-479cb79f972f
+  ontology:of_outcome instance:bf2e66c0-656a-4920-aa26-0c5dddc7b38f ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 133 ;
+  ontology:least_squares_mean -2.170000e+00 ;
+  ontology:standard_error 7.900000e-01 .
+
+instance:7a224228-d1c6-4a00-9979-62e942cbd163
+  ontology:of_outcome instance:f0fd374c-0a6a-4280-a00e-d2cedc97af10 ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 132 ;
+  ontology:least_squares_mean 2.730000e+00 ;
+  ontology:standard_error 4.600000e-01 .
+
+instance:2c7fcd47-3343-426d-8d31-42f057e21e4f
+  ontology:of_outcome instance:f0fd374c-0a6a-4280-a00e-d2cedc97af10 ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 131 ;
+  ontology:least_squares_mean 3.470000e+00 ;
+  ontology:standard_error 4.600000e-01 .
+
+instance:d1c2cc54-64b4-4dc7-8985-cee0886749c8
+  ontology:of_outcome instance:f0fd374c-0a6a-4280-a00e-d2cedc97af10 ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:4e7d017a-f7f0-4e6b-915d-0e1ded52e311 ;
+  ontology:sample_size 133 ;
+  ontology:least_squares_mean 1.250000e+00 ;
+  ontology:standard_error 5.000000e-01 .
+
+instance:9d82e893-542a-44b5-8a7e-5dfb470f266d
+  ontology:of_outcome instance:c522fc93-ddfd-454d-8e4d-c77320fabfd3 ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:0f64b81e-a57f-4726-8b41-77cfe7126ae0 ;
+  ontology:sample_size 132 ;
+  ontology:percentage 6.060000e+01 .
+
+instance:28602524-563c-4aeb-a676-0c886d9970ab
+  ontology:of_outcome instance:c522fc93-ddfd-454d-8e4d-c77320fabfd3 ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:0f64b81e-a57f-4726-8b41-77cfe7126ae0 ;
+  ontology:sample_size 131 ;
+  ontology:percentage 7.860000e+01 .
+
+instance:5b268b97-43ff-415e-a3f9-05f3ea4df38d
+  ontology:of_outcome instance:c522fc93-ddfd-454d-8e4d-c77320fabfd3 ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:0f64b81e-a57f-4726-8b41-77cfe7126ae0 ;
+  ontology:sample_size 133 ;
+  ontology:percentage 1.050000e+01 .
+
+instance:d4400564-eb4b-4425-bfa0-ac4baab26490
+  ontology:of_outcome instance:1e052da4-311d-444e-9536-d3c57c06d263 ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:ede585b3-c676-4db0-8c60-b7c2358805d3 ;
+  ontology:sample_size 132 ;
+  ontology:percentage 4.090000e+01 .
+
+instance:1db6a902-25f8-4f13-b646-f308c813d5a0
+  ontology:of_outcome instance:1e052da4-311d-444e-9536-d3c57c06d263 ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:ede585b3-c676-4db0-8c60-b7c2358805d3 ;
+  ontology:sample_size 131 ;
+  ontology:percentage 6.110000e+01 .
+
+instance:5d4f6803-5ec5-4eb5-89ce-4c777a5ee93b
+  ontology:of_outcome instance:1e052da4-311d-444e-9536-d3c57c06d263 ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:ede585b3-c676-4db0-8c60-b7c2358805d3 ;
+  ontology:sample_size 133 ;
+  ontology:percentage 4.500000e+00 .
+
+instance:31cbd811-3299-4e39-854f-6640c59ef470
+  ontology:of_outcome instance:8b38d318-d161-41a0-aa18-706ccce99b98 ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 8.360000e+00 ;
+  ontology:standard_deviation 8.300000e-01 .
+
+instance:9834765a-a7c5-4749-88c0-3c43ad5073a9
+  ontology:of_outcome instance:8b38d318-d161-41a0-aa18-706ccce99b98 ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 8.310000e+00 ;
+  ontology:standard_deviation 8.200000e-01 .
+
+instance:40e468de-8811-4bc7-abc5-8e79f00f02cf
+  ontology:of_outcome instance:8b38d318-d161-41a0-aa18-706ccce99b98 ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 8.420000e+00 ;
+  ontology:standard_deviation 8.800000e-01 .
+
+instance:f72b611a-47fa-4ed4-97cd-41940527f040
+  ontology:of_outcome instance:88733015-e53f-4743-af6a-1c1e7c40b50c ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 9.274000e+01 ;
+  ontology:standard_deviation 1.957000e+01 .
+
+instance:2e245ec4-fbd8-4ecc-9f1c-93128f5df22b
+  ontology:of_outcome instance:88733015-e53f-4743-af6a-1c1e7c40b50c ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 9.249000e+01 ;
+  ontology:standard_deviation 2.223000e+01 .
+
+instance:3bedb793-1aa9-40ef-8f0f-966fc76e4acb
+  ontology:of_outcome instance:88733015-e53f-4743-af6a-1c1e7c40b50c ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 8.988000e+01 ;
+  ontology:standard_deviation 2.106000e+01 .
+
+instance:b709ac52-ad28-4894-a431-2e66410cfb9a
+  ontology:of_outcome instance:66880c05-d4bb-4a3e-8f35-0a138d96262b ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 1.610000e+02 ;
+  ontology:standard_deviation 6.238000e+01 .
+
+instance:282de8f3-03dd-49f5-9bef-0524efd4e77d
+  ontology:of_outcome instance:66880c05-d4bb-4a3e-8f35-0a138d96262b ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 1.525000e+02 ;
+  ontology:standard_deviation 5.091000e+01 .
+
+instance:09a79cd8-69a7-4fbe-ad69-be91387a3903
+  ontology:of_outcome instance:66880c05-d4bb-4a3e-8f35-0a138d96262b ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 1.541000e+02 ;
+  ontology:standard_deviation 4.666000e+01 .
+
+instance:1451fcd5-3641-474e-8420-7b1f5231e05c
+  ontology:of_outcome instance:8cbdcbd2-1adb-47c1-a594-1c1a5d54af7c ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:median 3.500000e+01 ;
+  ontology:min 1.500000e+01 ;
+  ontology:max 3.000000e+02 .
+
+instance:6eb36dca-c12a-417f-a072-b7468a2250f8
+  ontology:of_outcome instance:8cbdcbd2-1adb-47c1-a594-1c1a5d54af7c ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:median 3.600000e+01 ;
+  ontology:min 1.400000e+01 ;
+  ontology:max 3.200000e+02 .
+
+instance:7cc53d0d-e250-4481-b7a7-eb68e90d4a2d
+  ontology:of_outcome instance:8cbdcbd2-1adb-47c1-a594-1c1a5d54af7c ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:median 3.600000e+01 ;
+  ontology:min 1.200000e+01 ;
+  ontology:max 1.240000e+02 .
+
+instance:db74d166-a4a3-48bf-a25f-2e1f884103ed
+  ontology:of_outcome instance:9c2d1920-025f-4271-8668-a5eefcaeb9a8 ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 7.889000e+01 ;
+  ontology:standard_deviation 9.720000e+00 .
+
+instance:8c178bff-813b-47e6-a9b0-43d2a710a194
+  ontology:of_outcome instance:9c2d1920-025f-4271-8668-a5eefcaeb9a8 ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 7.873000e+01 ;
+  ontology:standard_deviation 9.980000e+00 .
+
+instance:cc450a05-aaa8-4161-bdef-bd8bf8414585
+  ontology:of_outcome instance:9c2d1920-025f-4271-8668-a5eefcaeb9a8 ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 7.935000e+01 ;
+  ontology:standard_deviation 9.710000e+00 .
+
+instance:532b5a48-ee3c-4b09-a30d-502ca2e9f7f2
+  ontology:of_outcome instance:54c55af0-70a4-41c4-9948-cb85965d4acd ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 1.348700e+02 ;
+  ontology:standard_deviation 1.500000e+01 .
+
+instance:668507e0-e313-4841-8c16-b4ab44b83b1e
+  ontology:of_outcome instance:54c55af0-70a4-41c4-9948-cb85965d4acd ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 1.344000e+02 ;
+  ontology:standard_deviation 1.632000e+01 .
+
+instance:c06643f1-1946-40e8-a4b5-bd8704e85722
+  ontology:of_outcome instance:54c55af0-70a4-41c4-9948-cb85965d4acd ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 1.349900e+02 ;
+  ontology:standard_deviation 1.668000e+01 .
+
+instance:89b7604e-747c-4029-96de-2eec8fa20ab2
+  ontology:of_outcome instance:b47747f0-a130-449b-8263-291f504497a8 ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 2.886000e+01 ;
+  ontology:standard_deviation 6.350000e+00 .
+
+instance:b38910fd-56da-4561-85b2-a05021c7234a
+  ontology:of_outcome instance:b47747f0-a130-449b-8263-291f504497a8 ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 2.862000e+01 ;
+  ontology:standard_deviation 6.450000e+00 .
+
+instance:c703dbe8-6bc4-42ce-8e24-3946eb7bc2ab
+  ontology:of_outcome instance:b47747f0-a130-449b-8263-291f504497a8 ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 2.754000e+01 ;
+  ontology:standard_deviation 6.550000e+00 .
+
+instance:279c9e08-ac20-4835-8e7e-64b920102c96
+  ontology:of_outcome instance:5f3f9645-e743-4881-b75e-eb8853dae3dd ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 5.910000e+01 ;
+  ontology:standard_deviation 1.030000e+01 .
+
+instance:fc724639-4879-4ef5-9486-4f53d9d5d6d2
+  ontology:of_outcome instance:5f3f9645-e743-4881-b75e-eb8853dae3dd ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 5.850000e+01 ;
+  ontology:standard_deviation 9.000000e+00 .
+
+instance:b335e585-41f5-44a2-b8c3-ea196edf99d1
+  ontology:of_outcome instance:5f3f9645-e743-4881-b75e-eb8853dae3dd ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:sample_size "" ;
+  ontology:mean 5.880000e+01 ;
+  ontology:standard_deviation 1.090000e+01 .
+
+instance:2cba608a-aab7-4409-ba6e-d9e2e9d471f8
+  ontology:of_outcome instance:c15fc4d2-d500-4f87-9f1a-13212087c65a ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:category_count [
+    ontology:category instance:03c799f5-97b9-4dc8-a2b3-2ec3e4bdd62e ;
+    ontology:count 58
+  ] ;
+  ontology:category_count [
+    ontology:category instance:c9b27e5c-8864-4d0b-a115-1a22dabf21cb ;
+    ontology:count 74
+  ] .
+
+instance:107548ff-1a41-44ec-b07a-d1d7b76ef273
+  ontology:of_outcome instance:c15fc4d2-d500-4f87-9f1a-13212087c65a ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:category_count [
+    ontology:category instance:03c799f5-97b9-4dc8-a2b3-2ec3e4bdd62e ;
+    ontology:count 54
+  ] ;
+  ontology:category_count [
+    ontology:category instance:c9b27e5c-8864-4d0b-a115-1a22dabf21cb ;
+    ontology:count 77
+  ] .
+
+instance:75239cd7-b14b-424c-8739-5bb4fc782898
+  ontology:of_outcome instance:c15fc4d2-d500-4f87-9f1a-13212087c65a ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:category_count [
+    ontology:category instance:03c799f5-97b9-4dc8-a2b3-2ec3e4bdd62e ;
+    ontology:count 62
+  ] ;
+  ontology:category_count [
+    ontology:category instance:c9b27e5c-8864-4d0b-a115-1a22dabf21cb ;
+    ontology:count 71
+  ] .
+
+instance:25c51571-8f16-40db-93f0-a56b2f5ed8e6
+  ontology:of_outcome instance:223cf3be-2684-4055-a5a3-a8834bc1984d ;
+  ontology:of_group instance:26ceffe6-25fd-4e3b-b16b-211029415c1a ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:category_count [
+    ontology:category instance:e4814f62-b2e4-4765-abf0-da47d40e65d5 ;
+    ontology:count 93
+  ] ;
+  ontology:category_count [
+    ontology:category instance:5c31961f-bd4f-4543-9679-d95a7a59063f ;
+    ontology:count 39
+  ] ;
+  ontology:category_count [
+    ontology:category instance:2317a9bc-0cd1-4273-9f32-399c21cfdb5d ;
+    ontology:count 0
+  ] .
+
+instance:1ee22192-5795-4077-8ae0-10de44a1f3d0
+  ontology:of_outcome instance:223cf3be-2684-4055-a5a3-a8834bc1984d ;
+  ontology:of_group instance:70fe6256-7936-4a0c-8c12-60681900af3c ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:category_count [
+    ontology:category instance:e4814f62-b2e4-4765-abf0-da47d40e65d5 ;
+    ontology:count 102
+  ] ;
+  ontology:category_count [
+    ontology:category instance:5c31961f-bd4f-4543-9679-d95a7a59063f ;
+    ontology:count 29
+  ] ;
+  ontology:category_count [
+    ontology:category instance:2317a9bc-0cd1-4273-9f32-399c21cfdb5d ;
+    ontology:count 0
+  ] .
+
+instance:ae8c6c6d-0397-4781-af9f-55a1a110fc2f
+  ontology:of_outcome instance:223cf3be-2684-4055-a5a3-a8834bc1984d ;
+  ontology:of_group instance:fe706682-7b93-45bc-be84-e20c071f0e46 ;
+  ontology:of_moment instance:dbf3a2c6-0275-425d-a0c2-44d4cda670a7 ;
+  ontology:category_count [
+    ontology:category instance:e4814f62-b2e4-4765-abf0-da47d40e65d5 ;
+    ontology:count 86
+  ] ;
+  ontology:category_count [
+    ontology:category instance:5c31961f-bd4f-4543-9679-d95a7a59063f ;
+    ontology:count 46
+  ] ;
+  ontology:category_count [
+    ontology:category instance:2317a9bc-0cd1-4273-9f32-399c21cfdb5d ;
+    ontology:count 1
+  ] .
+
+instance:78ac049c-ac3a-47b4-a3f8-49221f9d09ed
+  ontology:of_outcome instance:8f120b7a-7c9a-49b0-9473-fab35ee5aff5 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 5 ;
+  ontology:event_count 5 .
+
+instance:47b33552-9e77-4e15-aedb-a0319ebcf1f2
+  ontology:of_outcome instance:8f120b7a-7c9a-49b0-9473-fab35ee5aff5 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 7 ;
+  ontology:event_count 7 .
+
+instance:c2c74482-f48d-4d9d-b308-364167e52012
+  ontology:of_outcome instance:8f120b7a-7c9a-49b0-9473-fab35ee5aff5 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:6b282df6-6bf8-4fb3-ada0-1b7bab4a84df
+  ontology:of_outcome instance:a4733233-2afa-43b3-ab4f-651a7192b7c7 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 6 ;
+  ontology:event_count 6 .
+
+instance:d5f89a5b-4b38-460a-ae99-30e168f365f5
+  ontology:of_outcome instance:a4733233-2afa-43b3-ab4f-651a7192b7c7 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 9 ;
+  ontology:event_count 9 .
+
+instance:678b4c15-b30e-467c-95f5-9aeb3225a596
+  ontology:of_outcome instance:a4733233-2afa-43b3-ab4f-651a7192b7c7 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 2 ;
+  ontology:event_count 2 .
+
+instance:c189fac3-5344-42de-b273-94f9e48015f2
+  ontology:of_outcome instance:ba3555d6-ae18-449b-9d2c-7f2b18d0869b ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 12 ;
+  ontology:event_count 15 .
+
+instance:9556bb21-dc34-47b6-b968-4973d9298546
+  ontology:of_outcome instance:ba3555d6-ae18-449b-9d2c-7f2b18d0869b ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 7 ;
+  ontology:event_count 7 .
+
+instance:86dec395-3bc9-452d-8af9-2af41d8f47bf
+  ontology:of_outcome instance:ba3555d6-ae18-449b-9d2c-7f2b18d0869b ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 4 ;
+  ontology:event_count 4 .
+
+instance:0c3bf93b-a788-43fe-ade8-144fd1773a6f
+  ontology:of_outcome instance:52298a63-fce2-40eb-bafc-12388d92b735 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 11 ;
+  ontology:event_count 14 .
+
+instance:25129e1d-d569-4617-8dc3-56762a77ec8e
+  ontology:of_outcome instance:52298a63-fce2-40eb-bafc-12388d92b735 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 6 ;
+  ontology:event_count 6 .
+
+instance:b920daf2-0f4c-4194-8ff0-56b185e7a30a
+  ontology:of_outcome instance:52298a63-fce2-40eb-bafc-12388d92b735 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 14 ;
+  ontology:event_count 16 .
+
+instance:c25bd8ea-2d57-4a60-9a73-ccbeae01c738
+  ontology:of_outcome instance:6001de9c-a2c0-4d1c-b298-a451491224c9 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 15 ;
+  ontology:event_count 21 .
+
+instance:51d93796-ec4a-4d1b-b09c-6bb5d293622b
+  ontology:of_outcome instance:6001de9c-a2c0-4d1c-b298-a451491224c9 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 22 ;
+  ontology:event_count 23 .
+
+instance:1ddac7c6-0eeb-4859-92a4-a0751c891551
+  ontology:of_outcome instance:6001de9c-a2c0-4d1c-b298-a451491224c9 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 6 ;
+  ontology:event_count 6 .
+
+instance:523b6391-3608-44bb-87af-d48d3cb4fae1
+  ontology:of_outcome instance:b241a372-6f82-4010-80d2-a510d98b9e5b ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 8 ;
+  ontology:event_count 10 .
+
+instance:da73ecee-926c-4d11-8dfb-38db01b7d6da
+  ontology:of_outcome instance:b241a372-6f82-4010-80d2-a510d98b9e5b ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:d66befaa-139b-4c7a-90d7-de46f965fab5
+  ontology:of_outcome instance:b241a372-6f82-4010-80d2-a510d98b9e5b ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 4 ;
+  ontology:event_count 4 .
+
+instance:d104c5b6-4d99-413e-99b7-12686f6a15ef
+  ontology:of_outcome instance:2b1d745d-efef-4295-a71e-0aff597a3b01 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 2 ;
+  ontology:event_count 3 .
+
+instance:1ed0b597-0c52-47a2-8f3e-1d379eac40ab
+  ontology:of_outcome instance:2b1d745d-efef-4295-a71e-0aff597a3b01 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 4 ;
+  ontology:event_count 5 .
+
+instance:2edda4ec-e895-4e1b-9fb3-ee785598a27b
+  ontology:of_outcome instance:2b1d745d-efef-4295-a71e-0aff597a3b01 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 8 ;
+  ontology:event_count 11 .
+
+instance:5ccf0edb-5d59-4a52-8e7f-33dcc9bb2449
+  ontology:of_outcome instance:388b2ab8-c8d1-4d7c-9e1b-cb27ea1d51f4 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 8 ;
+  ontology:event_count 9 .
+
+instance:f10457ab-6af2-4a4d-a479-360d0bf33fe2
+  ontology:of_outcome instance:388b2ab8-c8d1-4d7c-9e1b-cb27ea1d51f4 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 15 ;
+  ontology:event_count 17 .
+
+instance:e0cd5713-bff6-483f-879b-2a2b511384d0
+  ontology:of_outcome instance:388b2ab8-c8d1-4d7c-9e1b-cb27ea1d51f4 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 4 ;
+  ontology:event_count 4 .
+
+instance:20838440-1106-486a-8d6e-80b4399ea551
+  ontology:of_outcome instance:0819ecfa-d087-46d2-9014-995a85c0ccdc ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:83027d28-fa24-4d1e-9e9f-3860d1bf1e21
+  ontology:of_outcome instance:0819ecfa-d087-46d2-9014-995a85c0ccdc ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:add61502-fb51-4872-a600-b9dd2b62b49a
+  ontology:of_outcome instance:0819ecfa-d087-46d2-9014-995a85c0ccdc ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:cfdd68b3-a7b6-4112-a3b9-d58e929841b6
+  ontology:of_outcome instance:066c5e87-7569-48a1-b058-e3c81e7c85a2 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:f0ac4173-b60d-4937-9f77-ca5c62ff12f1
+  ontology:of_outcome instance:066c5e87-7569-48a1-b058-e3c81e7c85a2 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:9f3107b9-57c4-4f47-ac42-45d40695f374
+  ontology:of_outcome instance:066c5e87-7569-48a1-b058-e3c81e7c85a2 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:1f44baff-e3b0-43ff-b083-eb2039611c6f
+  ontology:of_outcome instance:a4b9fbcf-101f-45f8-8f6b-2a29c04f81df ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:58e9bb66-f465-4ebb-81b3-0a8a58532f39
+  ontology:of_outcome instance:a4b9fbcf-101f-45f8-8f6b-2a29c04f81df ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:326b3493-3d6d-4831-ae47-ec26ecd62233
+  ontology:of_outcome instance:a4b9fbcf-101f-45f8-8f6b-2a29c04f81df ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:ca60c2b2-c9e8-4c4b-b391-92d3dc978a98
+  ontology:of_outcome instance:e9f5f715-2bad-4a26-8820-4d7e5607b178 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:54f2c0a3-37c8-4023-8ce8-3d2c3a777027
+  ontology:of_outcome instance:e9f5f715-2bad-4a26-8820-4d7e5607b178 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:b1439637-1629-4f13-8ae3-d63e061eb204
+  ontology:of_outcome instance:e9f5f715-2bad-4a26-8820-4d7e5607b178 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:a6e7bc90-1cc4-4c14-a602-4c994ceae08b
+  ontology:of_outcome instance:b5cb1f02-c3d0-4dc2-8151-c2d7dc81d1a3 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:433ff84c-9c4d-4713-9f39-a8dc91e48292
+  ontology:of_outcome instance:b5cb1f02-c3d0-4dc2-8151-c2d7dc81d1a3 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:e10afa15-0987-4819-aa8d-626a3f01ebb5
+  ontology:of_outcome instance:b5cb1f02-c3d0-4dc2-8151-c2d7dc81d1a3 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:0b41d2f1-36b0-4ac7-8d72-94f6a0f39a4d
+  ontology:of_outcome instance:c6ff7054-322a-4b3a-a9f6-5fbfc04b71ef ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:a100dd0d-400f-4d6c-be23-12026a1c3f80
+  ontology:of_outcome instance:c6ff7054-322a-4b3a-a9f6-5fbfc04b71ef ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:c71c9274-13e5-448d-86d2-aef2a6838d44
+  ontology:of_outcome instance:c6ff7054-322a-4b3a-a9f6-5fbfc04b71ef ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:b8a194ca-c448-4d3f-a81b-f6137116fced
+  ontology:of_outcome instance:bf333717-bec2-4c2e-b6ba-cbdaa54cf92e ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:07a2e490-6f8b-47c2-8e51-37f8c5e64a06
+  ontology:of_outcome instance:bf333717-bec2-4c2e-b6ba-cbdaa54cf92e ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:5fbb9de2-588f-4134-9511-4970b4e4c2e0
+  ontology:of_outcome instance:bf333717-bec2-4c2e-b6ba-cbdaa54cf92e ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:0b250192-fa67-4abd-b045-ac95b3318bd1
+  ontology:of_outcome instance:80305074-9bd8-4bed-807e-c9c49445109f ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:3f6aa398-7818-4e20-8bf2-105b0342203e
+  ontology:of_outcome instance:80305074-9bd8-4bed-807e-c9c49445109f ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:4de7e25f-0cdd-434c-b326-b845ba8d6e58
+  ontology:of_outcome instance:80305074-9bd8-4bed-807e-c9c49445109f ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:fa70f89f-58f4-409a-86a9-e47b9e0e7deb
+  ontology:of_outcome instance:82849e1d-45a2-45d4-bb2e-64f91df725d2 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:16f5350e-225d-4217-8fa0-1e1872695400
+  ontology:of_outcome instance:82849e1d-45a2-45d4-bb2e-64f91df725d2 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:9e798052-5800-492e-a07c-c064b06973c7
+  ontology:of_outcome instance:82849e1d-45a2-45d4-bb2e-64f91df725d2 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:e09d695a-f206-4f76-bf74-35a935718f2f
+  ontology:of_outcome instance:a8b881bb-e38a-4edb-a43e-9bd0505c52ab ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:475293c4-ed5a-49a7-b510-d303cf7b6dee
+  ontology:of_outcome instance:a8b881bb-e38a-4edb-a43e-9bd0505c52ab ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:991bc3be-4796-4ebc-b233-9579a5f779e7
+  ontology:of_outcome instance:a8b881bb-e38a-4edb-a43e-9bd0505c52ab ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:f8cc8432-0c8b-421d-8b2e-b76cd7df23f3
+  ontology:of_outcome instance:3d70b71a-2d5f-4951-8162-302384588c45 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:97cc03c1-c0f4-4614-bbf1-aa21945a997b
+  ontology:of_outcome instance:3d70b71a-2d5f-4951-8162-302384588c45 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:09ca752e-812c-46fb-aa7a-ae18550d66b7
+  ontology:of_outcome instance:3d70b71a-2d5f-4951-8162-302384588c45 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:a0900631-62de-468c-89bc-29d3d9100635
+  ontology:of_outcome instance:b6b95260-1dbf-44b5-905a-2be65c695d8e ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:2a22da6e-7c05-4bd0-a73e-2a45ddb53b54
+  ontology:of_outcome instance:b6b95260-1dbf-44b5-905a-2be65c695d8e ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:c64c1570-99f9-467d-b804-e656b777340f
+  ontology:of_outcome instance:b6b95260-1dbf-44b5-905a-2be65c695d8e ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:6f02d9e2-850b-4fe9-811c-f5886ae0308b
+  ontology:of_outcome instance:e8e0cb7d-eca0-4cfc-b7c3-e1ddf17772ab ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:0f6304e0-8a52-4c60-b3e1-018a52aba7ba
+  ontology:of_outcome instance:e8e0cb7d-eca0-4cfc-b7c3-e1ddf17772ab ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:bad3c335-03be-4be3-a6c8-46bc0765ef4f
+  ontology:of_outcome instance:e8e0cb7d-eca0-4cfc-b7c3-e1ddf17772ab ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:f66d4da3-4045-41f1-b772-f9a43b006b27
+  ontology:of_outcome instance:7e4bf6a9-c474-44d4-b2ac-c6b703575ce4 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:712cac46-6eac-4a1f-aedb-4b4fb5bd11cc
+  ontology:of_outcome instance:7e4bf6a9-c474-44d4-b2ac-c6b703575ce4 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:1eb493f2-907f-48b6-bbb6-ac8f38509758
+  ontology:of_outcome instance:7e4bf6a9-c474-44d4-b2ac-c6b703575ce4 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:65b184b0-4e48-4f11-a8aa-04c2ba06ee00
+  ontology:of_outcome instance:bf30b8d1-af2d-43c7-85d6-bfd8975c2d1a ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:ea8f07b8-14e5-46a9-82f7-7f44064f93a8
+  ontology:of_outcome instance:bf30b8d1-af2d-43c7-85d6-bfd8975c2d1a ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:fce2b7cd-bab0-4651-b026-3ec27a968c6a
+  ontology:of_outcome instance:bf30b8d1-af2d-43c7-85d6-bfd8975c2d1a ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:8efe5417-6af4-4ad6-aa89-9c5b3ad4265b
+  ontology:of_outcome instance:b2a8d53e-d992-4344-9ff9-7b3a0b99252a ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:4eca959d-7152-43c6-a6b7-0cca36169713
+  ontology:of_outcome instance:b2a8d53e-d992-4344-9ff9-7b3a0b99252a ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:9ce9ade0-3858-4a78-9f49-aaa7db07bd97
+  ontology:of_outcome instance:b2a8d53e-d992-4344-9ff9-7b3a0b99252a ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:26c847c4-facb-4ac4-90fc-f33c52ff57fc
+  ontology:of_outcome instance:5913b7e5-c79d-4163-a35d-291ce78b0b5b ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:4024d6e3-cec2-469f-a9fa-de26338828fe
+  ontology:of_outcome instance:5913b7e5-c79d-4163-a35d-291ce78b0b5b ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:921937be-fe81-4832-8a3a-c1c93480ea6e
+  ontology:of_outcome instance:5913b7e5-c79d-4163-a35d-291ce78b0b5b ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:52f06d50-ee47-4de7-8e29-b2086c6b287d
+  ontology:of_outcome instance:74ba0cae-d1fa-49bb-86c4-74ea5965ffa8 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:05422c30-7e13-4c27-bcd3-7e02f6585561
+  ontology:of_outcome instance:74ba0cae-d1fa-49bb-86c4-74ea5965ffa8 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:a640bbb6-9777-422d-a331-e58999d379ff
+  ontology:of_outcome instance:74ba0cae-d1fa-49bb-86c4-74ea5965ffa8 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:14cdbf22-1786-4453-98a3-7be3cccb6c40
+  ontology:of_outcome instance:fb0dce6c-4feb-4403-8b5e-2c34069b53c9 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:a3e7430e-0092-48f6-9bb6-290c57aaf2a0
+  ontology:of_outcome instance:fb0dce6c-4feb-4403-8b5e-2c34069b53c9 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:8a2c403f-b572-4596-84e6-3ea87185015f
+  ontology:of_outcome instance:fb0dce6c-4feb-4403-8b5e-2c34069b53c9 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:6beb0eb5-c7b6-4ea8-bce0-956e35164288
+  ontology:of_outcome instance:4712f80e-0175-49ea-9e5b-adaea089e74a ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:a2fd4819-0d85-4510-b13a-d02bd9591bd4
+  ontology:of_outcome instance:4712f80e-0175-49ea-9e5b-adaea089e74a ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:cd972971-44ab-4df1-be67-8b1059d3ed09
+  ontology:of_outcome instance:4712f80e-0175-49ea-9e5b-adaea089e74a ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:be2c8b13-bdfd-4299-9a7b-58a0ee9d31d4
+  ontology:of_outcome instance:e7a3a127-7377-4da8-97b9-887250f710eb ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:93581288-33a5-428a-9091-44711941beeb
+  ontology:of_outcome instance:e7a3a127-7377-4da8-97b9-887250f710eb ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:6b0c93e1-a398-4c1e-a04c-f69723b6b79b
+  ontology:of_outcome instance:e7a3a127-7377-4da8-97b9-887250f710eb ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:16fbf5db-93e6-4231-8343-8c014eff10ca
+  ontology:of_outcome instance:60376d9d-764c-483c-9bda-1f9db5134765 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:22309886-dba3-4ec8-bdd8-73f8e164927a
+  ontology:of_outcome instance:60376d9d-764c-483c-9bda-1f9db5134765 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:6641ce6e-fe18-401e-85c2-e33b4bef5a97
+  ontology:of_outcome instance:60376d9d-764c-483c-9bda-1f9db5134765 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:7fdd19a5-3425-4006-88d0-2547d74cd797
+  ontology:of_outcome instance:5d874341-13dd-48c8-96bf-193144bec051 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:c486055a-7128-4fe7-93b1-3f9c89e1a5bb
+  ontology:of_outcome instance:5d874341-13dd-48c8-96bf-193144bec051 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:e5929af5-0e99-4f27-80d0-dfda325607a2
+  ontology:of_outcome instance:5d874341-13dd-48c8-96bf-193144bec051 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:6d3488df-236a-48a6-95e9-ca9faf2a3a59
+  ontology:of_outcome instance:cc40efba-69d4-4307-9540-a3df39286474 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:578ad0cf-f1c0-4f6b-b07e-d1600350ceac
+  ontology:of_outcome instance:cc40efba-69d4-4307-9540-a3df39286474 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:30fa3b83-43dc-4afb-8c0a-975c3e16ce37
+  ontology:of_outcome instance:cc40efba-69d4-4307-9540-a3df39286474 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:5bc1b550-59a9-4440-80eb-6fbb4d471c9f
+  ontology:of_outcome instance:ba38284b-d954-4abe-9b87-a6f85f117a9a ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:67256358-4691-4842-a101-fbbe195603d6
+  ontology:of_outcome instance:ba38284b-d954-4abe-9b87-a6f85f117a9a ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:7a68e83b-df55-4919-af65-30a6c93c2559
+  ontology:of_outcome instance:ba38284b-d954-4abe-9b87-a6f85f117a9a ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:cc33766b-0654-4cdc-969d-5c64fb281c28
+  ontology:of_outcome instance:7be93663-01bb-4238-9192-5eb81cfcddf1 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:b0efcfd2-46c3-4cc7-a80f-b2234785d578
+  ontology:of_outcome instance:7be93663-01bb-4238-9192-5eb81cfcddf1 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:44549de8-fee4-40e4-a30e-eaf776d83d82
+  ontology:of_outcome instance:7be93663-01bb-4238-9192-5eb81cfcddf1 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:ed4fd357-76c3-430d-987a-9925649938b3
+  ontology:of_outcome instance:07c1f002-fc4d-4a13-9357-1ee7831327f8 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:5a92ab54-32e6-42f3-ab77-a5b8c875b094
+  ontology:of_outcome instance:07c1f002-fc4d-4a13-9357-1ee7831327f8 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:bd3b5ef8-5e70-4cf3-a806-d4a0ef61d7df
+  ontology:of_outcome instance:07c1f002-fc4d-4a13-9357-1ee7831327f8 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:62490f86-b940-4a2a-a20f-1054f01c06d9
+  ontology:of_outcome instance:0c046806-1dab-4627-a333-810d664a48a1 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:f26a0973-e828-40e2-bfdc-6154a050be97
+  ontology:of_outcome instance:0c046806-1dab-4627-a333-810d664a48a1 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:36f2cf29-b992-42c7-8755-00808638999a
+  ontology:of_outcome instance:0c046806-1dab-4627-a333-810d664a48a1 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:5887866b-793d-4c18-86cc-69d8b6736df1
+  ontology:of_outcome instance:bed4070b-2cc7-453c-a708-e26bfc2dcb1a ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:4c8aa9a2-36ca-4cc4-86c4-c0c1a7b21673
+  ontology:of_outcome instance:bed4070b-2cc7-453c-a708-e26bfc2dcb1a ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:2440448b-835f-4fff-b4b1-80283e1ff0be
+  ontology:of_outcome instance:bed4070b-2cc7-453c-a708-e26bfc2dcb1a ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:21137819-98bc-44a7-ad4e-69e4cdaf3745
+  ontology:of_outcome instance:64d608d7-f275-43f0-85a7-dd1b04d97922 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:371c7db4-c493-4660-b064-9789f623e95c
+  ontology:of_outcome instance:64d608d7-f275-43f0-85a7-dd1b04d97922 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:dd983c89-6500-4a4c-a194-3840e288191e
+  ontology:of_outcome instance:64d608d7-f275-43f0-85a7-dd1b04d97922 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:ef708a92-3cc6-4b4b-8749-1a211fa757e0
+  ontology:of_outcome instance:949226bc-890c-4c27-9cd0-5d1143944b3f ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:46e78cd4-cd24-4baa-af1b-ef65883028bf
+  ontology:of_outcome instance:949226bc-890c-4c27-9cd0-5d1143944b3f ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:14934b1b-bf0e-4300-874f-1e57a3229d22
+  ontology:of_outcome instance:949226bc-890c-4c27-9cd0-5d1143944b3f ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:1e181e49-928e-48e0-9f4d-1b56c00cd988
+  ontology:of_outcome instance:eca6efd6-689f-4e34-93aa-c7ca85b22445 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:0132571f-01ae-406c-bc10-264c4037fed0
+  ontology:of_outcome instance:eca6efd6-689f-4e34-93aa-c7ca85b22445 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:6c3a3137-4bf0-4fc3-865d-4b97221abd9c
+  ontology:of_outcome instance:eca6efd6-689f-4e34-93aa-c7ca85b22445 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:052f172c-4405-485d-94b9-8fc5fc480cd2
+  ontology:of_outcome instance:301da726-5972-4701-9618-0a57d7f47fdb ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:029fa38c-5ee4-4c55-b1fb-2b25ccc2d795
+  ontology:of_outcome instance:301da726-5972-4701-9618-0a57d7f47fdb ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:0dc5257f-6f74-40f6-9284-e17ac806e4ee
+  ontology:of_outcome instance:301da726-5972-4701-9618-0a57d7f47fdb ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:3fa51e41-0d71-4864-aab6-b24f32e6ecc8
+  ontology:of_outcome instance:b518d93c-c572-450f-89ee-b7e50de42e3a ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:d885e00b-67d4-4512-826b-09b023ab962f
+  ontology:of_outcome instance:b518d93c-c572-450f-89ee-b7e50de42e3a ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:86db612a-82a5-422d-a7e5-f4bdf47c38e2
+  ontology:of_outcome instance:b518d93c-c572-450f-89ee-b7e50de42e3a ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:68ebf160-9690-48e8-83db-083cde7fc2d9
+  ontology:of_outcome instance:0618ac86-68ec-4f52-8bcb-3894598b01ed ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:4bee66bf-88cb-451d-933d-e8aed23fa1c2
+  ontology:of_outcome instance:0618ac86-68ec-4f52-8bcb-3894598b01ed ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:81b6c631-bd25-4d49-867d-c839c8dd863d
+  ontology:of_outcome instance:0618ac86-68ec-4f52-8bcb-3894598b01ed ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:f3c5dc82-96df-43dc-bf62-6f4eccc22608
+  ontology:of_outcome instance:9e731668-94e9-452b-88af-4342b04be015 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:1afd77c1-c99d-4f90-9d9b-42f6f15b097b
+  ontology:of_outcome instance:9e731668-94e9-452b-88af-4342b04be015 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:9965f1b6-c65c-4a27-9469-399733e5a420
+  ontology:of_outcome instance:9e731668-94e9-452b-88af-4342b04be015 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:74902c4d-ee72-4a20-a8e1-a48108ca26e2
+  ontology:of_outcome instance:013c4dc3-e90f-41ef-9354-b33ae787c181 ;
+  ontology:of_group instance:ef4b7259-db9c-4ff0-9bc6-d1eca9b142ad ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 132 ;
+  ontology:count 1 ;
+  ontology:event_count 1 .
+
+instance:1f8e8aae-e5c3-4b94-b816-0617a8f8b8e6
+  ontology:of_outcome instance:013c4dc3-e90f-41ef-9354-b33ae787c181 ;
+  ontology:of_group instance:92c8950f-822d-42bd-8667-d19cafa3f4fc ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 131 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .
+
+instance:311baf1c-7679-46d3-882f-15b0d66adec6
+  ontology:of_outcome instance:013c4dc3-e90f-41ef-9354-b33ae787c181 ;
+  ontology:of_group instance:d886373c-504d-4002-855f-fae79bbfbbc8 ;
+  ontology:of_moment instance:81f050d0-50d1-429a-8eda-68eb61c90455 ;
+  ontology:sample_size 133 ;
+  ontology:count 0 ;
+  ontology:event_count 0 .

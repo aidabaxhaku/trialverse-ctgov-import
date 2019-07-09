@@ -102,3 +102,8 @@
 (deftest testxml-3
   (let [imported-rdf (import-xml testxml)]
     (is (= 363846 (count imported-rdf)))))
+
+(deftest testxml-sustain2
+  (let [imported-rdf (import-xml (vtd/navigator (slurp "test/app/sustain-2.xml")))]
+    (spit "out-sustain.rdf" imported-rdf)
+    (is (= 363846 (count imported-rdf)))))

@@ -1,22 +1,22 @@
 (ns app.import-shared
-  (:require 
+  (:require
     [riveted.core :as vtd]
     [clojure.string :refer [lower-case]]
     [clojure.set :refer [map-invert]]
     [org.drugis.addis.rdf.trig :as trig]))
 
 (def prefixes {:rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-                  :rdfs "http://www.w3.org/2000/01/rdf-schema#"
-                  :xsd "http://www.w3.org/2001/XMLSchema#"
-                  :owl "http://www.w3.org/2002/07/owl#"
-                  :qudt "http://qudt.org/schema/qudt#"
-                  :ontology "http://trials.drugis.org/ontology#"
-                  :study "http://trials.drugis.org/studies/"
-                  :ictrp "http://trials.drugis.org/ictrp-id/"
-                  :instance "http://trials.drugis.org/instances/"
-                  :entity "http://trials.drugis.org/entities/"
-                  :dc "http://purl.org/dc/elements/1.1/"
-                  :bibo "http://purl.org/ontology/bibo/"})
+               :rdfs "http://www.w3.org/2000/01/rdf-schema#"
+               :xsd "http://www.w3.org/2001/XMLSchema#"
+               :owl "http://www.w3.org/2002/07/owl#"
+               :qudt "http://qudt.org/schema/qudt#"
+               :ontology "http://trials.drugis.org/ontology#"
+               :study "http://trials.drugis.org/studies/"
+               :ictrp "http://trials.drugis.org/ictrp-id/"
+               :instance "http://trials.drugis.org/instances/"
+               :entity "http://trials.drugis.org/entities/"
+               :dc "http://purl.org/dc/elements/1.1/"
+               :bibo "http://purl.org/ontology/bibo/"})
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
 (defn gen-uri [] (trig/iri :instance (uuid)))
@@ -86,9 +86,9 @@
   [subj xml prop attr]
   (let [value-str (vtd/attr xml attr)
         value     (if (or
-                       (= "count" prop)
-                       (= "event_count" prop)
-                       (= "sample_size" prop))
+                        (= "count" prop)
+                        (= "event_count" prop)
+                        (= "sample_size" prop))
                     (parse-int value-str)
                     (parse-double value-str))]
     (if value
@@ -110,3 +110,19 @@
   (trig/spo mm-uri
             [(trig/iri :rdfs "label") (trig/lit mm-title)]
             [(trig/iri :rdf "type") (trig/iri :ontology "MeasurementMoment")]))
+
+(defn of-variable
+  [measurement-type]
+  [(trig/iri :ontology "of_variable")
+   (trig/_po [(trig/iri :rdf "type")
+              (trig/iri :ontology "Variable")]
+             [(trig/iri :ontology "measurementType")
+              (trig/iri :ontology measurement-type)])])
+
+(defn of-variable-categorical
+  [category-rdf]
+  (let [[of-variable-subject
+         blank-with-pairs] (of-variable "categorical")
+        updated-blank-with-pairs (trig/spo blank-with-pairs
+                                           category-rdf)]
+    [of-variable-subject updated-blank-with-pairs]))

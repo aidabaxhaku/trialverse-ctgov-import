@@ -336,8 +336,7 @@
 
 (defn measurement-data-rdf-complex
   [props sample-size-xml measure-xml group-id m-meta]
-  (let [measurement-query (format "./*//category_list/category/measurement_list/measurement[@group_id=\"%s\"]" group-id)
-        sample-size-query (format ".//count_list/count[@group_id=\"%s\"]" group-id)
+  (let [sample-size-query (format ".//count_list/count[@group_id=\"%s\"]" group-id)
         sample-size (vtd/at sample-size-xml sample-size-query)]
   (map #(measurement-data-row-rdf 
          measure-xml group-id m-meta props % sample-size) 
@@ -346,7 +345,6 @@
 (defn outcome-measurement-data-rdf
   [xml group-id m-meta]
   (let [measures-xml (vtd/at xml "./measure")
-        measure-count (count (vtd/search xml "./measure"))
         sample-size-xml (vtd/at xml "./*//analyzed_list/analyzed")
         measure-xml (vtd/last-child measures-xml)
         props (outcome-measurement-properties xml)
@@ -378,10 +376,14 @@
 (defn baseline-measurement-data-rdf
   [subj measure-xml sample-size-xml group-id category-uris]
   (let [props (baseline-measurement-properties measure-xml)
-        properties (outcome-results-properties props)]
+        reported-properties (outcome-results-properties props)]
+
     (cond
-      (:simple props) (measurement-data-rdf-basic subj properties sample-size-xml measure-xml group-id)
-      (:categories props) (measurement-data-rdf-categorical subj measure-xml group-id category-uris)
+      (:simple props) (measurement-data-rdf-basic subj reported-properties sample-size-xml measure-xml group-id)
+      (and (:categories props)
+           (nil? (:dispersion props))
+           (= (:param props) "Count of Participants"))
+           (measurement-data-rdf-categorical subj measure-xml group-id category-uris)
       :else subj)))
 
 (defn baseline-measurements

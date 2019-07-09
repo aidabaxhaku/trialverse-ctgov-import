@@ -16,19 +16,11 @@
   [id xml-type]
   (:body
     (client/get
-      (str "https://clinicaltrials.gov/show/" (url-encode id)  xml-type "?=TRUE"))))
-
-(defn get-info
-  [id]
-  (get-from-ctgov id "displayXml"))
-
-(defn get-record
-  [id]
-  (get-from-ctgov id "resultsXml"))
+      (str "https://clinicaltrials.gov/show/" (url-encode id) "?" xml-type "=TRUE"))))
 
 (defn do-ctgov-import
   [id]
-  (import-xml (vtd/navigator (get-record id))))
+  (import-xml (vtd/navigator (get-from-ctgov id "resultsXml"))))
 
 (defn do-eudract-import
   [xml]
@@ -42,7 +34,7 @@
 
 (defn basic-info
   [id]
-  (let [xml (vtd/navigator (get-info id))
+  (let [xml (vtd/navigator (get-from-ctgov id "displayXml"))
         canonical-id (vtd/text (vtd/at xml "/clinical_study/id_info/nct_id"))]
     {:id canonical-id
      :aliases (map vtd/text (vtd/search xml "/clinical_study/id_info/nct_alias"))
