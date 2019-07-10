@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: com.ximpleware/vtd-xml:2.13">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/ximpleware/vtd-xml/2.13/vtd-xml-2.13.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
