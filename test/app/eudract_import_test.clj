@@ -20,7 +20,6 @@
 (def baseline-group-ids '("baselineGroup1Id" "baselineGroup2Id" "baselineGroup3Id"))
 (def adverse-event-group-ids '("ReportingGroup-1" "ReportingGroup-2" "ReportingGroup-3"))
 (def group-ids (concat arm-ids adverse-event-group-ids baseline-group-ids))
-
 (def variable-uri [:qname :instance "variable-uri"])
 (def mm-uri [:qname :instance "mm-uri"])
 (def age-category-ids '("adultsCategoryId" "pensionersCategoryId" "octogenarianCategoryId"))

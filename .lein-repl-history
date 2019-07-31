@@ -130,3 +130,215 @@ lein test design-parse-test
 out
 [2 2 2] [3 4]
 [34 4]
+(class (vector 1 2 3))
+(let [[first-element second-element third-element fourth-element] my-vector] 
+         (str "first=" first-element " second=" second-element 
+           " third=" third-element " fourth=" fourth-element))
+maps
+maps()
+maps( 2 4)
+maps(2 4)
+(def someting "str")
+(someting 1)
+(def someting ["str1" "str1"])
+someting
+(someting 1)
+(someting "str")
+({[:event 1] [:qname :instance "variable-uri"]} 1)
+({[:event 1] [:qname :instance "variable-uri"]} [:event 1])
+(second (re-find #"(?i)\W(n\s*=\s*(\d+)([,;](\s*n\s*=)?\s*(\d+))*)" label))
+(re-find #"(?i)\W(n\s*=\s*(\d+)([,;](\s*n\s*=)?\s*(\d+))*)")
+(re-find #"(\S+):(\d+)" line)
+(def matcher (re-matcher #"\d+" "abc12345def"))
+(re-find matcher)
+(re-find #"\d+" "abc12345def")
+(def phone-number "672-345-456-3212")
+(def matcher (re-matcher #"\d+" phone-number))
+(re-find matcher)
+(def matcher (re-matcher #"\d34t+" phone-number))
+(re-find matcher)
+(map [1 2  3 4 ])
+quit
+(map [1 2 3 4])
+(map 1 2 3 4)
+(map #(str "Hello " % "!" ) ["Ford" "Arthur" "Tricia"])
+[[:qname :instance "variable-uri"]]
+([[:qname :instance "variable-uri"]] 1)
+([[:qname :instance "variable-uri"]] 0)
+[:outcome idx]
+[:outcome 1]
+1
+{categories :categories
+    param      :param}
+(map #(vector :endpoint %) (range 1 (+ 3 1)))
+(vector :endpoint 2)
+(vector :endpoint 2 4 5 6)
+vector [:id 2]
+vector [:id 2 3 4 ]
+2
+(defn print-last-name [{:keys [l-name]}]
+(print l-name)
+12
+(into {} (map #(vector % {:uri [:qname :instance %]})
+                                       age-category-ids))
+(into {} (map #(vector % {:uri [:qname :instance %]}) "art" "arm" "mae"))
+(def age-category-ids '("adultsCategoryId" "pensionersCategoryId" "octogenarianCategoryId"))
+(def mock-age-categories (into {} (map #(vector % {:uri [:qname :instance %]})
+                                       age-category-ids)))
+(println mock-age-categories)
+(map #(vector :endpoint %) (range 1 (+ x 1)))
+(map #(vector :endpoint %) (range 1 (+ 5 1)))
+user=> (->> (range)
+            (map #(* % %))
+            (filter even?)
+            (take 10)
+            (reduce +))
+(reduce + 10)
+(reduce + (19))
+(reduce + (take 10))
+(reduce + (take 10 (filter even? (map #(* % %)))))
+(reduce + (take 10 (filter even? (map #(* % %) (range)))))
+(reduce + [2 3 4 5])
+(reduce + (2 3 4 5))
+(reduce #(assoc %1 %2 (inc (%1 %2 0)))
+        {}
+        (re-seq #"\w+" s))
+(reduce into [[1 2 3] [:a :b :c] '([4 5] 6)])
+(reduce into {} [{:dog :food} {:cat :chow} {:this taht} {:that so}])
+(reduce into {} [{:dog :food} {:cat :chow} {:this :taht} {:that :so}])
+defn limit [x y] 
+  (let [sum (+ x y)] 
+    (if (> sum 10) (reduced sum) sum)))
+(reduce + 0 (range 10))
+{}
+(assoc {} [:hello :goodbye
+])
+(assoc {} :hello :goodbye)
+(assoc {:cool :good} :hello :goodbye)
+'([:hello :goodbye] [:ok :bye])
+(def inlist '([:hello :goodbye] [:ok :bye]))
+(assoc {} (first inlist))
+(assoc {} (first (first inlist)) (second (first inlist)))
+(doc reduce)
+(reduce }
+(reduce (fn [in-map [key val]] (assoc in-map key val)) {} inlist)
+(into {} inlist )
+(doc into)
+(vector 1 2 3)
+(map #(vector :endpoint %) (range 1 (+ 5 1)))
+(def categories "potatoes" "meat")
+(into {}
+                                (map #(vector % "test"))
+categories))
+(into {}
+                                (map #(vector % "test")
+categories))
+(def categories "potatoes" "meat")
+(def categories :potatoes :meat)
+(def categories '(:potatoes :meat))
+(into {}
+                                (map #(vector % "test")
+categories))
+(def coolmap (into {} inlist))
+coolmap\
+(map println coolmap)~
+(defn flatten-a-map [dpdnts-map]
+  (apply set/union (vals dpdnts-map)))
+(flatten-a-map {:e #{:m :f}, :c #{:f}, :b #{:c :f}, :d #{:m :f}, :a #{:c :f}}
+((fn [x y]
+(println "Making a set")
+#{x y})
+1 2)
+(def frame (java.awt.Frame.))
+#'user/frame
+user/frame
+(def frame (java.awt.Frame.))
+frame
+(for [meth (.getMethods java.awt.Frame)
+:let [name (.getName meth)]
+:when (re-find #"Vis" name)] name)
+(.isVisible frame)
+(.setVisible frame true)
+(.setSize frame (java.awt.Dimension. 200 200))
+(def gfx (.getGraphics frame))
+(.fillRect gfx 100 100 50 75)
+(.setColor gfx (java.awt.Color. 255 128 0))
+(.fillRect gfx 100 150 75 50)
+(doseq [[x y xor] (xors 200 200)]
+(.setColor gfx (java.awt.Color. xor xor xor))
+(.fillRect gfx x y 1 1))
+(.printStackTrace *e)
+(defn xors [max-x max-y]
+(for [x (range max-x) y (range max-y)]
+[x y (bit-xor x y)])) (xors 2 2)
+doseq [[x y xor] (xors 200 200)]
+doseq [[x y xor] (xors 200 200)] (.setColor gfx (java.awt.Color. xor xor xor)) (.fillRect gfx x y 1 1))
+(doseq [[x y xor] (xors 200 200)]
+(.setColor gfx (java.awt.Color. xor xor xor))
+(.fillRect gfx x y 1 1))
+(doseq [[x y xor] (xors 500 500)]
+(.setColor gfx (java.awt.Color. xor xor xor))
+(.fillRect gfx x y 1 1))
+(.printStackTrace *e)
+(defn xors [xs ys]
+(for [x (range xs) y (range ys)]
+[x y (rem (bit-xor x y) 256)]))
+(defn clear [g] (.clearRect g 0 0 200 200))
+(doseq [[x y xor] (xors 500 500)]
+(.setColor gfx (java.awt.Color. xor xor xor))
+(.fillRect gfx x y 1 1))
+(:zombies population)
+(def population {:zombies 2700, :humans 9})
+(get population :zombies)
+(population :zombies)
+(def a-to-j (vec (map char (range 65 75))))
+a-to-j
+(first {:width 10, :height 20, :depth 15})
+(def schedule
+(conj clojure.lang.PersistentQueue/EMPTY
+:wake-up :shower :brush-teeth))
+schedule
+(into #{[]} [()])
+(into #{[1 2]} '[(3 4)])
+(sorted-set :b :c :a)
+(sorted-set [3 4] [2 1])
+(def my-set (sorted-set :a :b))
+my-set
+(def my-set (sorted-set :b :c :a))
+my-set
+(clojure.set/intersection #{:humans :fruit-bats :zombies}
+#{:chupacabra :zombies :humans})
+(let [m {:a 1, 1 :b, [1 2 3] "4 5 6"}]
+[(get m :a) (get m [1 2 3])])
+vector
+vector()
+(vector)
+(vector 1 3 4 )
+(map #(vector % (id)) categories)
+(defn fun [{a :1 b :2 c :3} arms] )
+fun arms :1
+fun arms a
+fun arms a :1
+(map #(vector (first %) (* 2 (second %)))
+(keys {:aida '
+'})
+(keys {:aida "foo" :joris "bar"})
+(concat {"cap" :a} {:b "r"})
+(:param "men")
+(:param men)
+(:param 1)
+(:param :pa)
+let pa 
+(fn [param]
+                (or (= "Number" param)
+                    (= "Count of Participants" param )))
+param
+(fn [param]
+                (or (= "Number" param)
+                    (= "Count of Participants" param )) param)
+(fb [param] (is(= "num")) 
+param
+)
+(fb [param] (is(= "num"))) 
+(fn [param] (is(= "num"))) 
+(fn [param] (is(= "num" param))) 

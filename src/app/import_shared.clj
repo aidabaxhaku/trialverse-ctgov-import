@@ -19,6 +19,7 @@
                :bibo "http://purl.org/ontology/bibo/"})
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
+
 (defn gen-uri [] (trig/iri :instance (uuid)))
 
 (defn spo-each [subj pred obj*]
@@ -103,8 +104,11 @@
             [(trig/iri :rdf "type") (trig/iri :ontology group-type)]))
 
 (def group-rdf #(group-rdf-flex-type %1 %2 "Group"))
+
 (def arm-rdf #(group-rdf-flex-type %1 %2 "Arm"))
+
 (def overall-population-rdf #(group-rdf-flex-type %1 %2 "StudyPopulation"))
+
 (defn mm-rdf
   [mm-uri mm-title]
   (trig/spo mm-uri
@@ -112,17 +116,19 @@
             [(trig/iri :rdf "type") (trig/iri :ontology "MeasurementMoment")]))
 
 (defn of-variable
-  [measurement-type]
+  [measurement-type ]
   [(trig/iri :ontology "of_variable")
    (trig/_po [(trig/iri :rdf "type")
               (trig/iri :ontology "Variable")]
              [(trig/iri :ontology "measurementType")
               (trig/iri :ontology measurement-type)])])
 
+
 (defn of-variable-categorical
   [category-rdf]
   (let [[of-variable-subject
-         blank-with-pairs] (of-variable "categorical")
-        updated-blank-with-pairs (trig/spo blank-with-pairs
-                                           category-rdf)]
+         blank-with-pairs]
+         (of-variable "categorical")
+         updated-blank-with-pairs (trig/spo blank-with-pairs
+                                            category-rdf)]
     [of-variable-subject updated-blank-with-pairs]))
